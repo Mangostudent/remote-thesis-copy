@@ -1,0 +1,62 @@
+So far, we have analyzed a decision problem with a feature vector space $\mathcal{X} = [0,1]$, and derived structural results for the Stackelberg equilibrium in this context. In this section, we generalize our analysis to a higher-dimensional feature space. We show that, under certain assumptions on the feature space, this higher-dimensional setting can be reduced to the one described in Section~\ref{sec:Problem formulation}.
+
+We focus on decision problems where the class boundary is defined by a linear hyperplane. Such scenarios commonly arise when decisions are based on a weighted sum of features, for example, admission decisions in academic institutions often depend on weighted combinations of subject scores. Our objective is to compute the Stackelberg equilibrium for this multi-dimensional decision problem.
+
+Let $w \in \R^n$ be a unit vector, and let $\mathcal{X} \subset \R^n$ be a bounded convex set denoting the set of feature vectors. Assume the distribution $D$ on $\mathcal{X}$ is uniform. Let $\um = \up = 2\uu > 0$. Let the true function $h: \mathcal{X} \to \mathcal{Y}$ be given by
+\begin{equation}\label{eq:true function multidimensional}
+    h(x) = \begin{cases}
+        \plus & \text{if } w^\top x > h, \\
+        \minus & \text{if } w^\top x \leq h,
+    \end{cases}
+\end{equation}
+where $h \in \R$.
+Let $\mathcal{Z} := \{z \in \mathcal{X} : w^\top z = h\}$ denote the class boundary set. We assume that the feature space $\mathcal{X}$ is sufficiently wide along the direction of $w$, such that for any feature vector $z \in \mathcal{Z}$ on the class boundary, the feature vectors $z + 2\uu w$ and $z - 2\uu w$ remain within $\mathcal{X}$. Since $\mathcal{X}$ is convex, the line segment $\{z + tw : t \in [-2\uu, 2\uu]\}$ lies entirely in $\mathcal{X}$ for every $z \in \cg{Z}$.
+Let the cost kernel be the Euclidean norm, i.e., $\phi(x, x') = \|x - x'\|$. All other assumptions from Section~\ref{sec:Problem formulation} remain unchanged.
+
+\begin{thm}\label{thm: multidimension decision problem}
+    Let $h$ given in \eqref{eq:true function multidimensional} be the true function and let $D$ be the uniform distribution on $\mathcal{X}$. Let
+    $r: \mathcal{X} \rightarrow \mathcal{Y} \cup \Delta$ be the receiver's strategy. Then $\mathcal{E}(r) \geq 2\uu\,\sigma(\cg{Z})$, where $\sigma(\cg{Z}) := \mathcal{H}^{n-1}(\cg{Z})/\operatorname{Vol}(\cg{X})$ is the surface area of $\cg{Z}$ induced by $D$.
+\end{thm}
+\begin{proof}
+    The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof: multidemnsional decision}).
+\end{proof}
+
+We now show that the strategy $r$ described in the following theorem is a Stackelberg equilibrium strategy.
+\begin{thm}\label{thm: multidimensional Stackelberg}
+Let $h$ be the true function, and let $D$ be the uniform distribution on $\cg{X}$. Let the receiver's strategy $r$ be defined as
+\[
+r(x) := 
+\begin{cases}
+\plus & \text{if } w^\top x \geq \h + \uu \\
+\minus & \text{if } w^\top x \leq \h - \uu \\
+\Delta & \text{otherwise}
+\end{cases}.
+\]
+Then $r$ is a Stackelberg equilibrium, and $\mathcal{E}(r) = 2\uu\sigma(\cg{Z})$, where $\sigma(\cg{Z}) := \mathcal{H}^{n-1}(\cg{Z})/\operatorname{Vol}(\cg{X})$ is the surface area of $\cg{Z}$.
+\end{thm}
+
+\begin{proof}
+    The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof: multidimensional stackelberg}).
+\end{proof}
+This theorem shows that if the class boundary is a hyperplane, then the decision boundaries of the receiver's Stackelberg equilibrium are also hyperplanes parallel to the class boundary hyperplane.
+We now show that this problem can be reformulated into our setup (Section~\ref{sec:Decision problem}) such that the respective Stackelberg equilibria remain consistent with each other.
+Let $H_c := \{x \in \cg{X} : w^\top x = \h\}$ denote the class boundary, and let $H_+ := \{x \in \cg{X}: w^\top x = \h + \uu \}$ and $H_- := \{x \in \cg{X}: w^\top x = \h - \uu\}$ denote the decision boundaries of the corresponding Stackelberg equilibrium. Let 
+\[
+a_{\min} := \min_{x \in \cg{X}} w^\top x \quad \text{and} \quad a_{\max} := \max_{x \in \cg{X}} w^\top x.
+\]
+It follows that $a_{\min} \leq \h \leq a_{\max}$.
+Define the mapping $\cg{M}: \cg{X} \to [0,1]$ as
+\[
+\cg{M}(x) = \frac{w^\top x - a_{\min}}{a_{\max} - a_{\min}}.
+\]
+This mapping projects all feature vectors onto the scalar interval $[0,1]$ based on their position along the direction of the weight vector $w$. We now calculate the mapping of the feature vectors lying on the class boundary and the decision boundaries of the Stackelberg equilibrium.
+
+\begin{equation*}
+\begin{aligned}
+    \cg{M}(H_c) &= \frac{\h - a_{\min}}{a_{\max}-a_{\min}}, \\
+    \cg{M}(H_+) &= \frac{\h + \uu - a_{\min}}{a_{\max}-a_{\min}}, \\
+    \cg{M}(H_-) &= \frac{\h - \uu - a_{\min}}{a_{\max}-a_{\min}}.
+\end{aligned}
+\end{equation*}
+Now consider the decision problem outlined in Section~\ref{sec:Decision problem}, with the class boundary at $\frac{\h - a_{\min}}{a_{\max}-a_{\min}}$ and $\um = \up = \frac{2\uu}{a_{\max}-a_{\min}}$. From Theorem~\ref{thm:Deterministic Stackelberg equilibrium strategy} (for the symmetric case $\um = \up$), it follows that the decision boundaries of the Stackelberg equilibrium are at $\ib = \frac{\h - \uu - a_{\min}}{a_{\max}-a_{\min}}$ and $\jb = \frac{\h + \uu - a_{\min}}{a_{\max}-a_{\min}}$. This precisely matches the image under $\cg{M}$ of the decision boundaries of the Stackelberg equilibrium derived in Theorem~\ref{thm: multidimensional Stackelberg}, as claimed.
+

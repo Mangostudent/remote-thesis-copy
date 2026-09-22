@@ -1,0 +1,579 @@
+<USER_REQUEST>
+I got this review what do u think and what changes shold i make and how serious are those
+
+\chapter*{Readiness and reading guide}
+\addcontentsline{toc}{chapter}{Readiness and reading guide}
+\textbf{Bottom line.} The manuscript has a coherent research theme, but several central claims cannot stand as written. Better typography does not close a proof gap. The revised presentation distinguishes model identities, conditional learning guarantees, and results that should not yet be advertised.
+
+\begin{description}
+\item[P0 --- blocking.] A central definition, claim, or supporting experiment fails as written.
+\item[P1 --- substantial.] A missing hypothesis, comparator mismatch, or proof repair materially changes the claim's scope.
+\item[P2 --- localized.] A notation, endpoint, exposition, or restricted-scope correction.
+\end{description}
+\textbf{Evidence language.} ``Confirmed error'' means a direct contradiction, explicit counterexample, or observable source mismatch. ``Proof gap'' means the available argument is insufficient, not that its conclusion is necessarily false. ``Conditional'' means the displayed implication still needs its stated premises established for this model.
+
+\begin{tabularx}{\textwidth}{@{}lXl@{}}
+\toprule
+Chapter & Main revision needed & Finding IDs \\
+\midrule
+1 & Align contribution claims and remove publication placeholders & C1-01--03 \\
+2 & Repair response definition, VC argument, and two-stage error budget & C2-01--05 \\
+3 & Match training/testing risks; qualify tuning and residual terms & C3-01--05 \\
+4 & Remove false smoothness implication; align bandit assumptions & C4-01--07 \\
+5 & Recompute common targeting and welfare before downstream claims & C5-01--08 \\
+6 & Restrict synthesis to what the repaired chapters establish & C6-01--03 \\
+\bottomrule
+\end{tabularx}
+
+\textbf{How to use this report.} Start with the relevant chapter, follow its file locations, then use Appendix A for typeset calculations and Appendix B for closure criteria. Stable IDs C2--C5 preserve the 25 findings in the previous review; this dossier adds six framing/conclusion findings. Some IDs group multiple related corrections. Severity is not a count of false theorems.
+
+\textbf{Scope and provenance.} The 70 source files recorded in the previous review's SHA-256 manifest match the current source snapshot. Central definitions, proof paths, experiment interfaces, and primary bandit references were re-inspected. The detailed C2--C5 findings are retained from that review rather than represented as a second independent full-proof certification. Chapters 1 and 6, mathematical exhibits, acceptance criteria, and the revised slides are newly organized here. Long constructions, data preprocessing, all solver outputs, and publication statuses are not independently certified. Experiments have not been rerun.
+
+\textbf{Path convention.} Source paths in findings are relative to the project root, and line numbers refer to the unchanged reviewed thesis snapshot. Compile this dossier from its own directory, or use the root-level commands in the README. The report is separate from the thesis: no unresolved theorem has been silently rewritten as proved.
+
+\chapter{Introduction: scope and contribution claims}
+\textbf{Assessment.} The two-part motivation---incentive-dependent observations and partitioned observations---is a useful organizing principle. The contribution summary must not promise more than the corrected technical chapters establish.
+
+\section{C1-01 --- P1: contribution claims inherit downstream blockers}
+\textbf{Location:} \code{Chapter_1_Introduction/C1_Introduction.tex:14}; \code{S0_Abstract.tex:1}.
+
+The introduction promises optimal achievable performance and fundamental learning limitations. The abstract specifically claims an IPO non-monotonicity example and a sublinear learning guarantee. The current IPO example and welfare derivation fail the checks in C5-01, C5-02, and C5-05; the online transfer remains conditional. The narrative therefore certifies results that the active proofs do not yet support.
+
+\textbf{Repair.} Maintain an explicit ledger: decision identities; learning bounds with complete assumptions; illustrative experiments; and open proof obligations. Do not turn an upper bound into an optimal-rate claim or a proposed example into an established theorem.
+\gate{Every sentence in the abstract and contribution list maps to a surviving result with matching domain, comparator, and quantifiers.}
+
+\section{C1-02 --- P2: publication records contain placeholders}
+\textbf{Locations:} \code{Chapter_1_Introduction/C1_Introduction.tex:39}; \code{refs.bib:940}; \code{refs.bib:948}.
+
+Two entries retain a journal-name placeholder. Submitted and accepted statuses require author confirmation, particularly where the evidence is not public. The revised deck deliberately omits a publication-status slide instead of inventing a venue or copying an unverified status.
+\gate{Reconcile authors, titles, venue names, and statuses in the thesis, bibliography, and eventual publication slide against author-supplied evidence.}
+
+\section{C1-03 --- P2: define the observation model more precisely}
+\textbf{Locations:} \code{Chapter_1_Introduction/C1_Introduction.tex:6}; \code{S0_Abstract.tex:1}.
+
+``Classical statistical learning assumes'' is broader than the intended i.i.d., fixed-observation baseline. Missing-data and nonstationary learning also exist; frame these as departures from the baseline studied here, rather than from every classical framework. Replace repeated ``shape of observations'' with ``which variables are jointly observed'' on first use. Chapter 3 is not a strategic-agent model and should remain visibly distinct from Chapters 2, 4, and 5.
+
+The earlier compiled abstract has an orphaned final phrase on a second page. Shorten its prose after correcting its scientific scope rather than changing institutional margins or font sizes.
+\gate{A reader can identify both departures, all four settings, and the exact observation restriction without needing later chapters.}
+
+\chapter{Strategic classification}
+\textbf{Assessment.} Preserve the distinction between decision structure and statistical learning. The response definition and necessity argument are blocking issues. The five IDs below retain the previous review's findings; the presentation removes the unsupported ``fundamental iff'' claim.
+
+\section{C2-01 --- P0, confirmed error: an empty response definition}
+\textbf{Location:} \code{Chapter_2_Strategic_Classification/Sections/3D_stochastic_strategy.tex:64}.
+
+The definition excludes any $s'\in\bar B(r)$ with $T(x;r,s')\leq T(x;r,s_r)$ for every $x$. But $s'=s_r$ always satisfies this condition. Therefore no strategy satisfies the literal definition, and the randomized-equilibrium theorem cannot use it unchanged.
+
+\textbf{Repair.} Retain the preceding worst-error maximization over lazy best responses, and remove the contradictory clause. State measurable selection and attainment assumptions. If pointwise maximality is intended, specify its direction and require strict improvement somewhere; excluding only the same named strategy does not exclude equivalent error functions.
+
+The ``closed'' admissible-region condition also needs its ambient topology specified: the no-penalty ramp produces $(h,1]$, not a closed subset of $[0,1]$. Require $u>0$ wherever the ramp divides by $2u$. Do not compare a lazy-response optimum and an unrestricted worst-response optimum without noting the change in tie-breaking.
+\gate{The proposed ramp belongs to the declared strategy class, a measurable lazy response exists, and the equilibrium statement uses the same tie convention throughout.}
+
+\section{C2-02 --- P0, proof gap: VC necessity changes the problem}
+\textbf{Locations:} \code{Chapter_2_Strategic_Classification/Sections/A6_proofs_4B.tex:27}; \code{Chapter_2_Strategic_Classification/Sections/4B_strategically_aware_erm.tex:3}; \code{Chapter_2_Strategic_Classification/Sections/A5_proofs_4A.tex:141}.
+
+The necessity proof starts from deterministic targets $Y=h(X)$, $h\in\mathcal F$, then invokes agnostic learnability, which quantifies over arbitrary joint laws of $(X,Y)$. The first guarantee does not establish the second. Furthermore, sender utility depends on the true function: $r\circ s_r$ is not automatically a fixed target-independent classifier when $h$ varies.
+
+\textbf{Repair.} Define an implementable fixed strategic loss class on observed pairs $(x,y)$ and prove uniform convergence for it. A sufficient condition can then be stated with the correct loss complexity. Necessity requires a separate reduction with the original quantifiers, or an explicit change in the learning problem. Recheck the finite-VC implication corollary and any claim that SERM automatically compresses the class.
+\gate{Specify what is fixed before sampling, what the learner can compute, and the distribution/target quantifiers. Supply a necessity proof or withdraw ``if and only if.''}
+
+\section{C2-03 --- P1, logical gap: no demonstrated algorithm separation}
+\textbf{Location:} \code{Chapter_2_Strategic_Classification/Sections/4B_strategically_aware_erm.tex:49}.
+
+The induced class ranges over all distributions, but the example fixes the uniform law to claim a singleton class. A statement under one distribution cannot identify that union. Rational points need not be null under atomic laws; excluding those laws also changes distribution-free necessity arguments. The example is outside the bounded-number-of-boundaries family stated earlier.
+
+Failure to learn an infinite-VC target class in ordinary PAC risk does not establish failure of the vanilla algorithm at its strategic objective: an inaccurate estimate of $h$ might still yield a good decision rule.
+\textbf{Repair.} Present the example only as a fixed-distribution illustration unless there is an actual strategic-excess-risk lower bound for the two-stage algorithm over the same distribution family.
+\gate{A separation claim compares the same objective, admissible laws, observations, and comparator for both algorithms.}
+
+\section{C2-04 --- P1, formula and scope errors: empirical intervals and rates}
+\textbf{Locations:} \code{Chapter_2_Strategic_Classification/Sections/A5_proofs_4A.tex:92}; \code{Chapter_2_Strategic_Classification/Sections/4A_standard_erm.tex:69}.
+
+For empirical CDF $F_m$, the correct identity is
+\[
+ D_m((a,b))=F_m(b^-)-F_m(a),
+\]
+not $F_m(b)-F_m(a)$, which measures $(a,b]$. Fitted endpoints can be observations, so endpoint mass cannot be ignored. DKW also controls left limits; this part is repairable.
+
+The proof promotes an existence/structure result for an optimum to a statement about every candidate strategy's error set. Restrict the supremum to a justified structured family, verify the interval count $K$, and show that the empirical optimizer belongs to that family.
+
+The target-learning rate is not the complete two-stage sample complexity. Conditional on the repaired transfer lemmas, the error budget has the form
+\[
+ e_{\rm strategic}\leq 2e_{\rm target}+4K e_{\rm DKW}.
+\]
+Taking $e_{\rm target}=e/4$, $e_{\rm DKW}=e/(8K)$ and failure probability $\delta/2$ per stage requires
+\[
+ m\geq \frac{32K^2}{e^2}\log\frac4\delta
+\]
+for the DKW stage, as well as the target-learning requirement. This is a conditional sufficient bound from this proof, not a minimax claim.
+\gate{State one end-to-end bound, with all budgets and structural assumptions; do not report only the realizable target ERM rate.}
+
+\section{C2-05 --- P2, localized corrections and model restrictions}
+\textbf{Locations:} \code{Chapter_2_Strategic_Classification/Sections/4A_standard_erm.tex:13}; \code{Chapter_2_Strategic_Classification/Sections/A5_proofs_4A.tex:152}; \code{Chapter_2_Strategic_Classification/Sections/3C_multidimensional_decision_problem.tex:19}; \code{Chapter_2_Strategic_Classification/Sections/3A_discrete_feature_set.tex:20}.
+\begin{itemize}
+\item Zero-one loss uses a misclassification indicator, not an equality indicator. Reconcile the sample size $m$, sum index $n$, and undefined labels $y_i$.
+\item Correct the proof's error-set expansion from correct-classification equalities to misclassification inequalities. The intended agreement away from the target-disagreement set can be retained.
+\item For a full-dimensional uniform law, define the section measure as $\sigma(Z)=\mathcal H^{d-1}(Z)/\operatorname{Vol}(\mathcal X)$. Ambient probability of a hyperplane section is zero; it is not this normalized section measure.
+\item The discrete graph objective counts correctly classified types. Assume uniform type probabilities, or use a weighted independent-set objective for nonuniform probabilities.
+\item A family of functions with at most $d-1$ boundaries is not interchangeable with an arbitrary finite-VC family. The interval structure needs its own proof.
+\end{itemize}
+\gate{Loss definitions, empirical indexing, probability normalization, and graph weights agree with the model and proofs.}
+
+\chapter{Partitioned side information}
+\textbf{Assessment.} The observation-pattern question and the three-candidate bound analysis are worth retaining. The current experiment does not measure the theorem's deployment risk, and the upper-bound tuning assumptions need repair.
+
+\section{C3-01 --- P0, confirmed experiment/theorem mismatch}
+\textbf{Locations:} \code{Chapter_3_Side_Information/Sections/3_algorithm.tex:22}; \code{Chapter_3_Side_Information/code/side_information_exp.py:165}; \code{Chapter_3_Side_Information/code/side_information_exp.py:174}; \code{Chapter_3_Side_Information/code/side_information_exp.py:327}.
+
+PSIL trains with a hard imputer $\hat\phi(X)\in\{-1,+1\}$, then predicts with observed $Z$ at deployment. The experiment instead uses \code{predict_proba} as a soft feature in both training and testing. It never supplies \code{Z_test} to the learned primary predictor. Its test loss is neither the stated deployment risk $R(\hat w_\lambda)$ nor exactly the hard-imputed training risk.
+
+\textbf{Repair.} Implement hard imputation, observed-$Z$ testing, and the exact written coordinate/intercept penalties. Alternatively define a different soft-imputation method and derive its guarantee. Regenerate toy and real-data figures only after deciding which procedure is analyzed.
+\gate{Trace one training and one test example through the code and objective; every feature, loss, and penalty matches the stated algorithm. Existing plots are not used to verify the main theorem.}
+
+\section{C3-02 --- P1, unsupported bound proxy and experimental assumptions}
+\textbf{Locations:} \code{Chapter_3_Side_Information/code/side_information_exp.py:140}; \code{Chapter_3_Side_Information/code/side_information_exp.py:269}; \code{Chapter_3_Side_Information/Sections/4C_simulation_result.tex:100}.
+
+The code sets $C_1=C_2=W=1$ without demonstrating valid population envelopes, estimates oracle risks, and clips gaps or excess risks. Real-data oracle quantities used to select the regularizer are evaluated on the same test set used for reported performance. This is a plug-in proxy, not a certified high-probability upper bound. A 99\% confidence band for a repeated-run mean is not 99\% coverage of each run's excess risk.
+
+Untruncated Gaussian mixtures violate bounded-$X$ assumption C1. Mixed/categorical data do not satisfy the written continuous-$X$ assumption. Experiments set $m=n$ although the model assumes $n>m$.
+
+\textbf{Repair.} Disclose oracle information and constants; separate population estimation, selection, and evaluation samples; report unclipped estimates and uncertainty; label out-of-assumption stress tests. Either relax $n>m$ with justification or change the experiment. Verify the objective scaling rather than assuming feature rescaling implements all penalties.
+\gate{A theorem-matched experiment and a practical stress test have distinct captions, protocols, and claims. No test observations influence reported model selection.}
+
+\section{C3-03 --- P1, imputer tuning and confidence bookkeeping}
+\textbf{Locations:} \code{Chapter_3_Side_Information/Sections/3_algorithm.tex:20}; \code{Chapter_3_Side_Information/Sections/A1A2_strong_convexity_other_results.tex:32}; \code{Chapter_3_Side_Information/Sections/A1A2_strong_convexity_other_results.tex:190}; \code{Chapter_3_Side_Information/Sections/4A_upper_bound.tex:18}.
+
+The imputer lemma uses an oracle regularizer proportional to $\sqrt{\log(1/\delta)}/(\|u^*\|\sqrt m)$, while the algorithm chooses its constant by validation. A result for one fixed oracle choice does not automatically apply to a selected choice. ND excludes $u^*=0$ in the main theorem, but the standalone lemma needs to exclude or handle it explicitly.
+
+Constants and sample thresholds depend on the distribution, feature bound, coercivity/margin properties, confidence, and tuning choice. The learned-weight lemma's stated $1-\delta/4$ probability also conditions on prior imputer events; conditional and unconditional statements must agree. The cited regularized-ERM result [S3] hides a universal constant and does not establish a sharp constant-one inequality.
+
+\textbf{Repair.} Prove a deterministic $\mu=c/\sqrt m$ bound with its constant, or uniformly control a specified candidate grid with selection/splitting accounting. Use $n_0(P,\delta)$ and $m_0(P,\delta)$ where appropriate, state C1--C4 and ND together, and preserve the main proof's four-event union-bound structure with explicit event definitions.
+\gate{One event ledger states each failure budget, dependencies, and whether control is simultaneous in $\lambda_z$ and the selected imputer regularizer.}
+
+\section{C3-04 --- P1, binary regularization is not the general result}
+\textbf{Locations:} \code{Chapter_3_Side_Information/main_side.tex:5}; \code{Chapter_3_Side_Information/main_side.tex:26}; \code{Chapter_3_Side_Information/Sections/A4b_corollary_proofs.tex:18}.
+
+The opening and conclusion claim eventual binary regularization. The actual branch analysis permits a strictly preferred interior candidate when $W\Delta/a>2$ and the signal--imputation ratio lies between the derived thresholds. Moreover, it minimizes a theoretical bound, not actual risk. Limiting comparisons need not decide finite samples at a threshold.
+
+\textbf{Repair.} Say ``two endpoints and a feasible interior candidate,'' with the feasibility conditions in Appendix A. Separate finite-sample and asymptotic statements, and account for ties. Do not market this oracle calculation as a data-driven rule without joint validation information or additional identifying assumptions.
+\gate{Every summary retains the interior possibility, population dependence, and distinction between a bound-minimizer and a risk-minimizer.}
+
+\section{C3-05 --- P2, lower-bound quantifiers and class scope}
+\textbf{Locations:} \code{Chapter_3_Side_Information/Sections/4B_lower_bound.tex:7}; \code{Chapter_3_Side_Information/Sections/A5_lowebound_proof.tex:70}.
+
+The numerical constant is sound:
+\[
+ \log 2-H(0.2)=0.192744757\ldots>0.19.
+\]
+Let $Q$ be the common training-data law, including an independent algorithm seed. If every output belongs to at least one of the two bad events, $Q(E_1)+Q(E_2)\geq1$. Thus one \emph{fixed} index $k$ has $Q(E_k)\geq1/2$. The adversary does not choose its distribution after seeing the output. Probability is over the training samples and seed, not one test triple.
+
+The construction satisfies C1--C4 in dimension one but has $u^*=0$, so it is outside ND. It proves a logistic-excess-risk lower bound for the broader class, not a matching lower bound for the ND-restricted upper theorem. Use full-dimensional independent bounded features when extending to a prescribed higher dimension.
+\gate{State ``for every learner, some distribution'' and identify the class and probability space; do not imply irreducible excess risk on every distribution.}
+\chapter{Strategic feature revelation}
+\textbf{Assessment.} The disclosure rule and risk identity explain the mechanism. The blanket smooth-density implication is false, and the online guarantee is not established for the algorithm as written.
+
+\section{C4-01 --- P0, counterexample to strategic-risk smoothness}
+\textbf{Locations:} \code{Chapter_4_Strategic_Revelation/sections/5_online_learning.tex:58}; \code{Chapter_4_Strategic_Revelation/sections/7_postponed_proofs.tex:364}.
+
+Set $d=1$, $q=0$. Give $(X,U,Y)$ equal mass on a smooth product bump in $[0.4,0.6]^3$ and its joint reflection. Within each component, the coordinates are independent and symmetric about their component means $\pm0.5$. The joint density is globally smooth and compactly supported; all means vanish and $\E[XY]=1/4$.
+
+For $0<b\leq1$, $(2U-bX)bX>0$ on both components; for $-1\leq b<0$ it is negative. Therefore
+\[
+ R_S(b)=
+ \begin{cases}
+ \E[Y^2],&b\leq0,\\
+ \E[Y^2]-b/2+b^2\E[X^2],&b>0.
+ \end{cases}
+\]
+The left derivative at zero is $0$ and the right derivative is $-1/2$. The risk is not $C^1$, and its second distributional derivative contains a Dirac mass, precluding $H^3$ membership on an interval containing zero. This contradicts the claimed general Mat\'ern-$5/2$ conclusion in dimension one.
+
+The proof differentiates moving indicators without controlling boundary terms. At $b=0$ the switching boundary is the entire feature space; vanishing of one integrand factor there does not justify successive derivatives. A sign-dependent expression is also not the claimed polynomial.
+\textbf{Repair.} Remove the general implication. Explicitly assume and bound RKHS membership, prove a valid narrower example, or use a different regularity class and algorithm.
+\gate{Any replacement lemma survives this smooth-density counterexample and handles switching degeneracy rather than differentiating indicators formally.}
+
+\section{C4-02 --- P0, unsupported transfer from discretized GP-TS}
+\textbf{Locations:} \code{Chapter_4_Strategic_Revelation/sections/7_postponed_proofs.tex:43}; \code{Chapter_4_Strategic_Revelation/sections/5_online_learning.tex:17}.
+
+The thesis identifies the action sets with the full fixed continuous domain. Theorem 4 of [S1] instead analyzes specified discretization sets with approximation and cardinality control. Exact continuous optimization is not automatically the same analyzed algorithm. The two-regime action space is not literally the single compact convex domain in that theorem.
+
+\textbf{Repair.} Define time-dependent finite nets for each regime and justify their union, approximation error, and information gain. Alternatively use a theorem genuinely covering the stated method. Include norm and noise bounds, normalization, posterior regularization, inflation, and numerical optimization error.
+\gate{Match each hypothesis of the cited theorem to an explicit assumption or established lemma, including the finite-regime extension.}
+
+\section{C4-03 --- P1, the online rate is not always sublinear}
+\textbf{Locations:} \code{Chapter_4_Strategic_Revelation/sections/5_online_learning.tex:64}; \code{Presentation/main_presentation.tex:916}.
+
+The conditional exponent is $\alpha=1/2+d/(2\nu+d)$. It is below one exactly when $d<2\nu$. At $\nu=5/2$, this means integer dimensions $1,2,3,4$. At $d=5$ the displayed bound does not imply vanishing average regret; larger dimensions do not establish no-regret either. This does not prove the algorithm must have linear regret.
+
+The environment class is defined through $H^{5/2+d/2}$, while the theorem permits arbitrary $\nu>0$. That definition does not supply membership at larger smoothness parameters.
+\gate{Fix $\nu=5/2$ or redefine the class; state $d<5$ for the displayed no-regret implication and distinguish cumulative from average pseudo-regret.}
+
+\section{C4-04 --- P1, comparator and norm mismatch}
+\textbf{Locations:} \code{Chapter_4_Strategic_Revelation/sections/2_formulation.tex:32}; \code{Chapter_4_Strategic_Revelation/sections/4_offline_learning.tex:5}; \code{Chapter_4_Strategic_Revelation/sections/4_offline_learning.tex:29}.
+
+The decision problem optimizes over $\mathbb R^d$, while offline learning constrains the parameter to a unit ball. Uniform convergence on the ball gives a constrained comparator, not necessarily the earlier unconstrained advantage. The algorithm box uses an $\ell_\infty$ ball, whereas surrounding text uses a Euclidean ball; dimension factors change with this choice.
+
+\textbf{Repair.} Use one domain for both population minimizers and algorithms, or establish that the unconstrained minimizers lie within it. Treat the stated dimensional upper bounds as loose, not known necessary factors.
+\gate{Text, pseudocode, proofs, experiments, and the strategic-advantage comparator all use the same explicitly declared domain.}
+
+\section{C4-05 --- P1, joint RKHS norm and overprecise master bound}
+\textbf{Location:} \code{Chapter_4_Strategic_Revelation/sections/7_postponed_proofs.tex:453}.
+
+For the block kernel $k((m,b),(m',b'))=\ind\{m=m'\}k_0(b,b')$, the RKHS is a direct sum. A valid envelope is
+\[
+ B_{\rm joint}=\sqrt{B_V^2+B_S^2}\leq\sqrt2\max\{B_V,B_S\},
+\]
+not simply $\max\{B_V,B_S\}$. This affects the posterior inflation. The displayed master bound also omits terms and dependencies from [S1]. State the full applicable result before simplifying with fixed confidence, dimension, norm, and noise parameters.
+\gate{The inflation uses a valid joint envelope, and any soft-$O$ statement declares which parameters are fixed.}
+
+\section{C4-06 --- P1, endpoint omission and inverse covariance}
+\textbf{Location:} \code{Chapter_4_Strategic_Revelation/sections/3_decision.tex:55}.
+
+At $q=1$ all messages are erased, both risks are $\E[Y^2]$, and advantage is zero. Yet the strict-improvement condition can hold: choose independent symmetric $X,Y\in\{-1,+1\}$, $U=Y$, and $b=1/2$. Its numerator is $3/4$, denominator $2$, and left side zero. The asserted implication is false at this endpoint.
+
+Restrict strict improvement and sign preservation to $q<1$. At $q=1$ both sender actions also have identical received outcomes, so with a withhold-on-tie rule the strict disclosure characterization needs separate treatment. Assume $\operatorname{Var}(X)\succ0$ wherever its inverse is used, or give a pseudoinverse formulation. Specify action selection before the fresh hidden sample is observed.
+\gate{Handle the full-erasure case explicitly and state all invertibility and timing assumptions.}
+
+\section{C4-07 --- P1, experiment differs from the online theorem}
+\textbf{Locations:} \code{Chapter_4_Strategic_Revelation/code/3_online_learning.py:110}; \code{Chapter_4_Strategic_Revelation/code/3_online_learning.py:141}; \code{Chapter_4_Strategic_Revelation/code/3_online_learning.py:172}; \code{Presentation/main_presentation.tex:919}.
+
+The experiment uses an RBF kernel, unbounded Gaussian-mixture samples, grids outside the unit ball, and no analyzed inflation factor. It benchmarks a fixed grid rather than the continuous optimum. The original slide instead calls it Mat\'ern-$5/2$ GP-TS. Fitting a curve with a prescribed exponent does not verify that exponent.
+\gate{Relabel it as a practical RBF/grid heuristic or rerun the analyzed variant; record kernel, bounds, inflation, grid, benchmark, seeds, and optimizer accuracy.}
+
+\chapter{IPO regulation}
+\textbf{Assessment.} Retain the general finite-subset optimization idea, but recompute the affine example from the common-presentation program. The present welfare and interior-optimum claims are blocked, not merely missing cosmetic details.
+
+\section{C5-01 --- P0, max and min are interchanged}
+\textbf{Location:} \code{Chapter_5_IPO/sections/decision.tex:96}, equation \code{eq:p_alphabeta_simple}.
+
+Joint targeting requires one presentation:
+\[
+ p_{\alpha\beta}^*(x,\epsilon)=\max_{z\in\mathcal F_Z(x,\epsilon)}\min\{V_\alpha(z),V_\beta(z)\}.
+\]
+It is not generally the minimum of the two separately maximized valuations. At $x=0$, $\epsilon=1$, $\mathcal X=[-2,2]^2$, $V_\alpha(z)=2z_1$, and $V_\beta(z)=2z_2$, the separate maxima both equal $2$. A common presentation attains only $\sqrt2$, at $z=(1/\sqrt2,1/\sqrt2)$. Equal sensitivity norms do not fix the error.
+\textbf{Repair.} Solve the common max--min program; then recompute targeting regions, welfare, derivatives, examples, and figures.
+\gate{All compared prices arise from feasible common presentations. The checked counterexample returns $\sqrt2$, not $2$.}
+
+\section{C5-02 --- P0, disintegration drops sector membership}
+\textbf{Location:} \code{Chapter_5_IPO/sections/decision.tex:160}, equation \code{eq:lie_disintegration_step}.
+
+The preceding sector definition imposes both a score cutoff and price ordering. The integral keeps only the cutoff, falsely replacing an intersection by a larger event. For a price-ordering sector $C_j$, the integrand must retain
+\[
+ \E[\mu(X)\ind\{X\in C_j\}\mid S_j=s]f_{S_j}(s).
+\]
+If the sector changes with $\epsilon$, its derivative contributes additional terms. Once both written cutoff integrals cover full support, the old formula gives $3\E[\mu(X)]/2$; full sale in the actual model gives $\E[\mu(X)]$. This is double-counting.
+\gate{Use disjoint, exhaustive actual trading events and verify zero-trade and full-sale limits before differentiating.}
+
+\section{C5-03 --- P0, inconsistent feasible set and regularity premise}
+\textbf{Locations:} \code{Chapter_5_IPO/sections/model.tex:6}; \code{Chapter_5_IPO/sections/model.tex:62}; \code{Chapter_5_IPO/sections/decision.tex:70}; \code{Chapter_5_IPO/sections/learning.tex:9}.
+
+The general feasible set intersects a ball with compact $\mathcal X$, while the affine example uses an unrestricted ball. A move $\epsilon w_j/\|w_j\|$ can leave $\mathcal X$; compact-domain saturation does not justify that altered model.
+
+The assumed smooth joint Lebesgue density of $(X,Y,\{N_j\})$ cannot hold as written: $Y$ lies on finitely many valuation graphs, counts sum to a fixed total, and the learning model fixes counts deterministically. Smooth density of $X$ alone also does not imply arbitrarily smooth welfare after a switching argmax. The general smoothness paragraph is commented out, and the active affine argument has C5-01/C5-02 errors.
+
+\textbf{Repair.} Choose one feasible domain and a precise reference measure, such as a density for $X$ with conditional probabilities for discrete types. Assume and bound welfare RKHS membership explicitly unless it can be proved. Under the original compact-domain model, $\operatorname{diam}(\mathcal X)$ is a safe uniform saturation threshold for the feasible set; a consistent, tolerance-independent tie rule is needed for the selected outcome to saturate as well.
+\gate{Domain, reference measure, tie rule, and RKHS premise describe the same market in the model, example, and learning theorem.}
+
+\section{C5-04 --- P1, negative valuations and no trade}
+\textbf{Locations:} \code{Chapter_5_IPO/sections/decision.tex:14}; \code{Chapter_5_IPO/sections/postponed_proofs.tex:14}; \code{Chapter_5_IPO/sections/postponed_proofs.tex:47}.
+
+Prices are nonnegative, but valuations may be negative. If all valuations are negative, no feasible optimal price equals a valuation; a nonnegative no-trade price earns zero. A singleton-target candidate does not guarantee that only that singleton buys at the resulting price.
+
+Add a no-trade option, price-zero conventions, and a deterministic tie rule. Distinguish subset revenue lower bounds from actual demand. Welfare need not be nonnegative: the appropriate envelope is
+\[
+ |W_t|\leq\eta Y_{\mathrm{abs},\max}.
+\]
+The corrected bounded interval still gives a noise bound, but not the old nonnegative range.
+\gate{Test all-negative, zero, tied, and overlapping valuations; keep negative true-value examples consistent with the welfare/noise assumptions.}
+
+\section{C5-05 --- P0, the interior example is outside its model}
+\textbf{Location:} \code{Chapter_5_IPO/sections/decision.tex:206}.
+
+The example uses $V_\alpha(x)=2x_1$ and $V_\beta(x)=2x_2$, but prescribes $\mu(x)=2(x_1+x_2)/5+1$. At $x=0$, both valuations are zero and every permitted conditional mixture has mean zero, not one. The mismatch persists on a positive-probability neighborhood. No allowed $\gamma(x)\in[0,1]$ produces that mean everywhere.
+
+The uniform density on a parallelogram is not a globally smooth compactly supported density when extended by zero. Consequently $\epsilon^*=2.5$ does not demonstrate non-emptiness of the claimed class.
+\gate{Construct $\mu(x)=\gamma(x)V_\alpha(x)+(1-\gamma(x))V_\beta(x)$ with $0\leq\gamma\leq1$, use an admissible density/domain, and solve the actual joint-targeting program before claiming an interior optimum.}
+
+\section{C5-06 --- P1, unsupported interior-optimum calculus}
+\textbf{Location:} \code{Chapter_5_IPO/sections/postponed_proofs.tex:38}.
+
+At a stationary point, $\sum_j\bar\mu_j f_j=0$ does not imply each term is zero. The terms $\bar\mu_j f_j'$ in the second derivative cannot be discarded. Monotonicity of conditional means does not supply the asserted strict negativity by this argument.
+
+A smooth compactly supported density may vanish at a support endpoint. Negative conditional mean there does not force a strictly negative limiting derivative. If support minima differ, both cutoffs do not simultaneously approach their minima at the maximum saturation threshold.
+\gate{After repairing welfare, compare actual neighborhoods of both endpoints, include support clipping and every derivative term, and distinguish existence from uniqueness or strict concavity.}
+
+\section{C5-07 --- P1, conditional rate and unmatched algorithm}
+\textbf{Locations:} \code{Chapter_5_IPO/sections/learning.tex:29}; \code{Chapter_5_IPO/sections/postponed_proofs.tex:47}; \code{Chapter_5_IPO/code/learning_sim.py:58}.
+
+The exponent arithmetic is correct: substituting $\gamma_T=\widetilde O(T^{1/6})$ into $\widetilde O(\gamma_T\sqrt T)$ gives $\widetilde O(T^{2/3})$. The missing parts are a valid welfare RKHS premise, accessible norm/noise envelopes, kernel/regularization conventions, posterior inflation, and an analyzed discretization or continuous-action theorem [S1, S2].
+
+The simulation uses a fixed grid, optimized kernel hyperparameters, stale posterior fits between updates, synthetic Gaussian noise, clipped affine valuations, and a different welfare/domain surrogate. It illustrates a practical variant, not the theorem as implemented.
+\gate{Repair the theorem's market and algorithm first; then use a matched experiment or explicitly report heuristic performance against the best grid arm.}
+
+\section{C5-08 --- P2, computational claims need qualification}
+\textbf{Locations:} \code{Chapter_5_IPO/sections/decision.tex:22}; \code{Chapter_5_IPO/sections/decision.tex:55}.
+
+Enumerating $2^k-1$ convex subproblems is exponential in the number of investor groups. It is a finite reduction useful for small fixed $k$, not an efficient-in-$k$ algorithm. Smoothness on a compact interval alone supplies neither a certified global optimizer nor a known finite evaluation budget.
+\gate{Distinguish local numerical optimization from certified global search; state quantitative regularity, an evaluation model, and an approximation tolerance before claiming tractability.}
+
+\chapter{Conclusion: defensible synthesis}
+\textbf{Assessment.} The conclusion already acknowledges simple models and an interior regularization regime. That restraint should be made consistent across chapter introductions, the abstract, and slides.
+
+\section{C6-01 --- P1: beneficial strategic behavior needs a comparator}
+\textbf{Location:} \code{Chapter_6_Conclusion/C6_Conclusion.tex:6}.
+
+The statement that strategic behavior can improve decision making should be attached to a specific model and benchmark. Chapter 4 requires a common parameter domain and a non-erasure condition for strict advantage; Chapter 5 currently lacks a valid interior-welfare example. One chapter's information-selection mechanism does not establish a universal advantage from manipulation.
+\gate{State when and relative to which baseline improvement holds; omit the invalid IPO example until recomputed.}
+
+\section{C6-02 --- P1: distinguish bound optimization from risk optimization}
+\textbf{Location:} \code{Chapter_6_Conclusion/C6_Conclusion.tex:6}.
+
+The reference to an interior value or two extremes is more accurate than an unconditional binary claim. Retain the words ``minimizes the theoretical bound.'' The candidates depend on population quantities, branch feasibility, and limiting versus finite-sample comparisons. They are not an implementable oracle-free rule for minimizing the unknown deployment risk. The lower bound applies to a broader distribution class than the ND-restricted upper bound.
+\gate{State the three-candidate result with branch conditions and do not claim a matching minimax theorem or universally vanishing total excess risk.}
+
+\section{C6-03 --- P2: separate corrections from future extensions}
+\textbf{Location:} \code{Chapter_6_Conclusion/C6_Conclusion.tex:4}.
+
+Correct ``these settings shows'' to ``these settings show'' during the thesis prose pass. More importantly, missing proofs of claims already made are revision obligations, not merely future research. Richer preferences and larger models are future directions; restoring a sector indicator or fixing an empty definition is a prerequisite for the present dissertation.
+
+\textbf{Suggested closing position.} The dissertation studies how incentives and the variables observed together affect decision and learning problems. Its models motivate structure-aware procedures, with performance guarantees restricted to their stated hypotheses. Explicitly separating established identities, conditional bounds, and empirical illustrations makes the contributions more precise and easier to defend.
+\gate{The final synthesis contains no stronger claim than the chapter it summarizes, and the remaining scientific repair queue is closed or the corresponding claim is withdrawn.}
+
+\chapter{Checked calculations and safer theorem statements}
+\section{A.1 --- Strategic classification: one complete error budget}
+Assuming the missing structured-loss and target-transfer arguments are repaired, allocate error and confidence as follows:
+\[
+ e_t=e/4,\qquad e_D=e/(8K),\qquad \delta_t=\delta_D=\delta/2.
+\]
+Then $2e_t+4Ke_D=e$. From the DKW tail $2\exp(-2me_D^2)$, the empirical-distribution stage requires
+\[
+ m\geq\frac{32K^2}{e^2}\log\frac4\delta.
+\]
+It must be combined with a realizable target-learning requirement of order
+\[
+ \frac{d\log(1/e)+\log(1/\delta)}{e},
+\]
+up to the relevant constants and logarithmic conventions. If both stages use the same sample size, satisfy both requirements; independence is not required merely to union-bound their valid failure events. If independent samples are used instead, report their sizes separately and include their sum when reporting total data use.
+
+This conditional proof strategy has an $e^{-2}$ term. Strategic realizability need not yield zero optimal strategic error, so ordinary realizable target rates do not automatically transfer to the strategic loss class.
+
+\section{A.2 --- Side information: residual plus estimation, not consistency}
+Use a scalar $\lambda=\lambda_z$, define
+\[
+ a=|w_z^*|^2,\quad \Delta=T(v^*)-R(w^*),\quad
+ b_m=\frac4{\log2}\left(L(u^*)+\frac{C_2}{\sqrt m}\right),
+\]
+and write the proposed bound as
+\[
+ R(\hat w_\lambda)-R(w^*)\leq \frac{C_1}{\sqrt n}+F_m(\lambda),\qquad
+ F_m(\lambda)=\min\{a\lambda,\Delta\}+b_m\min\left\{W,\frac1{2\lambda}\right\}.
+\]
+The confidence, tuning, and population-envelope issues in C3-03 must still be resolved before treating this as an applicable finite-sample theorem.
+
+For $a,b_m,W,\Delta>0$ and $\lambda\geq\lambda_0=n^{-1/2}$, minimize the scalar function by comparing
+\[
+ \lambda_0,\quad \infty,\quad
+ \lambda_I=\sqrt{\frac{b_m}{2a}},
+\]
+where the interior candidate is included only if
+\[
+ \lambda_I\geq\lambda_0,\qquad a\lambda_I\leq\Delta,\qquad
+ \frac1{2\lambda_I}\leq W.
+\]
+The four branch shapes are an increasing affine function, a constant, a decreasing reciprocal plus a constant, and $a\lambda+b_m/(2\lambda)$. Only the last has a strict interior minimum. Branch junctions can introduce ties; comparing the feasible stationary point and endpoints suffices to attain a minimum, not necessarily to list every minimizing point on a plateau. Degenerate parameters should be handled separately, without division by zero.
+
+At the extended endpoint, $\lambda=\infty$ means the explicit constraint $w_z=0$, and $F_m(\infty)=\Delta$. At a feasible interior point, $F_m(\lambda_I)=\sqrt{2ab_m}$. As both sample sizes grow with fixed positive population constants,
+\[
+ F_m(\lambda_0)\longrightarrow \frac4{\log2}L(u^*)W.
+\]
+The residuals $L(u^*)$ and $\Delta$ need not vanish; the total excess-risk bound is not generally $O(n^{-1/2})$.
+
+The lower-bound entropy constant uses natural logarithms:
+\[
+ H(p)=-p\log p-(1-p)\log(1-p),\qquad
+ \log2-H(0.2)=0.192744757\ldots.
+\]
+This calculation does not alter its broader-class quantifiers or make it a lower bound on the ND subclass.
+
+\section{A.3 --- Strategic revelation: a smooth-density kink}
+A precise bump for C4-01 is $\rho(t)=c\exp[-1/(1-t^2)]\ind\{|t|<1\}$, with $c$ chosen to integrate to one. Let $S$ be a symmetric sign, and independently draw three variables with density $\rho$. Set
+\[
+ X=S(0.5+0.1A),\quad U=S(0.5+0.1B),\quad Y=S(0.5+0.1C).
+\]
+The joint density is a finite mixture of smooth product bumps. Conditional independence and symmetry give $\E[XY]=1/4$. For $0<b\leq1$, $bX$ has the sign of $X$ and $2U-bX$ has the same sign on both supports. For $b<0$ their signs are opposite. Hence the risk in C4-01 has a derivative jump of $-1/2$ at zero. This is an analytic counterexample; a Monte Carlo graph is not needed to establish it.
+
+For the online rate, the conditional substitution from [S1, S2] is
+\[
+ \gamma_T=\widetilde O\left(T^{d/(2\nu+d)}\right)
+ \quad\Longrightarrow\quad
+ \mathcal R_T=\widetilde O\left(T^{1/2+d/(2\nu+d)}\right),
+\]
+with dimension, confidence, norm, noise, and kernel parameters fixed. All model and algorithm hypotheses remain necessary. For $\nu=5/2$:
+\begin{center}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+$d$ & 1 & 2 & 3 & 4 & 5 & 6\\
+\midrule
+Exponent & $2/3$ & $11/14$ & $7/8$ & $17/18$ & $1$ & $23/22$\\
+No-regret from this bound? & Yes & Yes & Yes & Yes & No & No\\
+\bottomrule
+\end{tabular}
+\end{center}
+``No'' means not established by this bound, not disproved for the algorithm. The two-regime direct-sum extension also needs an explicit argument.
+
+\section{A.4 --- IPO: common price, sectors, and bounded noise}
+For affine or concave valuations and convex compact $\mathcal X$, a nonempty target subset $S$ gives the candidate program
+\[
+ \begin{aligned}
+ \max_{z,p}\quad &p\\
+ \text{subject to}\quad &p\geq0,\quad z\in\mathcal X,\quad \|z-x\|_2\leq\epsilon,\\
+ &p\leq V_j(z)\quad(j\in S).
+ \end{aligned}
+\]
+Include no trade and evaluate actual demand at each feasible candidate; do not assume exact singleton participation. Enumeration has $2^k-1$ nonempty subsets. The presentation uses this corrected formulation as a repair, not as a claim that the chapter's downstream welfare derivation is already corrected.
+
+In the counterexample, if $t=\min(z_1,z_2)>0$, then $2t^2\leq z_1^2+z_2^2\leq1$, so the common price $2t\leq\sqrt2$. Equality is feasible at $z_1=z_2=1/\sqrt2$. The claimed separate-maxima value $2$ is therefore unattainable jointly.
+
+For equal group sizes and $\eta=1$, let $A_0,A_\alpha,A_\beta,A_{\alpha\beta}$ denote disjoint actual trade events under a fixed tie rule. With $\mu(x)=\E[Y\mid X=x]$,
+\[
+ W(\epsilon)=\E\!\left[\mu(X)
+ \left(\tfrac12\ind_{A_\alpha}+\tfrac12\ind_{A_\beta}+\ind_{A_{\alpha\beta}}\right)\right].
+\]
+If $A_j=C_j\cap\{S_j\geq c_j\}$, its contribution disintegrates as
+\[
+ \E[\mu(X)\ind_{A_j}]=\int_{c_j}^{\infty}
+ \E[\mu(X)\ind_{C_j}\mid S_j=s]f_{S_j}(s)\,ds.
+\]
+The formula assumes a density for the score; otherwise use the score's probability measure. It does not permit dropping $C_j$ or ignoring moving-sector terms when differentiating.
+
+Finally, if $|W_t|\leq M=\eta Y_{\mathrm{abs},\max}$ conditionally on the chosen action and $\xi_t=W_t-\E[W_t\mid\mathcal F_{t-1},a_t]$, the interval length is $2M$. Hoeffding's elementary bounded-variable estimate gives
+\[
+ \E[e^{s\xi_t}\mid\mathcal F_{t-1},a_t]\leq e^{s^2M^2/2}.
+\]
+This supplies a noise proxy once the market observations and timing satisfy the stated conditional-mean model. It does not prove RKHS membership.
+
+\chapter{Repair order and seminar handoff}
+\section{Dependency-aware scientific repair order}
+\begin{enumerate}
+\item \textbf{Fix definitions and domains.} Resolve C2-01, the common Chapter 4 parameter domain and $q=1$ endpoint, and Chapter 5's feasible set, no-trade convention, and reference measure.
+\item \textbf{Rebuild central arguments.} Replace C2's necessity claim unless proved; remove C4's invalid smoothness lemma; solve C5's actual common-targeting program and restore sector membership.
+\item \textbf{Restate learning results.} Give C2's complete error budget, C3's tuning/confidence ledger, and C4/C5's explicit norm, noise, kernel, and discretization assumptions. Do not infer them from smooth input densities.
+\item \textbf{Recompute examples and experiments.} Replace the invalid IPO example; implement PSIL's observed-$Z$ deployment risk; separate theorem-matched experiments from heuristic grids and surrogate objectives.
+\item \textbf{Synchronize all summaries.} Update the abstract, opening contribution list, chapter conclusions, bibliography, and final slides only after deciding which claims survive.
+\item \textbf{Complete production checks.} Resolve references, publication placeholders, overflow, abstract pagination, and applicable institution-specific requirements, then conduct a timed rehearsal.
+\end{enumerate}
+
+\section{Experiment acceptance matrix}
+\begin{tabularx}{\textwidth}{@{}lXX@{}}
+\toprule
+Chapter & Must match the theorem & Must report separately\\
+\midrule
+3 & Hard imputer; observed $Z$ at test; exact penalties; bounded/continuous setup if claimed & Oracle-selected quantities, proxy constants, stress tests, unclipped estimates\\
+4 & Parameter ball; analyzed kernel/inflation; bounded model; action timing & RBF/grid heuristics, grid comparator, continuous approximation gap\\
+5 & Common targeting; actual demand; feasible domain; true welfare; noise convention & Clipped valuations, surrogate welfare, kernel refitting, stale posterior updates\\
+\bottomrule
+\end{tabularx}
+
+\section{What changed in the revised presentation}
+\textbf{Source:} \code{Presentation/pre_synopsis.tex}. The original \code{Presentation/main_presentation.tex} is unchanged. The existing skeleton supplies the chapter sequence, title, author information, and navy/gold visual identity. The revision prioritizes a question, model, main mechanism, and qualified takeaway for each chapter.
+\begin{itemize}
+\item Replace the crowded five-column roadmap with four short research questions.
+\item Show the sender--receiver and observation-pattern diagrams in native TikZ.
+\item Remove the VC ``iff'' and unsupported algorithm-separation headlines.
+\item Distinguish Chapter 3's estimation terms from its persistent residuals; retain the feasible interior regularizer and broader lower-bound class.
+\item Use a common constrained comparator for the Chapter 4 learning discussion. Make RKHS membership, the algorithm transfer, and $d<5$ explicit qualifications.
+\item Replace the invalid IPO shortcut and welfare plot. Show the common-price program and account for actual trading events instead.
+\item Do not reuse unmatched plots as theorem evidence. Omit unverified publication statuses; add verified records only after author confirmation.
+\item Move branch checks, counterexamples, and proof obligations into clearly labeled backup slides. The main seminar still states material limitations; backups are not used to hide them.
+\end{itemize}
+
+\section{Suggested rehearsal allocation: 35 minutes plus questions}
+\begin{tabularx}{\textwidth}{@{}lrlX@{}}
+\toprule
+Part & Minutes & Role & One sentence to land\\
+\midrule
+Motivation & 4 & Framing & Incentives and joint observation patterns change the learning problem.\\
+Chapter 2 & 6 & Decision then learning & A response convention is part of the model, not a technical afterthought.\\
+Chapter 3 & 8 & Missing joint information & More marginal data do not generally identify the missing dependence.\\
+Chapter 4 & 7 & Selective disclosure & Informative selection need not produce a smooth risk surface.\\
+Chapter 5 & 7 & Regulation & Joint targeting must use one feasible presentation.\\
+Synthesis & 3 & Close & Match the mechanism, comparator, theorem, and experiment.\\
+\bottomrule
+\end{tabularx}
+
+\section{Questions to prepare for}
+\begin{enumerate}
+\item Which strategic loss class is fixed before seeing the target or data?
+\item What tie rule is assumed, and does a best response exist?
+\item Does the bound control total excess risk or only its estimation component?
+\item Does the lower-bound distribution satisfy the upper theorem's ND condition?
+\item How is deployment-risk tuning possible without joint labeled validation data?
+\item Why should a switching strategic objective belong to the selected RKHS?
+\item For which dimensions does the displayed rate imply no-regret?
+\item Can both investor groups attain their separate valuation maxima at the same presentation?
+\item Are the experiment's risk, feasible set, and comparator identical to the theorem's?
+\item Which results are original decision insights and which are conditional applications of existing learning theorems?
+\end{enumerate}
+
+\section{Submission-specific checks still requiring confirmation}
+The thesis's code-appendix reference \code{subsec:code_side_exp} points to an appendix whose input is commented out in \code{main.tex:52}. Include a reviewed appendix or correct the cross-reference. Do not enable unrelated inputs blindly.
+
+The previous audit reported 178 thesis pages, 18 overfull horizontal boxes, and an unresolved reference. Those are archived observations, not a new thesis build in this pass. The original deck had 46 pages and three overfull vertical boxes; the revised deck has its own fresh validation record.
+
+Confirm publication statuses, final seminar date/duration, declaration wording and assistance disclosure, approval/signature pages, and the applicable institutional submission stage with the author and Academic Office. This package is not an administrative compliance certificate. No claim is made here about the latest institutional regulations.
+
+\chapter{Validation and sources}
+\section{What this pass verifies}
+\begin{itemize}
+\item The recorded 70-file source snapshot matches the current thesis, experiment, bibliography, and original-deck files.
+\item The 25 C2--C5 finding IDs are preserved, with three added findings each for Chapters 1 and 6.
+\item Independent executable checks cover the IPO common-price counterexample, Chapter 3's entropy constant and scalar candidate rule, the DKW budget arithmetic, and the Mat\'ern-$5/2$ exponents. The smooth-density kink is established analytically in Appendix A, not certified by sampling.
+\item Both new LaTeX documents are built from source. Their page counts and warning counts are recorded in \code{Thesis_Audit_LaTeX_2026-09-15/validation_results.json} after the build. Selected pages are visually inspected; no claim is made of line-by-line proofreading of every rendered page.
+\end{itemize}
+
+\textbf{Not performed.} Full experiment reruns, proofs of the proposed replacement theorems, a new end-to-end thesis build, verification of every long construction, independent publication-status checks, or institutional certification. A successful PDF build is a production check, not mathematical validation.
+
+\section{Rebuild from the project root}
+\begin{quote}\small\ttfamily
+latexmk -cd -pdf -interaction=nonstopmode\par
+\hspace{1em}-halt-on-error -outdir=build\par
+\hspace{1em}Thesis\_Audit\_LaTeX\_2026-09-15/main\_audit.tex
+\end{quote}
+\begin{quote}\small\ttfamily
+latexmk -cd -pdf -interaction=nonstopmode\par
+\hspace{1em}-halt-on-error -outdir=build\_presynopsis\par
+\hspace{1em}Presentation/pre\_synopsis.tex
+\end{quote}
+These displayed lines describe single shell commands; the README provides copyable versions, including refreshing the convenient top-level PDF copies. The report's included paths are relative to its directory. The slides also compile relative to their directory.
+
+Run \code{python Thesis_Audit_LaTeX_2026-09-15/validate.py} after both builds. It uses the already-installed NumPy, SciPy, and pypdf packages, creates no environment, and writes a machine-readable result inside this audit folder. Fixed-seed scalar checks support algebra, not finite-sample coverage of the statistical theorem.
+
+\section{Primary-source record}
+The following publisher records and papers were consulted on 15 September 2026. Identifiers match the earlier review. Bibliographic titles are provided rather than embedding tool-specific citation markup in the PDF.
+\begin{description}
+\item[{[S1]}] S. R. Chowdhury and A. Gopalan. \emph{On Kernelized Multi-armed Bandits}. ICML, PMLR 70:844--853, 2017. Theorem 4 and the discretization construction preceding it are the relevant transfer points. A local copy is at \code{Chapter_5_IPO/sources/papers/chowdhury2017kernelized.pdf}.
+\item[{[S2]}] S. Vakili, K. Khezeli, and V. Picheny. \emph{On Information Gain and Regret Bounds in Gaussian Process Bandits}. AISTATS, PMLR 130:82--90, 2021. Corollary 1 and the Mat\'ern specialization following it support the information-gain exponent under their hypotheses. Local copy: \code{Chapter_5_IPO/sources/papers/vakili2021information.pdf}.
+\item[{[S3]}] A. Della Vecchia, J. Mourtada, E. De Vito, and L. Rosasco. \emph{Regularized ERM on random subspaces}. AISTATS, PMLR 130:4006--4014, 2021. Theorem 1 is the cited regularized-ERM result; hidden constants and fixed-versus-selected regularization must be respected.
+\end{description}
+
+\section{Prior-review provenance}
+Detailed original reasoning remains available in \code{Thesis_Review_2026-09-15/01_Mathematical_Findings.md}, with rate interpretation in \code{Thesis_Review_2026-09-15/02_Bounds_and_Rates.md}. The prior snapshot and numerical evidence are in \code{Thesis_Review_2026-09-15/verification_results.json}.
+
+The prior review mentions a \code{verify_review.py} file that is not present in the current workspace. Do not treat that old command as reproducible here; this package supplies its own \code{validate.py}. The old build statistics are retained only with explicit historical labeling.
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-16T13:09:07+05:30.
+
+The user's current state is as follows:
+Other open documents:
+- g:\My Drive\excited-lavoisier\Compiled_Thesis\Chapter_3_Side_Information\Sections\A5_lowebound_proof.tex (LANGUAGE_LATEX)
+- g:\My Drive\excited-lavoisier\Compiled_Thesis\Chapter_6_Conclusion\C6_Conclusion.tex (LANGUAGE_LATEX)
+- g:\My Drive\excited-lavoisier\temp_chapter3_explanation.md (LANGUAGE_MARKDOWN)
+- g:\My Drive\excited-lavoisier\Compiled_Thesis\Chapter_4_Strategic_Revelation\sections\2_formulation.tex (LANGUAGE_LATEX)
+- g:\My Drive\excited-lavoisier\Compiled_Thesis\Chapter_5_IPO\sections\learning.tex (LANGUAGE_LATEX)
+Browser State:
+  Page 3F96DC609C1118055802139836C66A40 (Vantage widget) - https://vantage.csw.lenovo.com/v1/web/containerwidget/default/ [ACTIVE]
+    Viewport: 297x59, Page Height: 59
+</ADDITIONAL_METADATA>
+<USER_SETTINGS_CHANGE>
+The user changed setting `Model Selection` from None to Gemini 3.1 Pro (High). No need to comment on this change if the user doesn't ask about it. If reporting what model you are, please use a human readable name instead of the exact string.
+</USER_SETTINGS_CHANGE>

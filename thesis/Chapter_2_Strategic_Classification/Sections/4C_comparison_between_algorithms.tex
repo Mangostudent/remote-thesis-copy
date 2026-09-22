@@ -1,0 +1,47 @@
+We now consider an example of a learning problem and show how strategy-aware ERM compares with standard ERM in various situations. This example guides our intuition on when to choose which algorithm.
+
+\begin{exg}\label{eg:Multiple decision boundaries}
+    Consider the decision problem where the true function has $d$ decision boundaries. Let the probability measure $\fk{D}$ be uniform on $[0,1]$ and let $\up = \um = \uu := 0.2$. To keep things simple, we additionally assume that each sub-interval $O_i$ has the same width $k\mathbf{u}$, where $k$ is a fraction (this implies $n \approx \frac{1}{\uu k}$ assuming an exact division). From Proposition \ref{prop:Deterministic Stackelberg equilibrium for multiple decision boundaries}, we know the structure of the receiver Stackelberg strategy $r$. Because of symmetry, we further assume that the $\Delta$-region is equally shared between two adjacent intervals $I_i$ and $I_{i+1}$, except when the entire $I_i$ is a $\Delta$-region. Then, the structure of $r \circ s_r$ for different numbers of decision boundaries is given as follows:
+    \noindent \textit{Case 1: } $k > 1$. In this case, the number of decision boundaries is $3n$.
+
+    \noindent \textit{Case 2: } $k \leq 1$. In this case, the $r$ assigns label $\Delta$ to the minority class. Hence, the number of decision boundaries is $1$.
+	
+%	\begin{figure}		
+%		\centering
+%		\begin{tikzpicture}[scale=0.6]
+%			\begin{axis}[
+%				axis lines = left,
+%				xlabel = \(\frac{1}{\text{width}}\),
+%				ylabel = {\(\text{Number of decision boundaries}\)},
+%				xmin=1, xmax=10,
+%				ymin=0, ymax=14,
+%				]
+%				\addplot [
+%				domain=5:10, 
+%				samples=4, 
+%				color=blue,
+%				]
+%				{1};
+%				\addplot [
+%				domain=1:5, 
+%				samples=18, 
+%				color=blue,
+%				]
+%				{3*x};
+%				\addplot [
+%				domain=1:10, 
+%				samples=22, 
+%				color=red,
+%				]
+%				{x};
+%			\end{axis}
+%		\end{tikzpicture}
+%        \caption{Complexity difference between true function and Stackelberg equilibrium.}
+%	\end{figure}
+\end{exg}
+
+
+
+From the above example, we can see that as complexity increases, the number of decision boundaries increases to a point and then becomes $1$. The threshold point, which is $\frac{1}{\uu}$, can be considered a boundary separating the simple hypothesis from the complex hypothesis. This means that the complexity of a hypothesis is with respect to a given game structure, which here is characterised by $\uu$.
+
+Now consider $F_n$, a set of all hypotheses with a number of decision boundaries up to $n$. Clearly, VC dim$(F_n) \geq $ VC dim$(F_m)$ if $n \geq m$. Now, if $\cg{F} = F_n$, then from Example \ref{eg:Multiple decision boundaries}, we have $\widetilde{\cg{F}} \subset F_n$ in Case 1 and $F_n \subset \widetilde{\cg{F}}$ in Case 2. Therefore, VC dim$(\cg{F}) \geq$ VC dim$(\widetilde{\cg{F}})$ and VC dim$(\cg{F}) \leq$ VC dim$(\widetilde{\cg{F}})$ respectively. Heuristically, it means that if the VC dim($\cg{F}$) is large with respect to $\mathbf{u}$, then choose Algorithm \ref{algo:Startegically aware ERM}, or else choose Algorithm \ref{algo:Vanilla ERM}.

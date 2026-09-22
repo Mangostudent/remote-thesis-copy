@@ -1,0 +1,102 @@
+\section{Decision Problem}
+\index{Strategic advantage|textbf}\index{Mandatory revelation baseline|textbf}
+
+In this section, we study the decision problem under the regression framework established in Section~\ref{sec:formulation}, where the environment $\mathcal{E}$ (and in particular the joint distribution $P_{(U,X,Y)}$) is fully known to the receiver. We establish necessary and sufficient conditions on $\mathcal{E}$ under which voluntary feature disclosure strictly improves receiver performance relative to the mandatory baseline, i.e., $\Delta(\mathcal{E})>0$. To simplify calculations, we assume $\mathbb{E}[U]=\mathbb{E}[X]=\mathbb{E}[Y]=0$ and define
+\begin{equation*}
+    F_b(u,x):= (2u - b^\top x)b^\top x \quad \text{and} \quad G_b(x,y):= (2y - b^\top x)b^\top x.
+\end{equation*}
+
+We begin by deriving the vanilla risk.
+\begin{lemma}\label{lemma:regression_vanilla_risk}
+Let $\mathcal{E}$ be an environment. For any receiver strategy $r_b \in \mathcal{R}$, the vanilla risk is given by:
+\begin{equation}
+    \label{eq:vanilla_risk_decomp}
+    \RV(b) = \mathrm{Var}(Y) - (1 - q)\mathrm{Var}(b_V^\top X) + (1 - q)\mathrm{Var}((b - b_V)^\top X),
+\end{equation} 
+where $b_V = \mathrm{Var}(X)^{-1}\mathrm{Cov}(X, Y)$ is the ordinary least-squares (OLS) slope vector. The optimal vanilla risk is given by
+\begin{equation*}
+    \RV^*(q) = \mathrm{Var}(Y) - (1 - q)\mathrm{Var}(b_V^\top X).
+\end{equation*}
+\end{lemma} 
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch4} (Proof~\ref{proof:vanilla_risk}).
+\end{proof}
+
+Next, we characterize the sender's strategic disclosure rule.
+\begin{lemma}[Sender Best Response]
+\label{lem:best_response}
+For a committed receiver strategy $r_b \in \mathcal{R}$, the sender reveals if and only if
+\begin{equation*}
+    F_b(u, x) = (2u - b^\top x)b^\top x > 0.
+\end{equation*}
+Equivalently, with ties resolved by withholding,
+\begin{equation*}
+    s_b(u,x) = 
+    \begin{cases} 
+    x & \text{if } F_b(u,x) > 0, \\ 
+    \emptyset & \text{if } F_b(u,x) \le 0. 
+    \end{cases}
+\end{equation*}
+\end{lemma}
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch4} (Proof~\ref{proof:best_response}).
+\end{proof}
+
+We now evaluate the strategic risk for a given receiver strategy.
+\begin{lemma}\label{lemma:regression_strategic_risk}   
+Let $\mathcal{E}$ be an environment. For any receiver predictive rule $r_b \in \mathcal{R}$, the strategic risk simplifies to
+\begin{equation}
+    \label{eq:strategic_risk_formula}
+    \RS(b) = \mathrm{Var}(Y) - (1 - q)\mathbb{E}\left[ G_b(X, Y) \I{F_b(U, X) > 0} \right],
+\end{equation}
+where $G_b(x,y) = (2y - b^\top x)b^\top x$.
+\end{lemma} 
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch4} (Proof~\ref{proof:strategic_risk}).
+\end{proof}
+
+Finally, using these lemmas we establish a necessary and a sufficient conditions on the environment $\mathcal{E}$ for which $\Delta(\mathcal{E})>0$. We begin by stating a sufficient condition.
+\begin{theorem}[Sufficient Condition for $\Delta(\mathcal{E}) > 0$]
+\label{thm:sufficient_condition}  
+Let $\mathcal{E}$ be an environment. If there exists a receiver strategy $r_b \in \mathcal{R}$ parameterized by a slope vector $b\in\mathbb{R}^d$ such that
+\begin{equation*}
+    \|U - Y\|_2 < \frac{\mathbb{E}[|G_b(X, Y)|] - \mathrm{Var}(b_V^\top X) - \mathrm{Var}((b - b_V)^\top X)}{4\sqrt{\mathrm{Var}(b^\top X)}},
+\end{equation*}
+then $\Delta(\mathcal{E}) > 0$. Here, $\|U - Y\|_2 = \sqrt{\mathbb{E}[(U - Y)^2]}$ denotes the statistical alignment between the sender's preference value $U$ and the true ground-truth label $Y$.
+\end{theorem}
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch4} (Proof~\ref{proof:sufficient_condition}).
+\end{proof}
+
+We finish by establishing a necessary condition for $\Delta(\mathcal{E}) > 0$.
+\begin{theorem}[Necessary Condition for $\Delta(\mathcal{E}) > 0$]
+\label{thm:necessary_condition}
+Let $\mathcal{E}$ be an environment. If for all receiver strategy $r_b \in \mathcal{R}$ whose parameter vector $b\in\mathbb{R}^d$ satisfies
+\begin{equation*}
+    \mathbb{E}[|G_b(X, Y)|] - \mathrm{Var}(b_V^\top X) - \mathrm{Var}((b - b_V)^\top X) \le 0,
+\end{equation*}
+then $\Delta(\mathcal{E}) \leq 0$.
+Hence, a necessary condition for $\Delta(\mathcal{E}) > 0$ is that there exists a receiver strategy $r_b \in \mathcal{R}$ whose parameter vector $b\in\mathbb{R}^d$ satisfies
+\begin{equation*}
+    \mathbb{E}[|G_b(X, Y)|] - \mathrm{Var}(b_V^\top X) - \mathrm{Var}((b - b_V)^\top X) > 0.
+\end{equation*}
+\end{theorem}
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch4} (Proof~\ref{proof:necessary_condition}).
+\end{proof}
+
+\begin{remark}
+\label{rem:noise_effect}
+The channel noise $q$ only affects the magnitude of $\Delta(\mathcal{E})$ and cannot change its sign. 
+\end{remark}
+
+\paragraph{Simulation Results for the Decision Problem.}
+
+To empirically validate the decision problem and visualize the strategic advantage $\Delta(\env)$, we consider a family of zero-mean jointly Gaussian distributions for the continuous feature, outcome, and preference variables $(Y, X, U) \in \R^{d+2}$ (with $d=1$) specified by covariance matrix $\Sigma \in \R^{3 \times 3}$.\coderef{subsec:code_reg_decision} The variances are normalized to $\mathrm{Var}(X) = \mathrm{Var}(U) = \mathrm{Var}(Y) = 1.0$, and the feature-preference covariance is fixed at $\mathrm{Cov}(X, U) = 0.1$. To show the effect of channel noise (Remark~\ref{rem:noise_effect}), we compare two noise levels: low noise $q = 0.15$ and high noise $q = 0.85$.
+
+We fix $\mathrm{Cov}(X,U) = 0.1$ and sweep the covariance parameter space over a dense $40 \times 40$ uniform grid for $\mathrm{Cov}(U,Y) \in [-1, 1]$ and $\mathrm{Cov}(X,Y) \in [-1, 1]$. At each valid grid point, we compute the analytic formula for the vanilla risk $R_V^*$. The strategic risk $R_S^*$ is evaluated numerically using a Monte Carlo sample size of $100{,}000$ and minimized over the receiver slope parameter $b \in [-5, 5]$. We plot the resulting strategic advantage, where the color indicates the sign and the intensity indicates the magnitude. Furthermore, we mark the regions satisfying the theoretical sufficient and necessary conditions (evaluated over candidate slopes $b \in [-5, 5]$) using dashed and solid boundaries, respectively.
+
+The empirical findings presented in Figure~\ref{fig:regression_decision_heatmaps} corroborate our theoretical analysis. First, the sufficient condition boundary (dashed line) holds near the region where the preference-outcome alignment $\mathrm{Cov}(U,Y)$ is large. This higher alignment lowers $\|U - Y\|_2$ (the LHS of Theorem~\ref{thm:sufficient_condition}), making the inequality easier to satisfy, while the RHS depends only on the feature-outcome statistics $(X,Y)$ and is independent of $U$. Second, the heatmaps at both noise levels $q$ display identical color regions and differ only in color intensity, which aligns with Remark~\ref{rem:noise_effect} that $q$ only attenuates the magnitude of the strategic advantage without altering its sign.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{regression_decision_sweep.png}
+    \caption{Strategic advantage $\Delta^\star(q)$ under varying channel noise levels.}
+    \label{fig:regression_decision_heatmaps}
+\end{figure}
+

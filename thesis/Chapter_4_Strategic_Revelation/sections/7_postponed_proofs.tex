@@ -1,0 +1,505 @@
+\section{Proofs and Supporting Results}\label{sec:proofs_ch4}
+
+This section provides standard learning-theoretic helper results and the proofs for the results presented in this chapter.
+
+\subsection{Supporting Results}
+
+
+In this section, we establish the supporting results required for the proofs of the theorems and lemmas presented in the chapter.
+
+We now state the theorem characterizing generalization bounds via Rademacher complexity.
+
+\begin{theorem}[Rademacher Complexity Generalization Bound, \citealp{shalevshwartz2014understanding}]\label{thm:rademacher_gen}
+Let $\mathcal{F}$ be a family of real-valued functions mapping from a domain $\mathcal{Z}$ to a bounded interval $[a, b]$, and let $S = (z_1, \dots, z_n) \sim \mathcal{D}^n$ be an i.i.d. sample of size $n$. Then, for any $\delta \in (0,1)$, with probability at least $1-\delta$ over the random draw of $S$, we have
+\begin{equation*}
+    \sup_{f \in \mathcal{F}} \left| \E[f] - \widehat{\E}_S[f] \right| \le 2\mathrm{Rad}_n(\mathcal{F}) + (b-a)\sqrt{\frac{\log(2/\delta)}{2n}},
+\end{equation*}
+where $\widehat{\E}_S[f] := \frac{1}{n}\sum_{i=1}^n f(z_i)$ is the empirical average over $S$, $\widehat{\mathrm{Rad}}_S(\mathcal{F}) := \E_{\sigma}\left[ \sup_{f \in \mathcal{F}} \frac{1}{n}\sum_{i=1}^n \sigma_i f(z_i) \right]$ is the empirical Rademacher complexity on sample $S$, and $\mathrm{Rad}_n(\mathcal{F}) := \E_S[\widehat{\mathrm{Rad}}_S(\mathcal{F})]$ is the expected Rademacher complexity over sample size $n$.
+\end{theorem}
+\begin{proof}
+Let $g(S) := \sup_{f \in \mathcal{F}} (\E[f] - \widehat{\E}_S[f])$. Changing any single sample point $z_i \to z_i'$ alters $g(S)$ by at most $(b-a)/n$. Applying McDiarmid's concentration inequality (Lemma 26.4 of \citealp{shalevshwartz2014understanding}) yields $g(S) \le \E_S[g(S)] + (b-a)\sqrt{\frac{\log(2/\delta)}{2n}}$ with probability at least $1-\delta/2$. By Lemma 26.2 of \citealp{shalevshwartz2014understanding}, the expected supremum satisfies $\E_S[g(S)] \le 2 \E_S[\widehat{\mathrm{Rad}}_S(\mathcal{F})] = 2\mathrm{Rad}_n(\mathcal{F})$. Applying the identical concentration bound to the negated class $-\mathcal{F} := \{-f : f \in \mathcal{F}\}$ (noting $\mathrm{Rad}_n(-\mathcal{F}) = \mathrm{Rad}_n(\mathcal{F})$) bounds the lower-tail supremum $\sup_{f \in \mathcal{F}} (\widehat{\E}_S[f] - \E[f]) = \sup_{h \in -\mathcal{F}} (\E[h] - \widehat{\E}_S[h])$ by the same threshold with confidence $1-\delta/2$. By a union bound over both tail events holding with probability at least $1-\delta$, the identity $\sup_{f \in \mathcal{F}} |\E[f] - \widehat{\E}_S[f]| = \max\left\{ \sup_{f \in \mathcal{F}} (\E[f] - \widehat{\E}_S[f]), \, \sup_{f \in \mathcal{F}} (\widehat{\E}_S[f] - \E[f]) \right\}$ yields the two-sided absolute supremum bound.
+\end{proof}
+
+We now establish a useful property regarding the Rademacher complexity of a product function class, expressed in terms of the individual function classes.
+\begin{lemma}[Rademacher Complexity of Product Function Classes]\label{lem:product_rademacher}
+Let $\mathcal{F}_1$ and $\mathcal{F}_2$ be two function classes mapping from domain $\mathcal{Z}$ to $\mathbb{R}$, bounded almost surely by $M_1 = \sup_{f_1 \in \mathcal{F}_1} \|f_1\|_\infty$ and $M_2 = \sup_{f_2 \in \mathcal{F}_2} \|f_2\|_\infty$ respectively. Define the product function class $\mathcal{F}_1 \cdot \mathcal{F}_2 := \{ z \mapsto f_1(z) f_2(z) : f_1 \in \mathcal{F}_1, f_2 \in \mathcal{F}_2 \}$. Then, for any sample $S = (z_1, \dots, z_n)$, the empirical Rademacher complexity satisfies
+\begin{equation*}
+    \widehat{\mathrm{Rad}}_S(\mathcal{F}_1 \cdot \mathcal{F}_2) \le M_2 \widehat{\mathrm{Rad}}_S(\mathcal{F}_1) + M_1 \widehat{\mathrm{Rad}}_S(\mathcal{F}_2),
+\end{equation*}
+and taking expectation over $S \sim \mathcal{D}^n$ yields $\mathrm{Rad}_n(\mathcal{F}_1 \cdot \mathcal{F}_2) \le M_2 \mathrm{Rad}_n(\mathcal{F}_1) + M_1 \mathrm{Rad}_n(\mathcal{F}_2)$.
+\end{lemma}
+\begin{proof}
+Fix a sample $S = (z_1, \dots, z_n) \in \mathcal{Z}^n$ and pick an arbitrary reference function $h_1 \in \mathcal{F}_1$. For any $f_1 \in \mathcal{F}_1$ and $f_2 \in \mathcal{F}_2$, writing $f_1(z_i) f_2(z_i) = (f_1(z_i) - h_1(z_i)) f_2(z_i) + h_1(z_i) f_2(z_i)$ and applying sub-additivity of the supremum yields
+\begin{align*}
+    \widehat{\mathrm{Rad}}_S(\mathcal{F}_1 \cdot \mathcal{F}_2) &\le \E_\sigma \left[ \sup_{f_1 \in \mathcal{F}_1, f_2 \in \mathcal{F}_2} \frac{1}{n}\sum_{i=1}^n \sigma_i (f_1(z_i) - h_1(z_i)) f_2(z_i) \right] \\
+    &\qquad + \E_\sigma \left[ \sup_{f_2 \in \mathcal{F}_2} \frac{1}{n}\sum_{i=1}^n \sigma_i h_1(z_i) f_2(z_i) \right].
+\end{align*}
+For the first term, since $|f_2(z_i)| \le M_2$, the scalar mapping $t \mapsto t \cdot f_2(z_i)$ is $M_2$-Lipschitz. Applying Talagrand's contraction lemma (Lemma 26.9 of \citealp{shalevshwartz2014understanding}) bounds this term by
+\begin{equation*}
+    M_2 \E_\sigma \left[ \sup_{f_1 \in \mathcal{F}_1} \frac{1}{n}\sum_{i=1}^n \sigma_i (f_1(z_i) - h_1(z_i)) \right] = M_2 \widehat{\mathrm{Rad}}_S(\mathcal{F}_1),
+\end{equation*}
+where the linear term $\frac{1}{n}\sum_{i=1}^n \sigma_i h_1(z_i)$ vanishes under expectation since $\E_{\sigma_i}[\sigma_i] = 0$.
+
+For the second term, since $|h_1(z_i)| \le M_1$, the scalar mapping $t \mapsto h_1(z_i) \cdot t$ is $M_1$-Lipschitz. Applying Talagrand's contraction lemma bounds this term by
+\begin{equation*}
+    M_1 \E_\sigma \left[ \sup_{f_2 \in \mathcal{F}_2} \frac{1}{n}\sum_{i=1}^n \sigma_i f_2(z_i) \right] = M_1 \widehat{\mathrm{Rad}}_S(\mathcal{F}_2).
+\end{equation*}
+Summing both bounds yields $\widehat{\mathrm{Rad}}_S(\mathcal{F}_1 \cdot \mathcal{F}_2) \le M_2 \widehat{\mathrm{Rad}}_S(\mathcal{F}_1) + M_1 \widehat{\mathrm{Rad}}_S(\mathcal{F}_2)$. Taking expectation over sample $S \sim \mathcal{D}^n$ establishes the population bound $\mathrm{Rad}_n(\mathcal{F}_1 \cdot \mathcal{F}_2) \le M_2 \mathrm{Rad}_n(\mathcal{F}_1) + M_1 \mathrm{Rad}_n(\mathcal{F}_2)$.
+\end{proof}
+
+We now restate the regret bound theorem for Kernelized Thompson Sampling on Reproducing Kernel Hilbert Spaces (RKHS) under sub-Gaussian noise feedback from \citet{chowdhury2017kernelized}.
+
+\begin{theorem}[Kernelized Thompson Sampling Regret Bound, {\citealp[Theorem 4]{chowdhury2017kernelized}}]\label{thm:kernel_ts_master}
+Let $\mathcal{D} \subset [0, r]^d$ be a compact and convex domain, and let the objective function $f: \mathcal{D} \to \mathbb{R}$ belong to a Reproducing Kernel Hilbert Space $\mathcal{H}_k(\mathcal{D})$ associated with kernel $k$, satisfying $\|f\|_{\mathcal{H}_k} \le B_k < \infty$. Suppose the observation noise $\eta_t = Z_t - f(a_t)$ is conditionally zero-mean and $R$-sub-Gaussian. Let $L = \sup_{x \in \mathcal{D}} \max_{j \in [d]} \left(\left. \frac{\partial^2 k(p,q)}{\partial p_j \partial q_j} \right|_{p=q=x}\right)^{1/2} < \infty$. Running GP-TS with round-$t$ decision sets $\mathcal{D}_t \subset \mathcal{D}$ satisfying $|f(x) - f([x]_t)| \le 1/t^2$ for all $x \in \mathcal{D}$ (via a discretization of mesh size $\epsilon_t \le \frac{1}{B_k L t^2}$) guarantees that, with probability at least $1 - \delta$, the cumulative regret satisfies
+\begin{equation*}
+    \operatorname{Reg}_T = \cO\left( \sqrt{(\gamma_T + \log(2/\delta)) d \log(B_k d T)} \left(\sqrt{T \gamma_T} + B_k \sqrt{T \log(2/\delta)}\right) \right) = \widetilde{\cO}\left( d^{1/2} \gamma_T \sqrt{T} \right),
+\end{equation*}
+where $\gamma_T$ is the maximum information gain after $T$ rounds for kernel $k$ on domain $\mathcal{D}$.
+\end{theorem}
+\begin{proof}
+This is Theorem 4 of \citet{chowdhury2017kernelized}. We refer the reader to \citet{chowdhury2017kernelized} for the full martingale concentration derivation.
+\end{proof}
+
+
+
+\subsection{Proofs for the Decision Problem}
+
+In this subsection, we present the proofs of the theoretical results for the decision problem.
+
+We now present the proof of Lemma~\ref{lemma:regression_vanilla_risk}.
+
+\begin{proof}(Proof of Lemma \ref{lemma:regression_vanilla_risk})\phantomsection\label{proof:vanilla_risk}\label{app:proof_vanilla_risk}
+Under mandatory disclosure, the sender always reveals features ($s(U,X) = x$). The features $X$ are successfully received with probability $1 - q$ and are erased with probability $q$. If erased, the receiver predicts the default value $0$ and suffers quadratic loss $Y^2$. If received, the receiver predicts $b^\top X$ and suffers $(Y - b^\top X)^2$. The vanilla risk is
+\begin{equation*}
+    \RV(b) = q\E[Y^2] + (1 - q)\E[(Y - b^\top X)^2].
+\end{equation*}
+Since $\E[Y] = 0$, we have $\E[Y^2] = \mathrm{Var}(Y)$.
+To decompose the second term, we add and subtract the OLS predictor $b_V^\top X$:
+\begin{equation*}
+    \E[(Y - b^\top X)^2] = \E\left[ \left( (Y - b_V^\top X) + (b_V - b)^\top X \right)^2 \right].
+\end{equation*}
+Expanding the square yields
+\begin{equation*}
+    \E[(Y - b^\top X)^2] = \E[(Y - b_V^\top X)^2] + \E[((b_V - b)^\top X)^2] + 2\E[(Y - b_V^\top X)(b_V - b)^\top X].
+\end{equation*}
+By the orthogonality principle of linear least squares, the error $Y - b_V^\top X$ is orthogonal to the feature space $\mathcal{X}$, meaning $\E[(Y - b_V^\top X)X] = 0$. Consequently, the cross-product term is zero:
+\begin{equation*}
+    2(b_V - b)^\top \E[(Y - b_V^\top X)X] = 0.
+\end{equation*}
+Furthermore, expanding the OLS residual risk yields
+\begin{equation*}
+    \E[(Y - b_V^\top X)^2] = \E[Y^2] - 2\E[Y b_V^\top X] + \E[(b_V^\top X)^2].
+\end{equation*}
+Applying orthogonality to $b_V^\top X$ gives $\E[(Y - b_V^\top X) b_V^\top X] = b_V^\top \E[(Y - b_V^\top X) X] = 0$, which implies $\E[Y b_V^\top X] = \E[(b_V^\top X)^2] = \mathrm{Var}(b_V^\top X)$. Since $\E[Y] = 0$ and $\E[b_V^\top X] = 0$, we have
+\begin{equation*}
+    \E[(Y - b_V^\top X)^2] = \mathrm{Var}(Y) - 2\mathrm{Var}(b_V^\top X) + \mathrm{Var}(b_V^\top X) = \mathrm{Var}(Y) - \mathrm{Var}(b_V^\top X),
+\end{equation*}
+and
+\begin{equation*}
+    \E[((b_V - b)^\top X)^2] = \mathrm{Var}((b_V - b)^\top X) = \mathrm{Var}((b - b_V)^\top X).
+\end{equation*}
+Substituting these back into the risk formula gives
+\begin{align*}
+    \RV(b) &= q\mathrm{Var}(Y) + (1 - q)\left( \mathrm{Var}(Y) - \mathrm{Var}(b_V^\top X) + \mathrm{Var}((b - b_V)^\top X) \right) \nonumber \\
+    &= \mathrm{Var}(Y) - (1 - q)\mathrm{Var}(b_V^\top X) + (1 - q)\mathrm{Var}((b - b_V)^\top X),
+\end{align*}
+which matches~\eqref{eq:vanilla_risk_decomp}. 
+
+The vanilla risk is minimized when $\mathrm{Var}((b - b_V)^\top X) = 0$. Assuming $\mathrm{Var}(X) \succ 0$, this occurs uniquely at $b = b_V$, yielding the optimal vanilla risk
+\begin{equation*}
+    \RV^*(q) = \mathrm{Var}(Y) - (1 - q)\mathrm{Var}(b_V^\top X).
+\end{equation*}
+\end{proof}
+
+We now present the proof of Lemma~\ref{lem:best_response}.
+
+\begin{proof}(Proof of Lemma \ref{lem:best_response})\phantomsection\label{proof:best_response}\label{app:proof_best_response}
+Consider a sender with preference realization $u$ and features $x$ under a committed receiver predictor parameter $b$. 
+If the sender chooses to withhold ($s(u,x) = \emptyset$), the receiver predicts $0$, and the sender suffers loss:
+\begin{equation*}
+    \ell_S(0, u) = u^2.
+\end{equation*}
+If the sender chooses to disclose ($s(u,x) = x$), the feature is successfully transmitted with probability $1 - q$ (resulting in prediction $b^\top x$ and loss $(b^\top x - u)^2$) and is erased with probability $q$ (resulting in prediction $0$ and loss $u^2$). The sender's expected loss from disclosing is
+\begin{equation*}
+    \E_{\epsilon}[\ell_S(\widehat{Y}, u)] = (1 - q)(b^\top x - u)^2 + q u^2.
+\end{equation*}
+The sender prefers disclosure if and only if:
+\begin{equation*}
+    u^2 > (1 - q)(b^\top x - u)^2 + q u^2.
+\end{equation*}
+Since $q \in (0, 1)$, we divide by the positive constant $1 - q > 0$ to get
+\begin{equation*}
+    u^2 > (u - b^\top x)^2.
+\end{equation*}
+Expanding the right-hand side gives
+\begin{equation*}
+    u^2 > u^2 - 2u b^\top x + (b^\top x)^2 \iff (2u - b^\top x)b^\top x > 0.
+\end{equation*}
+Recalling the definition of $F_b(u, x)$, this simplifies to $F_b(u, x) > 0$. We resolve ties by withholding, which completes the proof.
+\end{proof}
+
+We now present the proof of Lemma~\ref{lemma:regression_strategic_risk}.
+
+\begin{proof}(Proof of Lemma \ref{lemma:regression_strategic_risk})\phantomsection\label{proof:strategic_risk}\label{app:proof_strategic_risk}
+If $s_b(U,X) = x$, the sender attempts revelation. With probability $q$, the channel erases the features, leading to prediction $0$ and loss $Y^2$. With probability $1 - q$, features are successfully received, resulting in prediction $b^\top X$ and loss $(Y - b^\top X)^2$. If $s_b(U,X) = \emptyset$, the feature is withheld, leading to prediction $0$ and loss $Y^2$.
+The strategic risk is
+\begin{equation*}
+    \RS(b) = \E\left[ \I{s_b(U,X) = \emptyset} Y^2 + \I{s_b(U,X) = x} \left( q Y^2 + (1 - q)(Y - b^\top X)^2 \right) \right].
+\end{equation*}
+Grouping the terms containing $Y^2$ yields
+\begin{align*}
+    \RS(b) &= \E\left[ Y^2 - (1 - q)\I{s_b(U,X) = x} Y^2 + (1 - q)\I{s_b(U,X) = x} (Y - b^\top X)^2 \right] \nonumber \\
+    &= \E\left[ Y^2 \right] - (1 - q) \E\left[ \I{s_b(U,X) = x} \left( Y^2 - (Y - b^\top X)^2 \right) \right].
+\end{align*}
+Since $\E[Y] = 0$, we have $\E[Y^2] = \mathrm{Var}(Y)$. Expanding the term $Y^2 - (Y - b^\top X)^2$ gives:
+\begin{equation*}
+    Y^2 - (Y^2 - 2Y b^\top X + (b^\top X)^2) = (2Y - b^\top X)b^\top X = G_b(X, Y).
+\end{equation*}
+Thus, the expression reduces to:
+\begin{equation*}
+    \RS(b) = \mathrm{Var}(Y) - (1 - q)\E\left[ G_b(X, Y) \I{F_b(U, X) > 0} \right],
+\end{equation*}
+which is the stated equation~\eqref{eq:strategic_risk_formula}.
+\end{proof}
+
+We now present the proof of Theorem~\ref{thm:sufficient_condition}.
+
+\begin{proof}(Proof of Theorem \ref{thm:sufficient_condition})\phantomsection\label{proof:sufficient_condition}\label{app:proof_sufficient_condition}
+Let $\Delta(b) = \RV^* - \RS(b)$. By definition, if there exists $b \in \R^d$ such that $\Delta(b) > 0$, then $\Delta(\env) > 0$. Using the risk equations from Lemmas~\ref{lemma:regression_vanilla_risk} and~\ref{lemma:regression_strategic_risk}, the risk difference is
+\begin{equation*}
+    \RS(b) - \RV^* = (1 - q) \left[ \mathrm{Var}(b_V^\top X) - \E\left[ G_b(X, Y) \I{F_b(U, X) > 0} \right] \right].
+\end{equation*}
+We rewrite the expectation as
+\begin{equation*}
+    \E\left[ G_b(X, Y) \I{F_b(U, X) > 0} \right] = \E[G_b(X, Y)] - \E\left[ G_b(X, Y) \I{F_b(U, X) \le 0} \right].
+\end{equation*}
+Note that $G_b(X, Y) = (2Y - b^\top X)b^\top X = Y^2 - (Y - b^\top X)^2$. Taking expectations and using the vanilla risk calculations from Lemma~\ref{lemma:regression_vanilla_risk}, we have
+\begin{align*}
+    \E[G_b(X, Y)] &= \E[Y^2] - \E[(Y - b^\top X)^2] \nonumber \\
+    &= \mathrm{Var}(Y) - \left( \mathrm{Var}(Y) - \mathrm{Var}(b_V^\top X) + \mathrm{Var}((b - b_V)^\top X) \right) \nonumber \\
+    &= \mathrm{Var}(b_V^\top X) - \mathrm{Var}((b - b_V)^\top X).
+\end{align*}
+Thus, the risk difference is
+\begin{equation*}
+    \RS(b) - \RV^* = (1 - q) \left[ \mathrm{Var}((b - b_V)^\top X) + \E\left[ G_b(X, Y) \I{F_b(U, X) \le 0} \right] \right].
+\end{equation*}
+For this difference to be strictly negative, we require the bracketed term to be negative.
+We decompose the expectation term
+\begin{equation*}
+    \E\left[ G_b \I{F_b \le 0} \right] = \E\left[ G_b \I{G_b \le 0} \right] + \E\left[ G_b \left( \I{F_b \le 0} - \I{G_b \le 0} \right) \right].
+\end{equation*}
+For the first term, we use the standard algebraic identity $z \I{z \le 0} = \frac{z - |z|}{2}$ for any real scalar $z$. Applying this to $G_b(X, Y)$ and substituting $\E[G_b(X, Y)] = \mathrm{Var}(b_V^\top X) - \mathrm{Var}((b - b_V)^\top X)$ yields
+\begin{align}
+    \E\left[ G_b \I{G_b \le 0} \right] &= \frac{\E[G_b] - \E[|G_b|]}{2} \nonumber \\
+    &= \frac{\mathrm{Var}(b_V^\top X) - \mathrm{Var}((b - b_V)^\top X) - \E[|G_b(X,Y)|]}{2}.
+\end{align}
+For the second term, we establish the pointwise upper bound 
+\begin{equation*}
+    G_b \left( \I{F_b \le 0} - \I{G_b \le 0} \right) \le 2|Y - U||b^\top X|.
+\end{equation*}
+Hence:
+\begin{equation*}
+    G_b \left( \I{F_b \le 0} - \I{G_b \le 0} \right) \le |G_b - F_b| = 2|Y - U||b^\top X|.
+\end{equation*}
+Taking expectation and applying the Cauchy-Schwarz inequality gives:
+\begin{equation*}
+    \E\left[ G_b \left( \I{F_b \le 0} - \I{G_b \le 0} \right) \right] \le 2\E\left[ |Y - U||b^\top X| \right] \le 2 \|U - Y\|_2 \sqrt{\mathrm{Var}(b^\top X)}.
+\end{equation*}
+Combining these components, we get
+\begin{equation*}
+    \E\left[ G_b \I{F_b \le 0} \right] \le \frac{\mathrm{Var}(b_V^\top X) - \mathrm{Var}((b - b_V)^\top X) - \E[|G_b|]}{2} + 2 \|U - Y\|_2 \sqrt{\mathrm{Var}(b^\top X)}.
+\end{equation*}
+Substitute this inequality back into the risk difference:
+\begin{equation*}
+    \RS(b) - \RV^* \le (1 - q) \left[ \frac{\mathrm{Var}(b_V^\top X) + \mathrm{Var}((b - b_V)^\top X) - \E[|G_b|]}{2} + 2\|U - Y\|_2 \sqrt{\mathrm{Var}(b^\top X)} \right].
+\end{equation*}
+To guarantee that $\RS(b) - \RV^* < 0$, it is sufficient for the term in the brackets to be strictly negative:
+\begin{equation*}
+    2\|U - Y\|_2 \sqrt{\mathrm{Var}(b^\top X)} < \frac{\E[|G_b|] - \mathrm{Var}(b_V^\top X) - \mathrm{Var}((b - b_V)^\top X)}{2}.
+\end{equation*}
+Rearranging this inequality yields the sufficient condition.
+\end{proof}
+
+We now present the proof of Theorem~\ref{thm:necessary_condition}.
+
+\begin{proof}(Proof of Theorem \ref{thm:necessary_condition})\phantomsection\label{proof:necessary_condition}\label{app:proof_necessary_condition}
+We analyze the risk difference:
+\begin{equation*}
+    \RS(b) - \RV^* = (1 - q) \left[ \mathrm{Var}((b - b_V)^\top X) + \E\left[ G_b(X, Y) \I{F_b(U, X) \le 0} \right] \right].
+\end{equation*}
+Pointwise, for any realizations, we have
+\begin{equation*}
+    G_b \I{F_b \le 0} \ge G_b \I{G_b \le 0}.
+\end{equation*}
+
+Taking expectations on both sides yields
+\begin{equation*}
+    \E\left[ G_b \I{F_b \le 0} \right] \ge \E\left[ G_b \I{G_b \le 0} \right] = \frac{\mathrm{Var}(b_V^\top X) - \mathrm{Var}((b - b_V)^\top X) - \E[|G_b|]}{2}.
+\end{equation*}
+Substitute this lower bound into the risk difference:
+\begin{align*}
+    \RS(b) - \RV^* &\ge (1 - q) \left[ \mathrm{Var}((b - b_V)^\top X) + \frac{\mathrm{Var}(b_V^\top X) - \mathrm{Var}((b - b_V)^\top X) - \E[|G_b|]}{2} \right] \nonumber \\
+    &= \frac{1 - q}{2} \left[ \mathrm{Var}(b_V^\top X) + \mathrm{Var}((b - b_V)^\top X) - \E[|G_b|] \right].
+\end{align*}
+Now, suppose that for all $b \in \R^d$, the necessary condition fails, meaning:
+\begin{equation*}
+    \E[|G_b(X, Y)|] - \mathrm{Var}(b_V^\top X) - \mathrm{Var}((b - b_V)^\top X) \le 0 \quad \forall b \in \R^d.
+\end{equation*}
+This implies that the term inside the brackets is always non-negative:
+\begin{equation*}
+    \mathrm{Var}(b_V^\top X) + \mathrm{Var}((b - b_V)^\top X) - \E[|G_b(X, Y)|] \ge 0 \quad \forall b \in \R^d.
+\end{equation*}
+Since $1 - q > 0$, this guarantees $\RS(b) - \RV^* \ge 0$ for all $b$, which means $\Delta(\env) \le 0$.
+\end{proof}
+
+
+\subsection{Proofs for Offline Learning}
+
+In this subsection, we provide the proofs of the generalization bounds for offline learning.
+
+We now present the proof of Lemma~\ref{lem:vanilla_generalization}.
+
+\begin{proof}(Proof of Lemma \ref{lem:vanilla_generalization})\phantomsection\label{proof:vanilla_generalization}\label{app:proof_vanilla_generalization}
+Let $L(b) = \E[(Y - b^\top X)^2]$ denote the expected quadratic loss under receiver linear strategy $b \in \mathcal{R}$, and let $\widehat{L}(b) = \frac{1}{n}\sum_{k=1}^n (y_k - b^\top x_k)^2$ denote the empirical loss on sample $S$. The difference between true and empirical vanilla risks is
+\begin{align*}
+    \RV(b) - \RhatV(b) &= q\left( \mathrm{Var}(Y) - \frac{1}{n}\sum_{k=1}^n y_k^2 \right) + (1 - q)(L(b) - \widehat{L}(b)).
+\end{align*}
+Applying the triangle inequality yields
+\begin{equation*}
+    \sup_{b \in \mathcal{R}} |\RV(b) - \RhatV(b)| \le \left| \mathrm{Var}(Y) - \frac{1}{n}\sum_{k=1}^n y_k^2 \right| + \sup_{b \in \mathcal{R}} |L(b) - \widehat{L}(b)|.
+\end{equation*}
+We allocate failure probability $\delta/2$ to each of these two terms using a union bound.
+
+For the first term, since $Y \in [-1, 1]$ almost surely, $Y^2 \in [0, 1]$. Applying Hoeffding's concentration inequality yields $\left| \mathrm{Var}(Y) - \frac{1}{n}\sum_{k=1}^n y_k^2 \right| \le \sqrt{\frac{\log(4/\delta)}{2n}} = \cO\left( \sqrt{\frac{\log(1/\delta)}{n}} \right)$ with probability at least $1 - \delta/2$.
+
+To bound the second term $\sup_{b \in \mathcal{R}} |L(b) - \widehat{L}(b)|$, we apply the Rademacher complexity generalization bound (Theorem~\ref{thm:rademacher_gen}) to the loss-composed strategy space $\ell \circ \mathcal{R} := \{ (x,y) \mapsto (y - b^\top x)^2 : b \in \mathcal{R} \}$. First, we show that the scalar loss function is Lipschitz over the domain of predictions. For any strategy $b \in \mathcal{R}$ (where $\|b\|_\infty \le 1$) and feature vector $x$ (where $\|x\|_\infty \le 1$), the absolute prediction is bounded by $|b^\top x| = |\sum_{i=1}^d b_i x_i| \le \sum_{i=1}^d |b_i||x_i| \le d \cdot 1 = d$, so the scalar linear prediction $a = b^\top x$ lies in $[-d, d]$. Define the scalar loss function $\phi(a) = (y - a)^2$ for $a \in [-d, d]$ and $y \in [-1, 1]$. Differentiating $\phi(a)$ with respect to $a$ gives $|\phi'(a)| = 2|y - a| \le 2(1 + d)$. Hence, $\phi$ is $L$-Lipschitz over $[-d, d]$ with Lipschitz constant $L = 2(1 + d)$.
+
+Next, by Talagrand's contraction lemma (Lemma 26.9 of \citealp{shalevshwartz2014understanding}), the empirical Rademacher complexity of the loss-composed class $\ell \circ \mathcal{R}$ is bounded by
+\begin{equation*}
+    \widehat{\mathrm{Rad}}_S(\ell \circ \mathcal{R}) \le L \cdot \widehat{\mathrm{Rad}}_S(\mathcal{R}) = 2(1+d) \widehat{\mathrm{Rad}}_S(\mathcal{R}),
+\end{equation*}
+where $\widehat{\mathrm{Rad}}_S(\mathcal{R})$ is the empirical Rademacher complexity of the receiver strategy space $\mathcal{R} = \{ x \mapsto b^\top x : \|b\|_\infty \le 1 \}$. By Lemma 26.10 of \citet{shalevshwartz2014understanding} (Rademacher complexity bound for linear classes), for any sample $S = (x_1, \dots, x_n)$ with $\|x_k\|_2 \le \sqrt{d}$ and $\|b\|_2 \le \sqrt{d}$:
+\begin{equation*}
+    \widehat{\mathrm{Rad}}_S(\mathcal{R}) = \E_\sigma \left[ \sup_{b \in \mathcal{R}} \frac{1}{n}\sum_{k=1}^n \sigma_k b^\top x_k \right] \le \frac{\|b\|_2 \max_k \|x_k\|_2}{\sqrt{n}} \le \frac{\sqrt{d} \cdot \sqrt{d}}{\sqrt{n}} = \frac{d}{\sqrt{n}}.
+\end{equation*}
+Thus, $\widehat{\mathrm{Rad}}_S(\ell \circ \mathcal{R}) \le 2(1+d) \frac{d}{\sqrt{n}} = \frac{2d(1+d)}{\sqrt{n}} = \cO\left( \frac{d^2}{\sqrt{n}} \right)$, and taking expectation over $S \sim \mathcal{D}^n$ gives $\mathrm{Rad}_n(\ell \circ \mathcal{R}) = \cO\left( \frac{d^2}{\sqrt{n}} \right)$.
+
+Finally, applying Theorem~\ref{thm:rademacher_gen} to class $\ell \circ \mathcal{R}$ (bounded in $[0, (1+d)^2]$), with probability at least $1 - \delta/2$:
+\begin{equation*}
+    \sup_{b \in \mathcal{R}} |L(b) - \widehat{L}(b)| \le 2\mathrm{Rad}_n(\ell \circ \mathcal{R}) + (1+d)^2 \sqrt{\frac{\log(4/\delta)}{2n}} = \cO\left( \frac{d^2}{\sqrt{n}} + d^2\sqrt{\frac{\log(1/\delta)}{n}} \right).
+\end{equation*}
+Summing the bounds for both terms via a union bound completes the proof.
+\end{proof}
+
+We now present the proof of Lemma~\ref{lem:strategic_generalization}.
+
+\begin{proof}(Proof of Lemma \ref{lem:strategic_generalization})\phantomsection\label{proof:strategic_generalization}\label{app:proof_strategic_generalization}
+\textit{Notation abuse: Except for $R_S$ and $\widehat{R}_S$, where the subscript $_S$ denotes \emph{strategic}, the subscript $_S$ elsewhere denotes the underlying sample set $S$.}
+
+\noindent The strategic risk and empirical strategic risk are
+\begin{equation*}
+    \RS(b) = \mathrm{Var}(Y) - (1 - q)\E[h_b(U, X, Y)], \;\; \widehat{\RS}(b) = \frac{1}{n}\sum_{k=1}^n y_k^2 - (1 - q)\frac{1}{n}\sum_{k=1}^n h_b(u_k, x_k, y_k),
+\end{equation*}
+where $h_b(u, x, y) = G_b(x, y)\I{F_b(u, x) > 0}$. Applying the triangle inequality:
+\begin{equation*}
+    \sup_{b \in \mathcal{R}} |\RS(b) - \widehat{\RS}(b)| \le \left| \mathrm{Var}(Y) - \frac{1}{n}\sum_{k=1}^n y_k^2 \right| + (1-q) \sup_{b \in \mathcal{R}} \left|\E[h_b] - \widehat{\E}_S[h_b]\right|.
+\end{equation*}
+The first term is bounded by $\cO\left(\sqrt{\log(1/\delta)/n}\right)$ with probability at least $1 - \delta/2$ using Hoeffding's inequality.
+
+To bound the second term $\sup_{b \in \mathcal{R}} |\E[h_b] - \widehat{\E}_S[h_b]|$, consider the function class $\mathcal{H} = \{ h_b(u, x, y) = G_b(x, y)\I{F_b(u, x) > 0} : b \in \mathcal{R} \}$. Note that each $h_b = g_b \cdot k_b$ is a pointwise product of quadratic polynomial $g_b(x, y) = (2y - b^\top x)b^\top x$ from class $\mathcal{G}_1 = \{ (x,y) \mapsto (2y - b^\top x)b^\top x : b \in \mathcal{R} \}$ and binary threshold indicator $k_b(u, x) = \I{(2u - b^\top x)b^\top x > 0}$ from class $\mathcal{K} = \{ (u,x) \mapsto \I{(2u - b^\top x)b^\top x > 0} : b \in \mathcal{R} \}$. Since $\|b\|_\infty \le 1$, $\|x\|_\infty \le 1$, and $|y| \le 1$, by Hölder's inequality $|b^\top x| \le d$, which implies $\|g_b\|_\infty \le (2 + d)d = d(d+2)$ and $\|k_b\|_\infty \le 1$. By Lemma~\ref{lem:product_rademacher}, the empirical Rademacher complexity of $\mathcal{H} = \mathcal{G}_1 \cdot \mathcal{K}$ satisfies
+\begin{equation*}
+    \begin{aligned}
+    \widehat{\mathrm{Rad}}_S(\mathcal{H}) &\le \sup_{b \in \mathcal{R}} \|g_b\|_\infty \cdot \widehat{\mathrm{Rad}}_S(\mathcal{K}) + \sup_{b \in \mathcal{R}} \|k_b\|_\infty \cdot \widehat{\mathrm{Rad}}_S(\mathcal{G}_1) \\
+    &\le d(d+2) \widehat{\mathrm{Rad}}_S(\mathcal{K}) + \widehat{\mathrm{Rad}}_S(\mathcal{G}_1).
+    \end{aligned}
+\end{equation*}
+
+For the quadratic term $\mathcal{G}_1$, write $g_b(x_k, y_k) = \phi_k(b^\top x_k)$ where $\phi_k(t) = 2y_k t - t^2$ is a $1$-variable $L$-Lipschitz scalar function with $L = 2(1+d)$ over $t \in [-d, d]$. Applying Talagrand's contraction lemma (Lemma 26.9 of \citealp{shalevshwartz2014understanding}) to $\widehat{\mathrm{Rad}}_S(\mathcal{G}_1) = \E_\sigma \left[ \sup_{b \in \mathcal{R}} \frac{1}{n}\sum_{k=1}^n \sigma_k \phi_k(b^\top x_k) \right]$ factors out the Lipschitz constant $L$
+\begin{equation*}
+    \widehat{\mathrm{Rad}}_S(\mathcal{G}_1) \le 2(1+d) \widehat{\mathrm{Rad}}_S(\mathcal{R}) \le 2(1+d)\frac{d}{\sqrt{n}} = \cO\left( \frac{d^2}{\sqrt{n}} \right),
+\end{equation*}
+where $\widehat{\mathrm{Rad}}_S(\mathcal{R}) \le \frac{d}{\sqrt{n}}$ is the linear predictor bound (Lemma 26.10 of \citealp{shalevshwartz2014understanding}).
+
+For the indicator class $\mathcal{K}$, each function $\I{F_b(u, x) > 0}$ is a thresholded quadratic polynomial $F_b(u, x) = 2 u (b^\top x) - (b^\top x)^2$ in variables $(u, x) \in \R^{d+1}$. The vector space $V$ of degree-2 polynomials in $d+1$ variables has dimension $\dim(V) = \frac{(d+3)(d+2)}{2} = \cO(d^2)$. By Theorem 3.5 of \citet{anthony1999neural} (VC-dimension of thresholded vector spaces of functions), $\mathrm{VC}(\mathcal{K}) \le \dim(V) = \frac{(d+3)(d+2)}{2} = \cO(d^2)$. For sample $S = (z_1, \dots, z_n)$, the finite set of binary evaluation vectors $A_S = \{ (k(z_1), \dots, k(z_n)) \in \{0, 1\}^n : k \in \mathcal{K} \}$ has size bounded by the growth function $\tau_{\mathcal{K}}(n) := \max_{S'} |A_{S'}|$. By the Sauer-Shelah-Perles Lemma (Lemma 6.10 of \citealp{shalevshwartz2014understanding}), $|A_S| \le \tau_{\mathcal{K}}(n) \le (en / \mathrm{VC}(\mathcal{K}))^{\mathrm{VC}(\mathcal{K})}$. Since each binary vector $a \in A_S$ has $L_2$-norm $\|a\|_2 = \sqrt{\sum_{i=1}^n a_i^2} \le \sqrt{n}$, applying Massart's Finite Class Lemma (Lemma 26.8 of \citealp{shalevshwartz2014understanding}) to $A_S$ yields
+\begin{equation*}
+    \begin{aligned}
+    \widehat{\mathrm{Rad}}_S(\mathcal{K}) &= \widehat{\mathrm{Rad}}_S(A_S) = \E_\sigma \left[ \frac{1}{n}\sup_{a \in A_S} \sum_{i=1}^n \sigma_i a_i \right] \le \frac{\sqrt{n}\sqrt{2 \log |A_S|}}{n} \\
+    &\le \sqrt{\frac{2 \mathrm{VC}(\mathcal{K}) \log(en / \mathrm{VC}(\mathcal{K}))}{n}} \le \sqrt{\frac{2 \mathrm{VC}(\mathcal{K}) \log(en)}{n}} = \cO\left( \frac{d \sqrt{\log n}}{\sqrt{n}} \right).
+    \end{aligned}
+\end{equation*}
+
+Combining both bounds gives $\widehat{\mathrm{Rad}}_S(\mathcal{H}) \le d(d+2) \cO\left( \frac{d \sqrt{\log n}}{\sqrt{n}} \right) + \cO\left( \frac{d^2}{\sqrt{n}} \right) = \cO\left( \frac{d^3 \sqrt{\log n}}{\sqrt{n}} \right)$, and taking expectation yields $\mathrm{Rad}_n(\mathcal{H}) = \cO\left( \frac{d^3 \sqrt{\log n}}{\sqrt{n}} \right)$.
+
+Finally, applying Theorem~\ref{thm:rademacher_gen} to class $\mathcal{H}$ (bounded by $\|h_b\|_\infty \le d(d+2)$), with probability at least $1 - \delta/2$
+\begin{equation*}
+    \begin{aligned}
+    \sup_{b \in \mathcal{R}} |\E[h_b] - \widehat{\E}_S[h_b]| &\le 2\mathrm{Rad}_n(\mathcal{H}) + d(d+2)\sqrt{\frac{\log(4/\delta)}{2n}} \\
+    &= \cO\left( \frac{d^3 \sqrt{\log n}}{\sqrt{n}} + d^2 \sqrt{\frac{\log(1/\delta)}{n}} \right).
+    \end{aligned}
+\end{equation*}
+Summing these bounds via a union bound completes the proof.
+\end{proof}
+
+We now present the proof of Theorem~\ref{thm:advantage_generalization}.
+
+\begin{proof}(Proof of Theorem \ref{thm:advantage_generalization})\phantomsection\label{proof:advantage_generalization}\label{app:proof_advantage_generalization}
+Let $\Delta(\env) = \min_{b \in \mathcal{R}}\RV(b) - \min_{b \in \mathcal{R}}\RS(b)$ and $\widehat{\Delta}(D_n) = \min_{b \in \mathcal{R}} \widehat{\RV}(b) - \min_{b \in \mathcal{R}} \widehat{\RS}(b)$. We bound the difference using
+\begin{equation*}
+    \left| \min_{b \in \mathcal{R}} f(b) - \min_{b \in \mathcal{R}} g(b) \right| \le \sup_{b \in \mathcal{R}} |f(b) - g(b)|.
+\end{equation*}
+\begin{align*}
+    |\Delta(\env) - \widehat{\Delta}(D_n)| &\le \left| \min_{b \in \mathcal{R}} \RV(b) - \min_{b \in \mathcal{R}} \widehat{\RV}(b) \right| + \left| \min_{b \in \mathcal{R}} \RS(b) - \min_{b \in \mathcal{R}} \widehat{\RS}(b) \right| \nonumber \\
+    &\le \sup_{b \in \mathcal{R}} |\RV(b) - \widehat{\RV}(b)| + \sup_{b \in \mathcal{R}} |\RS(b) - \widehat{\RS}(b)|.
+\end{align*}
+Using a union bound, both generalization events hold simultaneously with probability at least $1 - \delta$. Summing the bounds yields the advantage generalization bound.
+\end{proof}
+
+
+\subsection{Proofs for Online Learning}
+
+In this subsection, we provide the proofs for the online learning problem.
+
+We now present the proof of Lemma~\ref{lem:sobolev_membership}.
+
+\begin{proof}(Proof of Lemma \ref{lem:sobolev_membership})\phantomsection\label{proof:sobolev_membership}\label{app:proof_sobolev_membership}
+We establish Sobolev space membership by showing that both the expected vanilla risk $\RV(b)$ and strategic risk $\RS(b)$ are infinitely differentiable ($\mathcal{C}^\infty$) on the compact domain $\mathcal{R} \subset \mathbb{R}^d$, which would imply $L(m,b)$ is infinite differentiable on compact domain which further implies their Sobolev norms of any order are finite.
+
+\noindent\textbf{Vanilla Risk $\RV(b)$:}
+Recall the formula for the vanilla risk
+\begin{equation*}
+    \RV(b) = \mathrm{Var}(Y) - (1-q)\mathrm{Var}(b_V^\top X) + (1-q)\mathrm{Var}((b-b_V)^\top X).
+\end{equation*}
+Since $\RV(b)$ is a quadratic polynomial in $b$, all its partial derivatives of order $|\alpha| \ge 3$ vanish identically. Thus, $\RV(b) \in \mathcal{C}^\infty(\mathcal{R})$.
+
+\noindent\textbf{Strategic Risk $\RS(b)$ Smoothness on $\mathcal{R}$:}
+Recall the strategic risk formula:
+\begin{equation*}
+    \RS(b) = \mathrm{Var}(Y) - (1-q)\E[G_b(X, Y)\I{F_b(U, X) > 0}],
+\end{equation*}
+where $F_b(u, x) = (2u - b^\top x) b^\top x$ and $G_b(x, y) = 2y b^\top x - (b^\top x)^2$. We show that $I(b) := \E[G_b(X, Y)\I{F_b(U, X) > 0}] \in \mathcal{C}^\infty(\mathcal{R})$.
+
+For any $b \in \mathcal{R}$ with $\|b\|_2 \ge b_{\min} > 0$, perform the elementary change of variables $v = u - \frac{1}{2}b^\top x$. The revelation condition $(2u - b^\top x)b^\top x > 0$ simplifies to $v(b^\top x) > 0$. Let $\hat{b} = b / \|b\|_2$, and let $R_b \in \mathrm{SO}(d)$ be a smooth local rotation mapping $\hat{b}$ to the first standard basis vector $e_1$. In rotated coordinates $z = R_b x$ (so $x = R_b^\top z$), the first coordinate satisfies $z_1 = \hat{b}^\top x$, which implies $b^\top x = \|b\|_2 z_1$.
+
+Because $\|b\|_2 > 0$, the revelation condition $v(b^\top x) > 0$ is equivalent to $v z_1 > 0$, which defines the fixed region
+\begin{equation*}
+    \Omega_0 := \{(v, z_1) \in \mathbb{R}^2 : v z_1 > 0\} \times \mathbb{R}^{d-1} \times \mathbb{R}.
+\end{equation*}
+Crucially, the domain of integration $\Omega_0$ has zero dependence on $b$. Since the Jacobian of the transformation $(u, x, y) \mapsto (v, z, y)$ is identically $1$, change of variables yields
+\begin{equation*}
+    I(b) = \int_{\Omega_0} G_b(R_b^\top z, y) \, p_{U,X,Y}\left(v + \tfrac{1}{2}\|b\|_2 z_1,\, R_b^\top z,\, y\right) dv \, dz \, dy.
+\end{equation*}
+Because $p_{U,X,Y}$ is $\mathcal{C}^\infty$ with compact support, $G_b$ is a polynomial in $(z, y, b)$, and the mapping $b \mapsto (\|b\|_2, R_b)$ is smooth for all $\|b\|_2 \ge b_{\min} > 0$, the integrand is an infinitely differentiable function of $b$ whose partial derivatives of all orders are uniformly bounded on the fixed integration domain $\Omega_0$. Applying the standard Leibniz integral rule (dominated convergence theorem) directly justifies differentiating under the integral sign to any order $k$. Therefore, $I(b) \in \mathcal{C}^\infty(\mathcal{R})$, and consequently $\RS(b) \in \mathcal{C}^\infty(\mathcal{R})$.
+
+% =========================================================================
+% Original Inductive Differentiation Proof (Preserved for Reference)
+% =========================================================================
+\iffalse
+We show by induction on $k = |\alpha|$ that for any multi-index $\alpha \in \mathbb{N}_0^d$ of order $k$, the partial derivative $D^\alpha I(b)$ exists, is continuous on $\mathcal{R}$, and can be expressed as a finite linear combination of terms belonging to two canonical integral forms
+\begin{equation}
+\label{eq:form_a}
+\begin{aligned}
+    \text{Form A: } \quad \int_{\mathbb{R}^d \times \mathbb{R}} P(x,y,b) \Big[ &\I{b^\top x > 0}\int_{\frac{1}{2}b^\top x}^{\infty} D_u^{\alpha_3} p \, du \\
+    + &\I{b^\top x < 0}\int_{-\infty}^{\frac{1}{2}b^\top x} D_u^{\alpha_3} p \, du \Big] dy \, dx,
+\end{aligned}
+\end{equation}
+\begin{equation}
+\label{eq:form_b}
+    \text{Form B: } \quad \int_{\mathbb{R}^d \times \mathbb{R}} Q(x,y,b) D_x^{\alpha_1} D_y^{\alpha_2} D_u^{\alpha_3} p\left(x, y, \tfrac{1}{2}b^\top x\right) dy \, dx,
+\end{equation}
+where $P(x,y,b)$ and $Q(x,y,b)$ are polynomials in $(x,y,b)$, and $D_x^{\alpha_1} D_y^{\alpha_2} D_u^{\alpha_3} p$ represents partial derivatives of $p$ of order $|\alpha_1|+|\alpha_2|+\alpha_3 \le k$.
+
+\noindent\textbf{Base Case ($k=1$):} Differentiating $I(b)$ with respect to $b_i$ via Leibniz's rule yields
+\begin{align*}
+    \frac{\partial I(b)}{\partial b_i} &= \int_{\mathbb{R}^d \times \mathbb{R}} \frac{\partial G_b(x, y)}{\partial b_i} \left[ \I{b^\top x > 0} \int_{\frac{1}{2}b^\top x}^{\infty} p \, du + \I{b^\top x < 0} \int_{-\infty}^{\frac{1}{2}b^\top x} p \, du \right] dy \, dx \\
+    &\quad + \int_{\mathbb{R}^d \times \mathbb{R}} \frac{1}{2}x_i G_b(x, y) \text{sign}(-b^\top x) p\left(x, y, \tfrac{1}{2}b^\top x\right) dy \, dx.
+\end{align*}
+The first integral is of Form A (with $P = \frac{\partial G_b}{\partial b_i}$ and $\alpha_3=0$), and the second integral is of Form B (with $Q = \frac{1}{2}x_i G_b$ and $\alpha_3=0$). Note that the discontinuity introduced by the indicator function does not contribute, since $G_b$ vanishes on the boundary ${x : b^\top x = 0}$.
+
+\noindent\textbf{Inductive Step ($k \to k+1$):} Assume that $D^\alpha I(b)$ is a finite sum of terms of Form A and Form B for all $|\alpha| \le k$. Differentiating a generic term of Form A with respect to $b_j$ via Leibniz's rule yields
+\begin{align*}
+    \frac{\partial}{\partial b_j} (\text{Form A}) &= \int_{\mathbb{R}^d \times \mathbb{R}} \frac{\partial P(x,y,b)}{\partial b_j} \Big[ \I{b^\top x > 0} \int_{\frac{1}{2}b^\top x}^{\infty} D_u^{\alpha_3} p \, du \\
+    &+ \I{b^\top x < 0} \int_{-\infty}^{\frac{1}{2}b^\top x} D_u^{\alpha_3} p \, du \Big] dy \, dx \\
+    &\quad + \int_{\mathbb{R}^d \times \mathbb{R}} P(x,y,b) \Big[ \text{sign}(-b^\top x) \frac{1}{2}x_j D_u^{\alpha_3} p\left(x,y,\tfrac{1}{2}b^\top x\right)\Big] dy \, dx.
+\end{align*}
+
+This expansion directly decomposes into two structurally identical forms:
+(a) A term of Form A where the polynomial factor becomes $\tilde{P}(x,y,b) = \frac{\partial P(x,y,b)}{\partial b_j}$.
+(b) A boundary term of Form B with the associated polynomial factor $\tilde{Q}(x,y,b) = \text{sign}(-b^\top x) \frac{1}{2}x_j P(x,y,b)$ determined by the active indicator region.
+
+Similarly, differentiating a generic term of Form B with respect to $b_j$ via the product and chain rules yields
+\begin{align*}
+    \frac{\partial}{\partial b_j} (\text{Form B}) &= \int_{\mathbb{R}^d \times \mathbb{R}} \frac{\partial Q(x,y,b)}{\partial b_j} D_x^{\alpha_1} D_y^{\alpha_2} D_u^{\alpha_3} p\left(x, y, \tfrac{1}{2}b^\top x\right) dy \, dx \\
+    &\quad + \int_{\mathbb{R}^d \times \mathbb{R}} Q(x,y,b) \left( \frac{1}{2}x_j \right) D_x^{\alpha_1} D_y^{\alpha_2} D_u^{\alpha_3+1} p\left(x, y, \tfrac{1}{2}b^\top x\right) dy \, dx.
+\end{align*}
+This calculation again produces a combination of terms that fit our canonical structure:
+(a) A term of Form B where the polynomial factor updates to $\tilde{Q}_1(x,y,b) = \frac{\partial Q(x,y,b)}{\partial b_j}$, preserving the derivative order of the density.
+(b) Another term of Form B where the new polynomial factor is $\tilde{Q}_2(x,y,b) = \frac{1}{2}x_j Q(x,y,b)$, and the order of the density derivative with respect to $u$ increases to $\alpha_3+1$. 
+
+Thus it follows that $\RS(b) \in \mathcal{C}^\infty(\mathcal{R})$.
+\fi
+
+% \noindent\textbf{Alternate Proof of Smoothness via Distributional Derivatives:}
+% The smoothness of the strategic risk can also be established more elegantly using the theory of distributions. The indicator functions $\mathbb{I}\{b^\top x > 0\}$ and $\mathbb{I}\{b^\top x < 0\}$ can be viewed as Heaviside step functions parameterized by $b$. In the sense of distributions, differentiating these step functions with respect to $b$ yields Dirac delta functions supported on the boundary hyperplane $b^\top x = 0$. Higher-order derivatives yield derivatives of the Dirac delta. 
+
+% The integral $I(b)$ can be interpreted as the action of these parameterized distributions on the test functions involving $p_{U,X,Y}(u,x,y)$ and $G_b(x,y)$. By the fundamental property of distributional derivatives, evaluating the derivative of a distribution against a test function is equivalent to evaluating the distribution against the derivative of the test function (i.e., integration by parts). Because the density $p_{U,X,Y}$ is infinitely differentiable ($\mathcal{C}^\infty$) and has compact support, it (along with the polynomial $G_b$) forms a valid smooth test function that can safely absorb any number of transferred derivatives. Therefore, applying the derivative to the integral always results in a bounded, well-defined functional evaluation. This immediately guarantees that the integral $I(b)$, and consequently $\RS(b)$, is infinitely differentiable with respect to $b$, bypassing the need for explicit boundary term tracking.
+
+\noindent\textbf{Sobolev Space Membership:}
+Since $\mathcal{R} \subset \mathbb{R}^d$ is compact and both $\RV(b), \RS(b) \in \mathcal{C}^\infty(\mathcal{R})$, every partial derivative $D^\alpha L(m,b)$ is continuous on the compact set $\mathcal{R}$ and therefore bounded: $\sup_{b \in \mathcal{R}} |D^\alpha L(m,b)| \le M_\alpha < \infty$.
+Consequently, the Sobolev norm of order $m_0 = 5/2 + d/2$ is finite:
+\begin{align*}
+    \|L(m, \cdot)\|_{H^{5/2+d/2}(\mathcal{R})}^2 &= \sum_{|\alpha| \le \lceil 5/2 + d/2 \rceil} \int_{\mathcal{R}} |D^\alpha L(m, b)|^2 \, db \\
+    &\le \operatorname{Vol}(\mathcal{R}) \sum_{|\alpha| \le \lceil 5/2 + d/2 \rceil} M_\alpha^2 < \infty.
+\end{align*}
+Thus, $L(m, b) \in H^{5/2+d/2}(\mathcal{R})$.
+\end{proof}
+
+We now present the proof of Theorem~\ref{thm:kernel_online_regret}.
+
+\begin{proof}(Proof of Theorem \ref{thm:kernel_online_regret})\phantomsection\label{proof:kernel_online_regret}\label{app:proof_kernel_online_regret}
+The proof proceeds by verifying the premises required to apply the kernelized Thompson Sampling regret bound of \citet[Theorem 4]{chowdhury2017kernelized} (stated as Theorem~\ref{thm:kernel_ts_master}) to our strategic setting over $\mathcal{A} = \{V, S\} \times \mathcal{R}$.
+
+\noindent\textbf{1. Noise Sub-Gaussianity:} 
+Because the domain of features, outcomes, and decision vectors is bounded ($\|X\|_2 \le X_0, |Y| \le Y_0, \|b\|_2 \le 1$), the realized loss $Z_t = \ell(m_t, b_t, X_t, Y_t, U_t)$ is uniformly bounded in a finite interval $[0, M_0]$. For any joint action $a_t = (m_t, b_t)$, both $Z_t$ and its conditional expectation $\mathbb{E}[Z_t \mid a_t]$ are bounded in $[0, M_0]$. By Hoeffding's Lemma, the zero-mean observation noise $\eta_t = Z_t - \mathbb{E}[Z_t \mid a_t]$ is bounded in $[-M_0, M_0]$ and thus conditionally $R$-sub-Gaussian with $R = M_0/2$.
+
+\noindent\textbf{2. RKHS Membership and Direct-Sum Norm Bound:} 
+By Lemma~\ref{lem:sobolev_membership}, the expected risk functions under each regime belong to the Sobolev space $H^{5/2+d/2}(\mathcal{R})$, which is norm-equivalent to the RKHS $\mathcal{H}_{k_0}(\mathcal{R})$ of the Matérn-$5/2$ kernel: $\|R_V\|_{\mathcal{H}_{k_0}} \le B_{k,V} < \infty$ and $\|R_S\|_{\mathcal{H}_{k_0}} \le B_{k,S} < \infty$. For the direct-sum kernel $k((m, b), (m', b')) = \mathbb{I}\{m = m'\} k_0(b, b')$, the joint RKHS decomposes orthogonally as $\mathcal{H}_k = \mathcal{H}_{k_0} \oplus \mathcal{H}_{k_0}$. Consequently, the joint objective $f(m, b) = \mathbb{I}\{m=V\} R_V(b) + \mathbb{I}\{m=S\} R_S(b)$ belongs to $\mathcal{H}_k(\mathcal{A})$ with bounded joint RKHS norm
+\begin{equation*}
+    \|f\|_{\mathcal{H}_k} = \sqrt{\|R_V\|_{\mathcal{H}_{k_0}}^2 + \|R_S\|_{\mathcal{H}_{k_0}}^2} \le \sqrt{B_{k,V}^2 + B_{k,S}^2} \le \sqrt{2}\max\{B_{k,V}, B_{k,S}\} =: B_k < \infty.
+\end{equation*}
+
+\noindent\textbf{3. Lipschitz Regularity and Action Discretization Net:} 
+For the Matérn-$5/2$ kernel, $k_0$ is twice continuously differentiable on the compact set $\mathcal{R}$, so $L := \sup_{b \in \mathcal{R}} \max_{j \in [d]} \left(\left. \frac{\partial^2 k_0(p,q)}{\partial p_j \partial q_j}\right|_{p=q=b}\right)^{1/2} < \infty$. By standard RKHS properties \citep[Eq.~(7)]{chowdhury2017kernelized}, any $f \in \mathcal{H}_k$ is Lipschitz with constant $L_f \le B_k L$. Evaluating candidate actions over the round-$t$ decision set $\mathcal{A}_t = \{V, S\} \times \mathcal{R}_t$, where $\mathcal{R}_t$ is an $\epsilon_t$-net of $\mathcal{R}$ with mesh size $\epsilon_t \le \frac{1}{B_k L t^2}$, guarantees that $|f(a) - f([a]_t)| \le B_k L \epsilon_t \le 1/t^2$ for all $a \in \mathcal{A}$, satisfying the exact decision-set premise of Theorem~\ref{thm:kernel_ts_master}. The cumulative discretization error across all $T$ rounds is bounded by $\sum_{t=1}^T 1/t^2 \le \pi^2/6 = \mathcal{O}(1)$.
+
+\noindent\textbf{4. Regret Derivation via Information Gain:} 
+Applying Theorem~\ref{thm:kernel_ts_master} with sub-Gaussian noise parameter $R$, RKHS norm bound $B_k$, and round-$t$ decision net $\mathcal{A}_t$ guarantees that, with probability at least $1 - \delta$, the cumulative regret satisfies
+\begin{equation*}
+    \operatorname{Reg}_T = \cO\left( d^{1/2} \gamma_T \sqrt{T \log(dT/\delta)} \right).
+\end{equation*}
+For the direct-sum Matérn-$5/2$ kernel across the two regimes, the maximum information gain satisfies $\gamma_T \le 2\gamma_{T, \mathcal{R}} = \mathcal{O}\left(T^{\frac{d}{5+d}} (\log T)^{\frac{5}{5+d}}\right)$ \citep[Table 1]{vakili2021information}. Substituting this rate yields
+\begin{equation*}
+    \operatorname{Reg}_T = \cO\left( d^{1/2} T^{\frac{5+3d}{10+2d}} (\log T)^{\frac{5}{5+d}} \sqrt{\log(dT/\delta)} \right) = \widetilde{\mathcal{O}}\left( T^{\frac{5+3d}{10+2d}} \right).
+\end{equation*}
+For any dimension $d \in \{1, 2, 3, 4\}$, the exponent $\frac{5+3d}{10+2d} < 1$, guaranteeing sublinear cumulative regret $\operatorname{Reg}_T = o(T)$.
+\end{proof}
+
+\iffalse
+% Previous proof version preserved for reference:
+\begin{proof}(Proof of Theorem \ref{thm:kernel_online_regret})
+The proof proceeds by verifying the conditions required to apply the continuous Gaussian Process bandit regret bound of \citet{chowdhury2017kernelized} to our strategic setting.
+
+We begin by establishing the sub-Gaussianity of the feedback noise. Because the domain of features, outcomes, and decision vectors is bounded ($\|X\|_2 \le X_0, |Y| \le Y_0, \|b\|_2 \le 1$), the realized loss $Z_t = \ell(m_t, b_t, X_t, Y_t, U_t)$ is uniformly bounded in a finite interval $[0, M_0]$. For the joint action $a_t = (m_t, b_t)$, both $Z_t$ and its conditional expectation $\mathbb{E}[Z_t \mid a_t]$ are bounded in $[0, M_0]$. By Hoeffding's Lemma, the zero-mean observation noise $\eta_t = Z_t - \mathbb{E}[Z_t \mid a_t]$ is bounded in $[-M_0, M_0]$ and thus conditionally $R$-sub-Gaussian with $R = M_0/2$.
+
+Next, we establish RKHS membership. By the definition of $\mathcal{P}_{\text{Sob}}$ (Definition~\ref{def:sobolev_risk}), the expected loss $L(m, b)$, which evaluates to $\RV(b)$ or $\RS(b)$ depending on the regime $m$, belongs to the Sobolev space $H^{5/2+d/2}(\mathcal{R})$. It is a standard result that the Reproducing Kernel Hilbert Space (RKHS) of the Matérn-$5/2$ kernel is norm-equivalent to the Sobolev space $H^{5/2+d/2}(\mathcal{R})$. Therefore, the joint objective $f(m, b)$ successfully lies within the product Matérn-$5/2$ RKHS $\mathcal{H}_k$ over $\mathcal{A}$ with a bounded RKHS norm $\|f\|_{\mathcal{H}_k} \le B_k := \max\{B_{k,V}, B_{k,S}\} < \infty$.
+
+Finally, we combine these properties to derive the regret bound. With $R$-sub-Gaussian noise and RKHS membership $f \in \mathcal{H}_k$ with $\|f\|_{\mathcal{H}_k} \le B_k$, applying Theorem 4 of \citet{chowdhury2017kernelized} (stated as Theorem~\ref{thm:kernel_ts_master}) guarantees that GP-TS achieves cumulative regret:
+\begin{equation*}
+    \operatorname{Reg}_T = \cO\left( d^{1/2} \gamma_T \sqrt{T \log(dT/\delta)} \right).
+\end{equation*}
+For the Matérn-$5/2$ kernel (smoothness parameter $\nu = 5/2$) on a $d$-dimensional compact space, the maximum information gain is bounded by $\gamma_T = \mathcal{O}\left(T^{\frac{d}{5+d}} (\log T)^{\frac{5}{5+d}}\right)$ \citep[Table 1]{vakili2021information}. Substituting this into the regret expression $\operatorname{Reg}_T = \cO\left( d^{1/2} \gamma_T \sqrt{T \log(dT/\delta)} \right)$ yields the final explicit bound:
+\begin{equation*}
+    \operatorname{Reg}_T = \cO\left( d^{1/2} T^{\frac{5+3d}{10+2d}} (\log T)^{\frac{5}{5+d}} \sqrt{\log(dT/\delta)} \right) = \widetilde{\mathcal{O}}\left( T^{\frac{5+3d}{10+2d}} \right).
+\end{equation*}
+\end{proof}
+\fi
+
+% Applied Fix: Replaced product-class Rademacher contraction bound with direct vector contraction.

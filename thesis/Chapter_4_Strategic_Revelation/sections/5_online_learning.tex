@@ -1,0 +1,93 @@
+\section{Online Learning Problem}
+\label{sec:online_learning}
+
+In the online learning setting, the receiver does not know the joint distribution of $(U,X,Y)$, while the channel noise parameter $q \in [0,1]$ is assumed known. Instead of observing a static offline training dataset, the receiver sequentially interacts with the unknown environment over rounds $t = 1, 2, \ldots, T$. At each round $t$, a fresh sender sample $(X_t, Y_t, U_t)$ is first drawn from the underlying environment distribution $P_{(U,X,Y)}$. The receiver then selects a disclosure regime $m_t \in \mathcal{M} := \{V, S\}$ and a regression parameter $b_t \in \mathcal{R} := \{b \in \mathbb{R}^d : \|b\| \le 1\}$ (the compact strategy space defined in Section~\ref{sec:offline_learning}), forming the joint action $a_t = (m_t, b_t) \in \mathcal{A} := \mathcal{M} \times \mathcal{R}$. At the end of round $t$, the receiver observes scalar bandit loss feedback $Z_t = \ell(m_t, b_t, X_t, Y_t, U_t)$, which is the least-squares loss for the realized $(U_t, X_t, Y_t)$ under model $b_t$ and disclosure regime $m_t$. The receiver then updates both its chosen regime and parameter vector to minimize cumulative loss, aiming to match the performance of the optimal fixed regime and regression model in hindsight.
+
+We pose this as a continuous bandit feedback problem and approach it through Gaussian Process Thompson Sampling (GP-TS) algorithm as proposed in Algorithm 2 in \citet{chowdhury2017kernelized}. The receiver aims to optimize the unknown expected risk function $f(a)$ over the joint action space $\mathcal{A} = \mathcal{M} \times \mathcal{R}$, defined as
+\begin{equation}
+\label{eq:expected_risk_definition}
+f(a) := \mathbb{E}_{(X,Y,U)}[\ell(m,b,X,Y,U)] = \begin{cases} \RV(b) & \text{if } m = \text{Vanilla}, \\ \RS(b) & \text{if } m = \text{Strategic}. \end{cases}
+\end{equation}
+To address this, the receiver places a Gaussian Process prior over candidate loss functions, initialized with prior mean $\mu_0(a) = 0$ and prior covariance kernel $k_0(a, a') = k(a, a')$. For joint actions $a = (m, b)$ and $a' = (m', b')$, the kernel $k_0(a, a') = k(a, a')$ takes the Matérn-$5/2$ functional form:
+\begin{equation}
+\label{eq:matern_kernel_def}
+k(a, a') := \mathbb{I}\{m = m'\}\left(1 + \frac{\sqrt{5}\|b - b'\|}{l} + \frac{5\|b - b'\|^2}{3 l^2}\right) \exp\left( -\frac{\sqrt{5}\|b - b'\|}{l} \right),
+\end{equation}
+where $l > 0$ is the kernel lengthscale parameter. For the direct-sum kernel $k((m,b),(m',b')) = \mathbb{I}\{m=m'\}k_0(b,b')$, the joint RKHS norm satisfies $B_k \le \sqrt{2}\max\{B_{k,V}, B_{k,S}\}$. At each round $t$, the receiver maintains the updated posterior distribution $\operatorname{GP}(\mu_{t-1}, v_t^2 k_{t-1})$, where $v_t$ is an inflation factor given by $v_t = B_k + R\sqrt{2(\gamma_{t-1}+1+\log(2/\delta))}$ \citep{chowdhury2017kernelized}. The receiver draws a virtual objective function $\widetilde{f}_t \sim \operatorname{GP}(\mu_{t-1}, v_t^2 k_{t-1})$ and selects action $a_t = (m_t, b_t) \in \arg\min_{a \in \mathcal{A}_t} \widetilde{f}_t(a)$ over the decision set $\mathcal{A}_t = \{V, S\} \times \mathcal{R}_t$, where $\mathcal{R}_t$ is an $\epsilon_t$-discretization net of $\mathcal{R}$ of mesh size $\epsilon_t = \mathcal{O}(1/t^2)$ following \citet{chowdhury2017kernelized}.
+
+Upon observing the scalar loss feedback $Z_t$, the receiver updates the GP posterior mean $\mu_t(a)$ and covariance kernel $k_t(a, a')$ according to the standard Gaussian process regression update rules \citep{chowdhury2017kernelized}:
+\begin{align}
+    \mu_t(a) &= \mathbf{k}_t(a)^\top (K_t + \lambda I_t)^{-1} \mathbf{Z}_t, \label{eq:gp_mean_update} \\
+    k_t(a, a') &= k(a, a') - \mathbf{k}_t(a)^\top (K_t + \lambda I_t)^{-1} \mathbf{k}_t(a'), \label{eq:gp_kernel_update}
+\end{align}
+where $\mathbf{Z}_t = [Z_1, \ldots, Z_t]^\top \in \mathbb{R}^t$ is the vector of observed losses, $\mathbf{k}_t(a) = [k(a_1, a), \ldots, k(a_t, a)]^\top \in \mathbb{R}^t$ is the kernel cross-covariance vector between action $a$ and past actions $a_1, \ldots, a_t$, and $K_t \in \mathbb{R}^{t \times t}$ is the kernel Gram matrix with entries $[K_t]_{i,j} = k(a_i, a_j)$ for $1 \le i, j \le t$, with $\lambda > 0$ serving as the regularization parameter. This procedure is detailed in Algorithm~\ref{alg:kernel_ts}.
+
+\begin{algorithm}[htbp]\index{Gaussian Process Thompson Sampling (GP-TS)|textbf}\index{Online learning problem|textbf}
+    \caption{Gaussian Process Thompson Sampling (GP-TS)}
+    \label{alg:kernel_ts}
+    \small
+    \begin{algorithmic}[1]
+        \State \textbf{Input:} Matérn-$5/2$ covariance kernel $k_0(a,a') = k(a,a') = \mathbb{I}\{m = m'\} \left(1 + \frac{\sqrt{5}\|b - b'\|}{l} + \frac{5\|b - b'\|^2}{3 l^2}\right) \exp\left( -\frac{\sqrt{5}\|b - b'\|}{l} \right)$, regularization $\lambda > 0$, confidence $\delta \in (0,1)$.
+        \State \textbf{Initialize:} Posterior mean $\mu_0(a) = 0$ and covariance $k_0(a,a') = k(a,a')$ for all $a \in \mathcal{A}$.
+        \For{$t = 1, 2, \ldots, T$}
+            \State Set inflation factor $v_t = B_k + R\sqrt{2(\gamma_{t-1}+1+\log(2/\delta))}$.
+            \State Sample virtual objective function $\widetilde{f}_t \sim \operatorname{GP}(\mu_{t-1}, v_t^2 k_{t-1})$.
+            \State Select action $a_t = (m_t, b_t) \in \arg\min_{a \in \mathcal{A}_t} \widetilde{f}_t(a)$ over decision set $\mathcal{A}_t = \{V, S\} \times \mathcal{R}_t$.
+            \State Observe loss feedback $Z_t = \ell(m_t, b_t, X_t, Y_t, U_t)$.
+            \State Update posterior mean $\mu_t(a)$ and covariance $k_t(a,a')$ via \eqref{eq:gp_mean_update} and \eqref{eq:gp_kernel_update}.
+        \EndFor
+    \end{algorithmic}
+\end{algorithm}
+
+We measure the performance of Algorithm~\ref{alg:kernel_ts} using cumulative regret relative to the minimal expected loss achievable in hindsight, namely $\min\{\RS^\star, \RV^\star\}$:
+\begin{equation}
+\label{eq:online_regret_definition}\index{Cumulative regret|textbf}
+    \operatorname{Reg}_T := \sum_{t=1}^T \bigl(f(a_t) - f(a^\star)\bigr), \qquad f(a^\star) = \min\{\RS^\star, \RV^\star\},
+\end{equation}
+where $a^\star \in \arg\min_{a \in \mathcal{A}} f(a)$.
+
+To establish a regret guarantee for GP-TS in our setting, we define the following class of regular environments.
+
+\begin{definition}[Sobolev Environments]\label{def:sobolev_risk}\index{Sobolev environments|textbf}\index{Sobolev space|textbf}
+Let $\mathcal{P}_{\text{Sob}}$ denote the set of environment joint distributions $(U,X,Y)$ such that the expected risk functions $L(m,b)$ belong to the Sobolev space $H^{5/2 + d/2}(\Rspace)$.
+\end{definition}
+
+We next show that $\mathcal{P}_{\text{Sob}}$ contains all environments with a smooth joint density $p_{U,X,Y}(u,x,y)$ on compact support, and is therefore non-empty.
+
+\begin{lemma}[Smooth Environments]
+\label{lem:sobolev_membership}
+Suppose the environment variables $(U, X, Y)$ have a smooth, bounded joint density $p_{U,X,Y}(u,x,y)$ with compact support, and the receiver's action space $\mathcal{R} \subset \{b \in \mathbb{R}^d : \|b\|_2 \ge b_{\min}\}$ is a compact domain bounded away from the origin for some $b_{\min} > 0$. Then $L(m, b) \in H^{5/2 + d/2}(\mathcal{R})$, and the environment is contained in $\mathcal{P}_{\text{Sob}}$.
+\end{lemma}
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch4} (Proof~\ref{proof:sobolev_membership}).
+\end{proof}
+
+We now state the theorem which gives the regret of Algorithm~\ref{alg:kernel_ts}.
+
+\begin{theorem}[Regret Bound for Strategic GP-TS]\label{thm:kernel_online_regret}\index{Mat\'ern kernel|textbf}\index{Cumulative regret bound|textbf}
+For any environment distribution in $\mathcal{P}_{\text{Sob}}$, let the receiver run GP-TS (Algorithm~\ref{alg:kernel_ts}) with a Matérn-$\nu$ kernel (for smoothness parameter $\nu > 0$) over the joint action space $\mathcal{A} = \mathcal{M} \times \mathcal{R} \subset \{V, S\} \times \mathbb{R}^d$. Then, with probability at least $1 - \delta$, the cumulative regret satisfies
+\begin{equation}
+\label{eq:kernel_online_regret_bound}
+    \operatorname{Reg}_T = \widetilde{\mathcal{O}}\left( T^{\frac{2\nu+3d}{4\nu+2d}} \right).
+\end{equation}
+Specifically, substituting the practical Matérn-$5/2$ kernel ($\nu=5/2$), the bound yields $\widetilde{\mathcal{O}}\bigl( T^{\frac{5+3d}{10+2d}} \bigr)$, which is sublinear ($\operatorname{Reg}_T/T \to 0$) for dimensions $d \in \{1, 2, 3, 4\}$.
+\end{theorem}
+\begin{proof}[Proof Outline]
+The proof of Theorem~\ref{thm:kernel_online_regret} applies the kernelized Thompson Sampling regret bound of \citet[Theorem 4]{chowdhury2017kernelized}, bounding the maximum information gain by $\gamma_T = \mathcal{O}\left(T^{\frac{d}{5+d}} (\log T)^{\frac{5}{5+d}}\right)$ \citep[Table 1, Theorem 1]{vakili2021information}. The complete proof is given in Section~\ref{sec:proofs_ch4} (Proof~\ref{proof:kernel_online_regret}).
+\end{proof}
+
+\paragraph{Simulation Results for Online Learning.}
+
+To evaluate Algorithm~\ref{alg:kernel_ts} and empirically validate the cumulative regret bounds from Theorem~\ref{thm:kernel_online_regret}, we simulate the online learning problem across feature dimensions $d \in \{1, 2\}$.\coderef{subsec:code_online_learning} For each evaluation environment, the data generation process draws joint feature vectors, outcomes, and sender preferences $(X, Y, U) \in \mathbb{R}^{d+2}$ from a 2-component Gaussian Mixture Model (GMM) with mixture weights $\pi_1 = 0.6, \pi_2 = 0.4$. Component 1 represents a sub-population with mean vector $\mu_1 = (+0.8 \mathbf{1}/\sqrt{d}, 1.0, 1.0)^\top$, while Component 2 represents a sub-population with mean vector $\mu_2 = (-0.8 \mathbf{1}/\sqrt{d}, -0.8, -1.0)^\top$. Both components share a symmetric positive-definite covariance matrix $\Sigma \in \mathbb{R}^{(d+2) \times (d+2)}$ specified by feature covariance $\Sigma_X = 0.64 I_d$, outcome variance $\mathrm{Var}(Y) = 0.6$, preference variance $\mathrm{Var}(U) = 0.5$, and cross-covariances $\mathrm{Cov}(X,Y) = \frac{0.5}{\sqrt{d}}\mathbf{1}$, $\mathrm{Cov}(X,U) = \frac{0.3}{\sqrt{d}}\mathbf{1}$, and $\mathrm{Cov}(Y,U) = 0.3$. The channel noise parameter is fixed at $q = 0.5$.
+
+In each independent trial, the receiver sequentially interacts with the environment over $T = 300$ rounds using Algorithm~\ref{alg:kernel_ts} configured with a Matérn kernel (approximated practically using a Squared-Exponential kernel with lengthscale $l = 0.7$) and regularization $\lambda = 0.1$. At each round $t$, a sample function $\widetilde{f}_t$ is drawn from the updated GP posterior to select action $a_t = (m_t, b_t) \in \mathcal{A}$. We average the cumulative regret $\operatorname{Reg}_T$ across $M = 10$ independent Monte Carlo simulation runs.
+
+The empirical findings are presented in Figure~\ref{fig:online_regret_validation}. As predicted by Theorem~\ref{thm:kernel_online_regret}, the empirical cumulative regret exhibits a sublinear growth rate matching the theoretical $\widetilde{\mathcal{O}}\left(T^{\frac{5+3d}{10+2d}}\right)$ scaling (which instantiates the general Matérn regret bound $\widetilde{\mathcal{O}}\bigl(T^{\frac{2\nu+3d}{4\nu+2d}}\bigr)$ for smoothness parameter $\nu = 5/2$), with shaded bands showing $\pm 1$ standard error across $M=10$ independent Monte Carlo trials. Furthermore, comparing $d=1$ and $d=2$ confirms that higher feature dimensionality leads to a larger regret growth rate due to the dimensional dependence, corroborating our theoretical analysis for environments with smooth joint densities $p_{U,X,Y}$ on compact support.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.72\textwidth]{online_learning_regret.pdf}
+    \caption{Empirical cumulative regret $\operatorname{Reg}_T$ versus time horizon $T$ for $d=1$ and $d=2$ (solid lines depict mean cumulative regret, shaded bands indicate $\pm 1$ standard error across $M=10$ trials).}
+    \label{fig:online_regret_validation}
+\end{figure}
+
+% Applied Fix: Restricted smooth density lemma to domains strictly separated from b=0 and specified nu=5/2.

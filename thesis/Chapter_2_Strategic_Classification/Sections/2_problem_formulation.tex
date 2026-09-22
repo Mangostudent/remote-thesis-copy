@@ -1,0 +1,114 @@
+In this section, we formulate the strategic classification problem. Recall that in strategic classification, the sender can alter the feature vector at a cost during the classifier's testing phase to obtain a preferred label.
+
+We formalize the strategic classification problem within this framework. Let $\cg{X}$ be the set of feature vectors; for simplicity we take $\cg{X}:= [0,1]$. Consider an abstract probability space and let $X$ be a $\cg{X}$-valued random variable defined on that space. Let $\cg{L}(X)$ denote the probability law of $X$ on  $\cg{X}$. Let $\fk{D}$ be the collection of laws of $X$ such that the corresponding cumulative distribution function, denoted as $\psi(\cdots)$, is differentiable and has a differentiable inverse except at finitely many points.
+We use $D$ to represent an element of $\fk{D}$. Let $\cg{Y} :=\{-,+\}$ be the set of labels. Let $h: \cg{X} \rightarrow \cg{Y}$ be a \textit{true function} that maps each feature $x \in \cg{X}$ to its corresponding \textit{true label} $y \in \cg{Y}$. We assume the true function to be given by
+\begin{equation}\label{eqn:True function}
+	h(x) := \begin{cases}
+		\minus, & x \in [0,\h] \\
+		\plus, & x \in (\h,1]
+	\end{cases},
+\end{equation}
+where $0 \leq \h \leq 1$. We refer to $\h$ as the class boundary. We call a label a \textit{majority class} label if the corresponding feature vectors whose true label is the said label has a probability (under probability law $D \in \fk{D}$) greater than or equal to half. The other label is called the \textit{minority label}.
+
+We model the strategic classification problem  as a game between two players, a sender and a receiver (classifier), who engage in a sender-receiver game with the receiver acting as the leader. The receiver is interested in correctly classifying  the feature vectors, whereas the sender is interested in obtaining a preferred label for each feature vector by potentially misreporting the feature vector. The gameplay proceeds as follows. The sender observes a realized feature vector $x\in \cg{X}$ drawn according to a probability law $D \in \fk{D}$ and modifies it to $s(x) \in \cg{X}$ according to a rule $s$. It then communicates $s(x)$ to the receiver, who then classifies it with a label $r(s(x))$ according to a rule $r$.
+
+The sender's strategy set for modifying feature vectors is given by
+\begin{equation}\label{eqn:Sender's strategy space}
+	\mathsf{S} := \{s \;|\; s: \cg{X} \rightarrow \cg{X} \}
+\end{equation}
+and the receiver's strategy set for classification is given by
+\begin{equation}\label{eqn:Receiver's strategy space}
+	\msf{R} := \{r\;|\; r:\cg{X} \rightarrow \cg{Y} \cup \Delta\}.
+\end{equation}
+Here, label $\Delta$ is an additional label, which we call the penalty label, whose interpretation will be provided later in this section. We refer to the set $\{x: r(x) = \Delta\}$ of feature vectors with label $\Delta$ as the $\Delta$-region.
+
+We analyze the above game as a screening game;
+the receiver first commits a strategy $r \in \msf{R}$, and then the sender, who knows the committed strategy, plays a strategy $s \in \msf{S}$, and finally the receiver plays his committed strategy $r$. Notice the asymmetry in the role of the sender and the receiver. The receiver can perform classification but cannot access the private information of the sender (the feature vector $x$). In contrast, the sender has access to private information but can not do classification and has to depend on the receiver to get his (preferred) label.
+
+The sender's preference for the label for each feature vector is represented by a utility function $U: (\cg{Y} \cup \Delta) \times \cg{X} \rightarrow \R \cup \{-\infty\}$. We assume it to be  given by
+
+\begin{equation}\label{eqn:Utility}
+	U(y,x) := \begin{cases}
+		\up & x \in [0,\h], y = \plus \\
+		\um & x \in (\h,1], y = \minus \\
+		0 & y = h(x)\\
+		-\infty & y = \Delta
+	\end{cases},
+\end{equation}\index{Penalty label|textbf}
+where $\um,\up \in \R.$
+Note that our choice of the utility function is more general than the one considered in \cite{hardt2016strategic}, as it allows the sender to have a non-uniform preference for labels at each feature vector, making the receiver's task more difficult. The cost incurred by the sender when modifying $x$ to $x'$ is given by $C(x,x') = |\phi(x') - \phi(x)|$, where the function $\phi: \cg{X} \rightarrow [0,1]$, called cost kernel\index{Cost kernel|textbf}, is a strictly monotonically increasing, invertible,   continuous function such that $\phi(0) = 0$ and $\phi(1)  = 1$.
+
+In the strategic classification problem, for a strategy $(r,s)$ and a feature vector $x \in \cg{X}$, the sender's payoff at $x$ is given by
+\begin{equation}
+	\senpayoff(x;r,s):= U(r(s(x)),x) - C(s(x),x).
+\end{equation}
+For a probability law $D \in \fk{D}$ on $\cg{X}$, the sender overall payoff, which is wants to maximize, is given by
+\begin{equation}\label{eqn:Sender's payoff}
+	\mathcal{U}(r,s) :=\E_{x \sim D}[\senpayoff(x;r,s)].
+\end{equation}
+For a strategy $(r,s)$ and a function $f: \cg{X} \rightarrow \cg{Y}$, the error set $E(r,s;f)$ be defined as
+\begin{equation}\label{eqn:error set}
+    E(r,s;f  ) := \{x \in \cg{X}: r(s(x)) \neq f(x).\}
+\end{equation}
+ For a probability law $D \in \fk{D}$ with a differentiable distribution function $\psi(x)$,
+the receiver's error, which it wants to minimize, is given by
+\begin{equation}\label{eqn:Average loss}
+	\cg{E}(r,s;h,D) = D(E(r,s;h)) = \int_0^1 \mathbbm{1}_{E(r,s;h)}{\psi'}(x)dx.
+\end{equation}
+Here $\mathbbm{1}_A$ denotes an indicator function on the set $A$ and
+$\psi'(x) = \frac{d\psi(x)}{dx}$
+
+
+\begin{rem}
+	We assume the set $\{x \in \cg{X}| r(s(x)) \neq h(x)\}$ is measurable w.r.t. $D$.
+\end{rem}
+
+\subsection{Interpretation of the penalty label}
+We now provide an interpretation of the penalty label. If the receiver classifies a feature vector $x$ as  $\Delta$, i.e., $r(x) = \Delta$, then the receiver ignores the feature vector $x$. We assume that ignoring $x$ results in an error for the receiver. From \eqref{eqn:Utility}, $U(\Delta) = -\infty$, which implies that the penalty label is the least preferred label for the sender.
+
+The receiver can exploit this fact to improve its classification accuracy. This property, where the receiver ignores certain feature vectors, is one of the novel contributions of this chapter. It is not considered in \cite{hardt2016strategic}, and we later show that it helps the receiver reduce overall misclassification.
+
+\subsection{Solution concept}
+We now describe the solution concept of our problem. For a given receiver strategy $r$, the best response strategies of the sender are defined as follows.
+
+\begin{defn}\label{defn:Best response}\index{Best response|textbf} Let $r$ be a receiver strategy. Let $B(r)$ be the set of sender strategies $s$ which satisfy
+	\begin{equation*}
+		s(x) \in \arg\max_{x' \in \cg{X}} U(r(x'),x) - C(x',x) \; \forall x \in \cg{X}.
+	\end{equation*}
+	The set $B(r)$ is called the best response set.
+\end{defn}
+
+There can be multiple best responses. We assume that the receiver anticipates that the sender will play a worst-case best response strategy, which is defined as follows.
+\begin{defn}[Worst case best response]\label{def:Worst case best response}\index{Worst-case best response|textbf}\index{Best response!worst-case|textbf}
+	A sender strategy $s_r$ is called a worst-case best response to a receiver strategy $r$ if
+	\begin{equation*}
+		\begin{aligned}
+			&s_r \in  \arg \min_{s' \in B(r)}D(\{x:r(s'(x)) = h(x)\}) &\text{and}\\ &\{x:r(s'(x)) = h(x)\} \not\subset \{x:r(s_r(x)) = h(x)\} &\text{for all } s' \in B(r).
+\end{aligned}
+\end{equation*}
+
+\end{defn}
+\begin{rem}\label{rem:disclaimer}
+	We always assume the receiver's strategy set $\mathsf{R}$ is such that $B(r)$ is non-empty and $s_r$ is well defined.
+\end{rem}
+
+\begin{notn}
+	We will generally drop various arguments in $\cg{E}(\cdot,\cdot,\cdot,\cdot)$ when they are apparent from the context. Specifically, when $h$ and $\psi$ are clear from the context, will sometimes be denoted as $\cg{E}(r):= \cg{E}(r,s_r;h,\psi)$.
+\end{notn}
+The sender-receiver pair of strategies $(r,s_r), r \in \msf{R}$ which minimises the receiver's error is called a Stackelberg equilibrium strategy or strategic classifier and is defined as follows.
+
+\begin{defn}[$D$-Stackelberg equilibrium]\label{def:Stackelberg equilibrium}\index{Stackelberg equilibrium|textbf}\index{Stackelberg equilibrium!$D$-Stackelberg equilibrium|textbf}\index{Strategic classifier|textbf}\index{Stackelberg error|textbf}
+	Let $D$ be a probability law on $\cg{X}$ and $h(x)$ be a true function. A receiver strategy $r^*_{h,D} \in \msf{R}$ is called a $D$-Stackelberg equilibrium strategy if
+	\begin{equation*}
+		\rs_{h,D} := \arg\min_{r \in \msf{R}}\cg{E}(r,s_r;h,D)
+	\end{equation*}
+	and $\cg{E}(r,s_r;h,D)$ is called the Stackelberg error.
+\end{defn}
+\begin{notn}
+	Sometimes, we will drop the subscript from $r_{h;D}$ if it is clear from the context.
+\end{notn}
+\begin{notn}
+	For a Stackelberg equilibrium $(r,s_r)$, since the sender strategy is directly derived from the receiver strategy $r$, we sometimes refer to $r$ alone as the Stackelberg equilibrium.
+\end{notn}
+
+We now consider the two subproblems of strategic classification: the \textit{decision problem} and the \textit{learning problem}. The setup discussed so far in this section remains common to both of them. In the decision problem, both the sender and the receiver know the true function $h$, and the receiver has to calculate the Stackelberg equilibrium from it. In the learning problem, the receiver does not know the true function $h$. However, the receiver has access to a hypothesis class $\mathcal{F}$ and a sample $S = \{(x_i, h(x_i))\}_{i=1}^m$ from which it has to estimate the Stackelberg equilibrium. Here, $x_i$'s are the samples which are drawn in an iid manner from a probability law  $D$ on $\cg{X}$ and $h(x_i)$'s are the corresponding true labels.

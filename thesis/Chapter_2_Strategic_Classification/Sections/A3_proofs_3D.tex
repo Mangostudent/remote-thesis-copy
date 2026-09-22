@@ -1,0 +1,245 @@
+We begin by presenting the proof of Proposition~\ref{prop:comparing sender strategy types}.
+
+\begin{proof}[Proof of Proposition \ref{prop:comparing sender strategy types}]\label{proof:comparing_sender_types}
+    By definition, both $s$ and $s'$ are best responses to $r$. Suppose
+    \[
+    \cg{E}(r, s'; h) > \cg{E}(r, s; h).
+    \]
+    This contradicts the assumption that $s$ is the worst-case best response, as it implies there exists another strategy $s'$ that results in a strictly higher error for the receiver.
+    Therefore, it follows that
+    \[
+    \cg{E}(r, s; h) \geq \cg{E}(r, s'; h),
+    \]
+    as claimed.
+\end{proof}
+
+Next, we provide the proof of Corollary~\ref{cor:Stackelberg worst case best response error}.
+
+\begin{proof}[Proof of Corollary \ref{cor:Stackelberg worst case best response error}]\label{proof:Stackelberg worst case best response error}
+    Let $s'$ be the worst-case lazy best response to $r^\star$. Let $(\bar{r}^\star, s_{\bar{r}^\star})$ be the Stackelberg equilibrium under the worst-case lazy best response.
+    From Proposition \ref{prop:comparing sender strategy types}, we know that
+    \[
+    \cg{E}(r^\star, s_{r^\star}) \geq \cg{E}(r^\star, s').
+    \]
+    Additionally, by the definition of $\bar{r}^\star$, we have
+    \[
+    \cg{E}(r^\star, s') \geq \cg{E}(\bar{r}^\star, s_{\bar{r}^\star}).
+    \]
+    From Theorem \ref{thm:Stochastic Stackelberg equilibrium}, we know that
+    \[
+    \cg{E}(\bar{r}^\star, s_{\bar{r}^\star}) = \frac{\uu}{2}.
+    \]
+    Combining these results, we conclude that
+    \[
+    \cg{E}(r^\star, s_{r^\star}) \geq \frac{\uu}{2}.
+    \]
+    Furthermore, from Example \ref{ex:eps stochastic strategy} (which appears in Section \ref{subsec:Examples and comparision}), we know that for every $\eps > 0$,
+    \[
+    \cg{E}(r_\eps,s_{r_\eps}) = \frac{\uu + \eps}{2}.
+    \]
+    Thus, if a Stackelberg equilibrium $r^\star$ exists, then it follows that
+    \[
+    \cg{E}(r^\star,s_{r^\star}) = \frac{\uu}{2}.
+    \]
+\end{proof}
+
+From the definition of $\msf{R}$ in \eqref{defn:stochastic_receiver}, every receiver strategy $r \in \msf{R}$ has the structure $r(x) \equiv (p(x),q(x),1-p(x)-q(x))$. The first lemma shows that without loss of generality, we can assume the structure of $r$ at each $x$ to be either $r(x) \equiv (1-q(x),q(x),0)$ or $r(x) \equiv (0,0,1)$.
+
+
+\begin{lem}\label{lem:delta null wlog}
+    Let $r \equiv (p,q,1-p-q) \in \msf{R}$ be a receiver strategy. Let $\Theta := \{x': x' \in \cg{X}, p(x') + q(x') <1\}$. Now consider another receiver strategy $\rt \equiv (\pt,\qt,1-\pt - \qt)$ defined as
+    \[
+    \rt(x) = \begin{cases}
+        r(x) &\text{if } x \in \cg{X}\setminus \Theta,\\
+        (0,0,1) &\text{if } x \in \Theta.
+    \end{cases}
+    \]
+    Then $\cg{E}(r) = \cg{E}(\rt)$.
+\end{lem}
+
+\begin{proof}\label{proof:delta null wlog}
+Let $x \in \cg{X}$. We first show that $s_r(x),s_{\rt}(x) \not\in \Theta$. From the definition of $p,q$ and $\Theta$, we have
+    \[1-p(x')-q(x') =\prob_r(\Delta|X' = x')  > 0, \text{ for all } x' \in \Theta.\]
+    \noindent If $s_r(x) \in \Theta$, then $$\prob_r(y = \Delta|X'_{s_r}=s_r(x)) > 0$$ and the sender's payoff is $\mathbb{U}(x;r,s_r) = -\infty$.
+    Similarly, if $s_{\rt}(x) \in \Theta$, then \[\prob_{\rt}(y = \Delta|X'_{s_{\rt}} = s_{\rt}(x)) = 1 \] and the sender's payoff is $\mathbb{U}(x;\rt,s_{\rt}) = -\infty$.
+    But from \eqref{eqn:receiver condition 1}, the feature vector set $\cg{X}\setminus \Theta \neq \emptyset$. Therefore, there exists $t \in \cg{X}\setminus \Theta$ such that
+        $$\prob_r(Y = \Delta|X'=t) = \prob_{\rt}(Y = \Delta|X'=t) = 0.$$
+Hence, for the sender strategy $s(x) = t$ for all $x \in \cg{X}$, we have
+    $$\prob_r(Y=\Delta|X'=t) = \prob_{\rt}(Y=\Delta|X'=t) = 0$$ and
+    the sender's payoff at $x$ for receiver strategies $r$ and $\rt$ will be $\mathbb{U}(x,r,s) > -\infty\text{ and } \mathbb{U}(x,\rt,s) > -\infty$ respectively.
+    But this contradicts that $s_r$ and $s_{\rt}$ are the worst-case lazy best responses, as $\mathbb{U}(x,r,s) > \mathbb{U}(x,r,s_r)$ and $\mathbb{U}(x,\rt,s) > \mathbb{U}(x,\rt,s_{\rt})$. Hence,
+    \begin{equation}\label{lem:eqn:non-Delta best response}
+        s_r(x), s_{\rt}(x) \in \cg{X} \setminus \Theta \text{ for all } x \in \cg{X}.
+    \end{equation}
+    From the construction of $\rt$, we know that $r(x) = \rt(x)$ for $x \in \cg{X} \setminus \Theta$. Therefore, combining it with \eqref{lem:eqn:non-Delta best response}, we get
+    \begin{equation}\label{eqn:lem:non-Delta best response 2}
+        r(s_r(x)) = \rt(s_r(x)) \text{ and } r(s_{\rt}(x)) = \rt(s_{\rt}(x)) \text{ for all } x \in \cg{X}.
+    \end{equation}
+    We next show that $s_r$ and $s_{\rt}$ are best responses to both $r$ and $\rt$. Since $s_r$ and $s_{\rt}$ are worst-case lazy best responses of $r$ and $\rt$, respectively, we have
+    \begin{equation}\label{eqn:lem:non-Delta best response 3}
+        \mathbb{U}(x;r,s_r) \geq \mathbb{U}(x;r,s_{\rt}) \text{ and } \mathbb{U}(x;\rt,s_{\rt}) \geq \mathbb{U}(x;\rt,s_r) \text{ for all } x \in \cg{X}.
+    \end{equation}
+    Substituting \eqref{eqn:lem:non-Delta best response 2} in \eqref{eqn:lem:non-Delta best response 3} and expanding it, we get
+    \begin{equation*}
+        \begin{aligned}
+            \fk{U}(x;r,s_r) - |s_r(x)-x| &\geq \fk{U}(x;r,s_{\rt})   - |s_{\rt}(x) -x| = \fk{U}(x;\rt,s_{\rt})   - |s_{\rt}(x) -x| &\text{ and }\\
+            \fk{U}(x;\rt,s_{\rt}) - |s_{\rt}(x)-x| &\geq \fk{U}(x;\rt,s_r)   - |s_r(x)-x| = \fk{U}(x;r,s_r)   - |s_r(x)-x|.
+        \end{aligned}
+    \end{equation*}
+    which implies
+    \[
+    |s_{\rt}(x) - x| - |s_r(x) -x| \geq \fk{U}(x,\rt,s_{\rt}) - \fk{U}(x,r,s_r) \geq |s_{\rt}(x) - x| - |s_r(x) -x|
+    \]
+    or
+    \begin{equation}\label{eqn:lem:non-Delta best response 4}
+        \fk{U}(x;\rt,s_{\rt}) - \fk{U}(x;r,s_r) = |s_{\rt}(x) - x| - |s_r(x) -x|.
+    \end{equation}
+    Thus, substituting \eqref{eqn:lem:non-Delta best response 4} back in \eqref{eqn:lem:non-Delta best response 3}, we get
+    \begin{equation}\label{eqn:lem:non-Delta best response 5.1}
+        \mathbb{U}(x;r,s_r) = \mathbb{U}(x;r,s_{\rt}) \text{ and } \mathbb{U}(x;\rt,s_{\rt}) = \mathbb{U}(x;\rt,s_r).
+    \end{equation}
+    This shows that $s_{\rt}$ and $s_r$ are best responses to both $r$ and $\rt$.
+    Furthermore, since $s_r$ and $s_{\rt}$ are both worst-case lazy best responses to $r$ and $\rt$, respectively, using the laziness constraint on \eqref{eqn:lem:non-Delta best response 5.1}, we have
+    \begin{equation}\label{eqn:lem:non-delta best response 6}
+        |s_r(x)-x| \leq |s_{\rt}(x) - x| \text{ and } |s_{\rt}(x) - x| \leq |s_r(x) - x| \text{ which implies } |s_r(x)-x|= |s_{\rt}(x) -x|.
+    \end{equation}
+    As an additional consequence, \eqref{eqn:lem:non-Delta best response 4} reduces to
+    \begin{equation}\label{eqn:lem:non-delta best response 7}
+        \fk{U}(r(s_r(x)),x) = \fk{U}(\rt(s_{\rt}(x)),x).
+    \end{equation}
+    Next, we show that $s_r$ and $s_{\rt}$ are worst-case lazy best responses to both $r$ and $\rt$. Since $s_r$ and $s_{\rt}$ are worst-case lazy best responses of $r$ and $\rt$, respectively, we have (using the worst-case constraint)
+    \begin{equation}\label{eqn:lem:non-Delta best response 5}
+        \begin{aligned}
+            &\cg{E}(r,s_r) = \int_\cg{X} T(x;r,s_r) \, dx \geq \int_\cg{X} T(x;r,s_{\rt}) \, dx = \cg{E}(r,s_{\rt})\quad \text{and} \\
+            &\cg{E}(\rt,s_{\rt}) = \int_\cg{X} T(x;\rt,s_{\rt}) \, dx \geq \int_\cg{X} T(x;\rt,s_r) \, dx = \cg{E}(\rt,s_r).
+        \end{aligned}
+    \end{equation}
+    Recall from \eqref{eqn:error function} that $T$ is defined as $T(x;r,s) = \prob_r(Y \neq h(x) \mid X'=s(x))$. Furthermore, if $s(x) \in \cg{X} \setminus \Theta$, then $$\fk{U}(x;r,s) = 2\uu\prob_r(Y \neq h(x) \mid X'=s(x))  = 2\uu T(x;r,s).$$ Hence, using this in \eqref{eqn:lem:non-Delta best response 5}, we get
+    \begin{equation*}
+    \begin{aligned}
+        \int_\cg{X} \fk{U}(r(s_r(x)),x) \, dx &\geq \int_\cg{X} \fk{U}(r(s_{\rt}(x)),x) \, dx, \quad \text{and} \\
+        \int_\cg{X} \fk{U}(\rt(s_{\rt}(x)),x) \, dx &\geq \int_\cg{X} \fk{U}(\rt(s_r(x)),x) \, dx.
+    \end{aligned}
+    \end{equation*}
+    But combining \eqref{eqn:lem:non-Delta best response 2} with \eqref{eqn:lem:non-delta best response 7}, we get
+    \[
+    \fk{U}(\rt(s_r(x)),x) = \fk{U}(r(s_r(x)),x) = \fk{U}(\rt(s_{\rt}(x)),x) = \fk{U}(r(s_{\rt}(x)),x).
+    \]
+    Thus,
+    \begin{equation*}\label{eqn:lem:non-Delta best response 8}
+        \int_\cg{X} T(x;r,s_r) \, dx = \int_\cg{X} T(x;r,s_{\rt}) \, dx \quad \text{and} \quad \int_\cg{X} T(x;\rt,s_{\rt}) \, dx = \int_\cg{X} T(x;\rt,s_r) \, dx.
+    \end{equation*}
+    Hence, $s_{\rt}$ and $s_r$ are also worst-case lazy best responses of $r$ and $\rt$, respectively. Therefore, $\cg{E}(r) = \cg{E}(\rt)$ as claimed.
+\end{proof}
+
+The next lemma calculates the worst-case lazy best response and classification error of a specific receiver strategy $ r $, which will later be shown to be a Stackelberg equilibrium.
+
+\begin{lem}\label{lem:error is half}
+    Let $ r \equiv (1-q,q,0) $, where
+    \begin{equation}\label{eqn:q defn}
+        q(x) = \begin{cases}
+            0 & \text{if } x \in [0,\ib], \\
+            \frac{x-\ib}{2\uu} & \text{if } x \in (\ib,\jb), \\
+            1 & \text{if } x \in [\jb,1]
+        \end{cases}
+    \end{equation}
+    and, $\ib = \h - \uu$ and $\jb = \h + \uu$.
+    Then the worst-case lazy best response of $ r $ is $ s_r(x) = x $, and the error function $ T(x;r,s_r) $ is
+    \[
+    T(x;r,s_r) = \begin{cases}
+        0 & \text{if } x \in [0,\ib] \cup [\jb,1], \\
+        q(x) & \text{if } x \in (\ib,\h], \\
+        1-q(x) & \text{if } x \in (\h,\jb).
+    \end{cases}
+    \]
+    Furthermore, $ \cg{E}(r) = \frac{\uu}{2} $.
+\end{lem}
+
+\begin{proof}\label{proof:error is half}
+    We divide the task of finding $ s_r $ over $ \cg{X} $ into various subintervals of $ \cg{X} $ and show that $s_r(x) = x$ in all of them.  Let $s_r(x) = x'$.
+
+    \noindent \textit{Case (i): } $x \in [0,\ib]$.\\
+ We now calculate $\mathbb{U}(x;r,s_r)$ and show that in the current case, $x=x'$.
+
+\begin{equation*}
+    \mathbb{U}(x;r,s_r) = \begin{cases}
+    -|x-x'| = 0 &\text{if } x'= x,\\
+    -|x-x'| < 0 &\text{if } x'\neq x \text{ and } x' \in [0,\ib],\\
+    2\uu q(x') - x' + x \leq 0 &\text{if } x' \in (\ib,\jb),\\
+    2\uu - x' + x \leq 0&\text{if } x' \in [\jb,1].
+    \end{cases}
+\end{equation*}
+Here we have used \eqref{eqn:q defn} to expand $q(x')$ and to show that  $2\uu q(x') - x' + x \leq 0$, and have used $\jb - \ib = 2\uu$ to show that $2\uu -x' + x \leq 0$.
+Thus for $x' \neq x$, we have $\mathbb{U}(x;r,s_r) \leq 0$ whereas for $x' = x$, $\mathbb{U}(x;r,s_r) = 0$. Furthermore, $x'=x$ is also the laziest option for $s_r$. Hence $s_r(x) = x$.
+
+\noindent \textit{Case (ii): } $x \in (\ib,\h]$.\\
+ We now calculate $\mathbb{U}(x;r,s_r)$ and show that in the current case, $x=x'$.
+ \begin{equation*}
+    \mathbb{U}(x;r,s_r) = \begin{cases}
+    2\uu q(x') - x + x' = x - \ib &\text{if } x'= x,\\
+    -x + x' < 0. &\text{if } x' \in [0,\ib],\\
+    2\uu q(x') - x + x' \leq x- \ib &\text{if } x' \in (\ib,x] \text{ and } x' \neq x,\\
+    2\uu q(x') - x' + x \le x-\ib    &\text{if } x' \in (x,\jb),\\
+    2\uu - x' + x \leq x - \ib &\text{if } x' \in [\jb,1].
+    \end{cases}
+\end{equation*}
+Here we have used \eqref{eqn:q defn} to expand $q(x')$ wherever it appears and have used $2\uu = \jb - \ib$ to show that $2\uu -x' + x \leq x - \ib$. Note that $x - \ib \geq 0$.
+Thus for $x' \neq x$, we have $\mathbb{U}(x;r,s_r) \leq x-\ib$ whereas for $x' = x$, $\mathbb{U}(x;r,s_r) \leq x - \ib$. Furthermore, $x'=x$ is also the laziest option for $s_r$. Hence $s_r(x) = x$.
+
+\noindent \textit{Case (iii): } $x \in (\h, \jb)$.\\
+ We now calculate $\mathbb{U}(x;r,s_r)$ and show that in the current case, $x=x'$.
+ \begin{equation*}
+    \mathbb{U}(x;r,s_r) = \begin{cases}
+    2\uu(1-q(x')) - x' + x = \jb -x &\text{if } x'= x,\\
+    2\uu - x + x' \leq \jb - x &\text{if } x' \in [0,\ib],\\
+    2\uu(1-q(x')) - x + x' \le \jb- x &\text{if } x' \in (\ib,x],\\
+    2\uu(1- q(x')) - x' + x \leq \jb - x    &\text{if } x' \in (x,\jb) \text{ and } x' \neq x,\\
+    -x' + x \leq  -\jb + x &\text{if } x' \in [\jb,1].        \end{cases}
+\end{equation*}
+Here we have used \eqref{eqn:q defn} to expand $q(x')$ wherever it appears and have used $2\uu = \jb - \ib$ to show that $2\uu - x + x' \leq \jb -x. $ Note that $\jb - x \geq 0$. Thus for $x' \neq x$, we have $\mathbb{U}(x;r,s_r) \leq \jb-x$ whereas for $x' = x$, $\mathbb{U}(x;r,s_r) = \jb-x$. Furthermore, $x'=x$ is also the laziest option for $s_r$. Hence $s_r(x) = x$.
+
+\noindent \textit{Case (iv): } $x \in [\jb, 1]$.\\
+We now calculate $\mathbb{U}(x;r,s_r)$ and show that in the current case, $x=x'$.
+
+ \begin{equation*}
+    \mathbb{U}(x;r,s_r) = \begin{cases}
+    -|x'-x| = 0 &\text{if } x'= x,\\
+    2\uu - x + x' \leq \jb - x \leq 0 &\text{if } x' \in [0,\ib],\\
+    2\uu(1-q(x')) - x + x' \le  \jb- x < 0 &\text{if } x' \in (\ib,\jb),\\
+    -|x'-x| <  0 &\text{if } x' \in [\jb,1] \text{and} x' \neq x.       \end{cases}
+\end{equation*}
+Here we have used \eqref{eqn:q defn} to expand $q(x')$ to show that $2\uu(1-q(x')) - x + x' < \jb- x < 0$. Thus for $x' \neq x$, we have $\mathbb{U}(x;r,s_r) \leq 0$ whereas for $x' = x$, $\mathbb{U}(x;r,s_r) = 0$. Furthermore, $x'=x$ is also the laziest option for $s_r$. Hence $s_r(x) = x$.
+\noindent Hence, by combining all cases (i)--(iv), we conclude that $ s_r(x) = x $. Therefore,
+    \[
+    T(x; r, s_r) = \prob_{r}\{Y \neq h(x) \mid X' = s_r(x)\} = \begin{cases}
+        0 & \text{if } x \in [0, \ib] \cup [\jb, 1], \\
+        q(x) & \text{if } x \in (\ib, \h], \\
+        1 - q(x) & \text{if } x \in (\h, \jb).
+    \end{cases}
+    \]
+    Since $ \cg{E}(r) = \int_\cg{X} T(x) \, dx $, it follows that $ \cg{E}(r) = \frac{\uu}{2} $.
+\end{proof}
+
+We now present the proof of Theorem~\ref{thm:Stochastic Stackelberg equilibrium}.
+
+\begin{proof}[Proof of Theorem \ref{thm:Stochastic Stackelberg equilibrium}]\label{proof:stochastic_stackelberg_eq}
+    From Lemma \ref{lem:error is half}, we have $\cg{E}(r) = \frac{\uu}{2}$.
+    Furthermore, we show that $\cg{E}(r') \geq \frac{\uu}{2}$ for all $r' \in \msf{R}$.
+    Let $x$ and $y$ be two features such that $x \le \h < y$, and let $a := s_{r'}(x)$ and $b := s_{r'}(y)$. From the property of worst case best response we have
+\begin{equation*}
+    \mathbb{U}(x;r',a) \ge \mathbb{U}(x;r',b) \text{ and } 
+    \mathbb{U}(y;r',b) \ge \mathbb{U}(y;r',a).
+\end{equation*}
+Thus we get 
+\begin{equation*}
+    2\uu (q(b)-q(a)) \leq |b-x| - |a-x| \text{ and } 2\uu (q(b)-q(a)) \leq |a-y| - |b-y|.
+\end{equation*}
+Summing them up and applying reverse triangle ineqaulity ($|A|-|B| \le |A-B|$), we get
+$$q(b) - q(a) \le \frac{y-x}{2\uu}.$$
+Therefore, error at $x$ and $y$ can be lower bounded as
+$$T(x;r',s_{r'}) + T(y;r',s_{r'}) \ge 1 - \frac{y-x}{2\uu}.$$
+Now consider features $x(t)  := \h - t$ and $y(t) := \h + t$ for $t \in [0,\uu]$. Since we have assumed $2\uu \ll \min\{\h, 1-\h\}$, $x(t), y(t) \in \cg{X}$.
+The error from the interval $[\h - \uu, \h + \uu]$ is lower bounded as
+$$\int_0^\uu T(\h - t;r',s_{r'}) dt + \int_0^\uu T(\h + t;r',s_{r'})dt \ge \int_0^\uu (1-\frac{t}{\uu})dt = \frac{\uu}{2}.$$
+Hence, $\cg{E}(r') \geq \frac{\uu}{2}$ for all $r' \in \msf{R}$, which implies $r$ is a Stochastic Stackelberg equilibrium.
+\end{proof}

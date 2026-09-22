@@ -1,0 +1,21 @@
+\subsection{Lower Bound on Excess Risk}
+
+In this section, we establish a fundamental limitation of learning from partitioned datasets. Specifically, we show that for any learning algorithm $A$, there exists a probability distribution of $(X, Y, Z)$ such that if $(D,S)$ is a partitioned data set  defined in \eqref{eqn: partitioned dataset}, the excess risk $R(A(D,S)) - R(\ws)$ is bounded away from zero with non-vanishing probability. This demonstrates that, even with infinite training data, the inability to observe features, labels, and side information jointly imposes an irreducible barrier to learning performance.
+
+\begin{thm}[Lower Bound on Excess Risk]\label{thm: Lower bound on excess risk}\index{Minimax lower bound|textbf}\index{Excess risk!minimax lower bound|textbf}
+    Let $(D,S)$ be a partitioned dataset defined in \eqref{eqn: partitioned dataset}, and let $(D,S) \mapsto A(D,S) \in \mathbb{R}^{d+2}$ be any learning algorithm (possibly randomized).
+    Then there exists a distribution of $(X, Y, Z)$ satisfying conditions \textnormal{(C1)--(C4)} generating the partitioned training datasets $(D,S)$ such that for $\ws$ defined in \eqref{eqn: w star}, we have
+    \begin{equation}
+        \mathbb{P}_{(D,S)}(R(A(D,S)) - R(\ws) > 0.19) \geq \frac{1}{2},
+    \end{equation}
+    where the probability is taken over the random draw of the partitioned training data $(D,S)$ (and any internal randomization of the algorithm $A$).
+\end{thm}
+
+\begin{proof}[Proof Outline]
+We construct two joint distributions, $P_1$ and $P_2$ over $(X, Y, Z)$ satisfying conditions (C1)--(C4), such that the observable marginal laws $(X, Y)$ and $(X, Z)$ are identical under both distributions, while their full joint distributions differ.
+
+Under the common training-data law $Q$, the partitioned dataset $(D,S)$ provides zero statistical information to distinguish $P_1$ from $P_2$. For any algorithm $A$, the sum of excess risks satisfies $(R_1(A(D,S)) - R_1^*) + (R_2(A(D,S)) - R_2^*) \ge 2(\ln 2 - H(0.2)) > 2 \times 0.19$ pointwise for every output. Defining the bad events $E_k = \{(D,S) : R_k(A(D,S)) - R_k^* > 0.19\}$, this pointwise separation guarantees $E_1 \cup E_2 = \Omega$, so that under the common data law $Q$, $\max\{Q(E_1), Q(E_2)\} \ge 1/2$. Hence, for every learner, there exists a fixed distribution in the class under which the excess risk exceeds $0.19$ with probability at least $1/2$. 
+
+We note that while $P_1$ and $P_2$ satisfy conditions (C1)--(C4), they have optimal imputer weight $u^* = 0$ (uninformative features for $Z$), which falls outside the Non-Degeneracy condition (ND) assumed for the upper bound. This lower bound establishes that across the broader partitioned learning class, non-vanishing excess risk is an intrinsic limitation arising from the unobserved joint relationship.
+The complete proof is given in Section~\ref{sec:proofs_ch3} (Proof~\ref{subsec: proof of lower bound}).
+\end{proof}

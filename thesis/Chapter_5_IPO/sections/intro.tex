@@ -1,0 +1,35 @@
+%======================================================================
+\section{Introduction}
+\label{sec:intro}
+%======================================================================
+
+Initial Public Offerings (IPOs) serve as a crucial mechanism for private companies to raise public capital and foster financial market growth. However, significant information asymmetries exist between issuing firms and prospective retail investors. Issuing firms frequently possess incentives to window-dress or strategically modify their presented financial metrics and business features to project a favorable valuation. To prevent investor exploitation and curb capital misallocation to unviable ventures, financial regulatory bodies mandate reporting standards and audit tolerance. Yet, overly stringent regulatory oversight can impose prohibitive compliance burdens, deterring viable firms from entering the capital market. Finding an optimal balance between market growth and investor protection is therefore a fundamental challenge in regulatory economics.
+
+We model this interaction between a welfare-maximizing regulator and a capital-maximizing issuing firm, where the regulator sets an enforcement tolerance limit $\varepsilon$ that constrains the Euclidean distance by which the firm can window-dress its fundamental feature vector $x$ into a presented feature vector $z$, while jointly choosing the presentation and share price. The market consists of heterogeneous investor subpopulations with distinct personal valuation profiles over presented features. The firm seeks to maximize the total capital raised, whereas the regulator seeks to maximize social welfare by facilitating capital raising by viable firms while curbing misallocations to non-viable firms. We formulate this interaction as a Stackelberg screening game, with the regulator as the leader and the issuing firm as the follower.
+
+
+\subsection{Contributions}
+
+We analyze this regulatory game under two distinct information paradigms: the \emph{Decision Problem} (where feature-valuation distributions are known to the regulator) and the \emph{Learning Problem} (where distributions are unobserved and must be learned through online market interactions).
+
+For the Decision Problem, we prove that for any fixed enforcement level $\varepsilon$, the firm's optimal presentation and pricing strategy reduces to solving $2^k-1$ constrained convex optimization subproblems corresponding to candidate buyer subsets. We further show that expected social welfare need not be monotone in enforcement tolerance. In particular, an overly strict regime ($\varepsilon=0$) can prevent viable firms with low perceived valuations at their baseline features from raising sufficient capital, whereas an overly lax regime ($\varepsilon=\infty$) can enable non-viable firms to mislead investors. An intermediate enforcement level can therefore allow viable firms with low perceived valuations to improve their market prospects while limiting the ability of non-viable firms to mislead investors.
+
+
+For the Learning Problem, the regulator must learn the optimal enforcement tolerance over a finite time horizon $T$ in a continuous-armed bandit setting. Under market distributions with smooth probability density function with compact support, we show that the expected social welfare function resides in the Reproducing Kernel Hilbert Space (RKHS) associated with a Mat\'ern-$\tfrac{5}{2}$ kernel. Consequently, employing the established Gaussian Process Thompson Sampling (GP-TS) algorithm guarantees a sublinear cumulative regret of $\widetilde{\mathcal{O}}(T^{2/3})$, proving that optimal regulatory oversight can be learned efficiently online.
+
+
+\subsection{Related Work}
+
+This chapter contributes to the literature on strategic decision making and regulatory policy, bridging strategic feature modification, market segmentation, IPO pricing, and online bandit learning.
+
+\textit{Strategic Feature Modification and Information Design.} Strategic feature modification is studied in~\cite{hardt2016strategic,perdomo2020performative,krishnaswamy2021classification,singh2025strategic,singh2026linear} in screening games where agents modify features or withhold data under decision rules, while information design~\cite{kamenica2011bayesian,bergemann2019information} explores strategic disclosure. While our prior work~\cite{singh2026linear} studied strategic feature revelation where verifiable features are selectively withheld, here the issuing firm actively manipulates (window-dresses) continuous features within a regulatory Euclidean ball.
+
+\textit{Market Segmentation and IPO Pricing.} Classical market segmentation~\cite{bergemann2015limits} studies price discrimination across buyer groups. In our model, although the firm posts a single uniform price, internal subpopulation valuations are used to strategically target investor groups via feature presentation. Traditional IPO literature~\cite{rock1986why,ritter2002review} tracks investor surplus and firm capital under market frictions and information asymmetries; we evaluate analogous welfare and capital objectives, but with an issuing firm that strategically window-dresses features under regulatory enforcement limits.
+
+\textit{Online Continuum-Armed and GP Bandits.} Online bandit literature~\cite{bubeck2011xarmed,flaxman2005online,srinivas2010gp,russo2014learning,chowdhury2017kernelized,vakili2021information,rasmussen2006gaussian} establishes regret bounds under regularity (RKHS) conditions. In our learning setup, we show that market distributions with smooth probability density functions over compact support satisfy these regularity conditions, guaranteeing the $\widetilde{\mathcal{O}}(T^{2/3})$ regret bound. This chapter is derived from our manuscript~\cite{singh2026ipo_journal}. To the best of our knowledge, the problem of regulating strategic window dressing under heterogeneous market valuations across decision and online bandit settings has not been previously studied, and was first explored in our work~\cite{singh2026ipo_journal}.
+
+
+
+
+
+

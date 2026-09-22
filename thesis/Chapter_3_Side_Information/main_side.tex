@@ -1,0 +1,37 @@
+\chapter{Learning with Side Information from Partitioned Data}
+\label{ch:side_info}
+\graphicspath{{Chapter_3_Side_Information/Figures/}{Chapter_3_Side_Information/code/}}
+
+We address the problem of classification where, at test time, side information---a label from a different task---is available alongside the primary input features. Our objective is to design a classifier that can effectively leverage this additional side information. This side information cannot be treated simply as an additional feature during training because the training dataset is partitioned: we do not have access to simultaneous joint observations of labels and side information together with the features. In this chapter, we propose an algorithm that operates under this setting by imputing the missing side information. Its behavior is governed by a regularization hyperparameter that determines the degree of trust placed in the imputed values. We derive an upper bound on the excess risk as a function of this hyperparameter. We characterize the bound-minimizing regularizer via a Three-Candidate Rule: the optimal choice selects between two boundary endpoints (fully trusting or entirely ignoring the side information) and a feasible interior candidate, exhibiting conditional threshold-like behavior depending on the underlying signal-to-imputation ratio. We further establish a minimax lower bound showing that the excess risk of any algorithm remains bounded away from zero, revealing a fundamental limitation of the partitioned-data setting.
+
+\input{Chapter_3_Side_Information/Sections/1_introduction}
+\input{Chapter_3_Side_Information/Sections/2_problem_formulation}
+\input{Chapter_3_Side_Information/Sections/3_algorithm}
+
+\section{Analysis of the Algorithm}
+In this section, we analyze the excess risk of the Partitioned Side Information Learning (PSIL) algorithm (Algorithm \ref{alg: side information algorithm}). Our main theoretical result, Theorem \ref{thm: main theorem}, provides an explicit upper bound on the excess risk as a function of the sample sizes, distribution-dependent quantities, and the regularization parameter. This bound characterizes how the choice of regularizer mediates the trade-off between relying on imputed side information and using only the primary features. Corollary \ref{cor: three candidates} provides guidance for selecting the optimal regularization parameter from three candidates. Moreover, Corollary \ref{cor: bang_bang} establishes a conditional threshold-based result showing that, for sufficiently large side information sample sizes, the bound-minimizing regularizer takes an extreme value when the side information is either very noisy or highly informative. 
+
+Next, Theorem \ref{thm: Lower bound on excess risk} establishes a minimax lower bound on the excess risk for any algorithm, quantifying the intrinsic difficulty of learning from partitioned datasets in which features, labels, and side information are never observed jointly. 
+
+Finally, we conduct simulations on a variety of datasets to investigate the behavior of the value of $\lamz$ that minimizes the excess risk of our proposed algorithm.
+
+\input{Chapter_3_Side_Information/Sections/4A_upper_bound}
+\input{Chapter_3_Side_Information/Sections/4B_lower_bound}
+\input{Chapter_3_Side_Information/Sections/4C_simulation_result}
+%\input{Chapter_3_Side_Information/Sections/4D_alternative_experiments}
+
+\section{Conclusion, Limitations, and Future Work}
+In this chapter, we addressed the problem of utilizing test-time side information for classification when joint observations of side information and labels were absent from the training dataset. We proposed an algorithm that imputes the missing side information during training. The algorithm's behavior is governed by a regularization hyperparameter, which quantifies the trust placed in the imputed data. We derived an upper bound on the excess risk as a function of this hyperparameter, noting that the optimal value depends on prior knowledge of the relationship between side information and labels. We established a Three-Candidate Rule for the bound-minimizing regularizer, showing that the optimal regularizer selects between two boundary endpoints and a feasible interior candidate, exhibiting conditional threshold-like behavior when the side information is either very noisy or highly informative.
+This choice cannot be inferred from the partitioned data alone and must instead be guided by theoretical considerations about the underlying ground-truth distribution.
+Furthermore, we established a fundamental limitation of this problem: the excess risk of any learning algorithm is lower-bounded by a non-vanishing term. This limitation arises directly from the lack of joint side information–label observations during training. 
+
+Despite these contributions, this chapter has some limitations. First, our theoretical analysis and algorithmic development are currently restricted to the binary classification setting; extending these results to multi-label scenarios remains an open direction. Second, the theoretical analysis is restricted to the setting of logistic regression; extending these results to other models or loss functions remains another open direction. Third, the upper bound we derive may not be tight in all regimes, particularly due to the presence of the $\mathsf{W}$ term, which can lead to loose guarantees in practice. Addressing these limitations is an important avenue for future research. Additionally, another promising future direction is to explore the strategic aspect of this problem, where an agent decides whether to reveal side information to the classifier at test time.
+
+\section{Proofs and Supporting Results}\label{sec:proofs_ch3}
+This section contains all proofs deferred from the main text, together with the auxiliary lemmas they rely on. The complete proof of Theorem~\ref{thm: main theorem} is given in Section~\ref{subsec: proof of main theorem}; the complete proof of Theorem~\ref{thm: Lower bound on excess risk} is given in Section~\ref{subsec: proof of lower bound}. The remaining sections provide supporting lemmas used throughout.
+
+\input{Chapter_3_Side_Information/Sections/A1A2_strong_convexity_other_results}
+\input{Chapter_3_Side_Information/Sections/A3_other_useful_results}
+\input{Chapter_3_Side_Information/Sections/A4_main_proof}
+\input{Chapter_3_Side_Information/Sections/A4b_corollary_proofs}
+\input{Chapter_3_Side_Information/Sections/A5_lowebound_proof}

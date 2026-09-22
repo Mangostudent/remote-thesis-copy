@@ -1,0 +1,78 @@
+\pdfminorversion=7
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{naturalnames}{hyperref}
+\documentclass[openright,oneside]{iitbthesis}
+
+%%% my definitions %%%
+\usepackage{defs}
+\input{chapter_macros}
+
+\allowdisplaybreaks
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%% Title page %%%%%%%%%%%%%%%%
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{S0_TitlePage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% Chapter 1: Intro %%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{Chapter_1_Introduction/C1_Introduction}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% Chapter 2: Strat. Class. %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begingroup
+\input{Chapter_2_Strategic_Classification/main_class}
+\endgroup
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% Chapter 3: Side Info %%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begingroup
+\input{Chapter_3_Side_Information/main_side}
+\endgroup
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% Chapter 4: Strat. Rev. %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begingroup
+\input{Chapter_4_Strategic_Revelation/main_rev}
+\endgroup
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%% Chapter 5: IPO %%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begingroup
+\input{Chapter_5_IPO/main_ipo}
+\endgroup
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%  Chapter 6: Conclusion %%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{Chapter_6_Conclusion/C6_Conclusion}
+
+
+% \appendix
+% \input{Appendix_Code}
+
+\makeatletter
+\renewcommand\chapter{\@startsection {chapter}{0}{\z@}%
+		{-3.5ex \@plus -1ex \@minus -.2ex}%
+		{2.3ex \@plus.2ex}%
+		{\normalfont\LARGE\bfseries}}
+\makeatother
+
+\cleardoublepage \phantomsection
+
+\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{ieeetran}	
+\bibliography{refs}
+
+\cleardoublepage \phantomsection
+\addcontentsline{toc}{chapter}{Index}
+\printindex
+
+\end{document}

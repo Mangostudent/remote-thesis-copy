@@ -1,0 +1,52 @@
+We begin by presenting the proof of Lemma~\ref{lem:1-1 correspondance between independence set and recoverable feature vector}.
+
+\begin{proof}[Proof of Lemma \ref{lem:1-1 correspondance between independence set and recoverable feature vector}]\label{proof:lem independence set}
+	\begin{enumerate}[label=(\alph*)]
+		\item Let $I$ be an independent set of $G_h$. First, by condition (a) of Definition~\ref{def:Sender's graph}, for every feature vector $\ibb \in \cg{X}$, there is at most one action $\kbb$ such that $(\ibb,\kbb) \in I$ (since $\ibb = \jbb$ with $\kbb \neq \lbb$ creates an edge). Second, also by condition (a), if $(\ibb,\kbb) \in I$ and $(\jbb,\kbb) \in I$, then $h(\ibb) = h(\jbb)$ (since $h(\ibb) \neq h(\jbb)$ with $\kbb = \lbb$ creates an edge). Hence $r(\cdot;I)$ is well defined.
+
+		Now let $(\ibb,\kbb) \in I$. By definition of $r(\cdot;I)$, we have $r(\kbb) = h(\ibb)$, which yields the sender at $\ibb$ a payoff of
+		\begin{equation*}
+			U(r(\kbb),\ibb) - C(\kbb,\ibb) = U(h(\ibb),\ibb) - C(\kbb,\ibb) = -C(\kbb,\ibb) > -\infty.
+		\end{equation*}
+		Consequently, the sender's worst-case best response $s_r(\ibb)$ must achieve a payoff at least $-C(\kbb,\ibb)$, which implies $r(s_r(\ibb)) \neq \Delta$ (since $U(\Delta,\ibb) = -\infty$).
+		
+		From the definition of $r(\cdot;I)$, $r(s_r(\ibb)) \neq \Delta$ implies that there exists some node $(\jbb,\lbb) \in I$ such that $s_r(\ibb) = \lbb$ and $r(\lbb) = h(\jbb)$. Suppose for contradiction that $\ibb$ is misclassified, that is, $r(s_r(\ibb)) \neq h(\ibb)$. Since $r(s_r(\ibb)) = h(\jbb)$, this means $h(\jbb) \neq h(\ibb)$. Furthermore, since $\lbb = s_r(\ibb)$ is a best response for the sender at $\ibb$, reporting $\lbb$ must yield at least the payoff of reporting $\kbb$:
+		\begin{equation*}
+			U(h(\jbb),\ibb) - C(\lbb,\ibb) \geq -C(\kbb,\ibb) \implies U(h(\jbb),\ibb) - C(\lbb,\ibb) + C(\kbb,\ibb) \geq 0.
+		\end{equation*}
+		Since $h(\ibb) \neq h(\jbb)$ and $U(h(\jbb),\ibb) - C(\lbb,\ibb) + C(\kbb,\ibb) \geq 0$, condition (b) of Definition~\ref{def:Sender's graph} holds. This implies that there is an edge between $(\ibb,\kbb)$ and $(\jbb,\lbb)$ in $G_h$, which contradicts the fact that $I$ is an independent set. Therefore, we must have $r(s_r(\ibb)) = h(\ibb)$, showing that every feature vector $\ibb$ represented in $I$ is correctly classified.
+		
+		Since condition (a) ensures that each such feature vector $\ibb$ appears in at most one pair in $I$, there are exactly $|I|$ distinct feature vectors represented in $I$. Hence, $|\{x \in \cg{X}: r(s_r(x)) = h(x)\}| \geq |I|$.
+		
+		\item Let $r(x)$ be an arbitrary receiver strategy, and define $I := \{(x,s_r(x)): r(s_r(x)) = h(x)\}$. Since $s_r$ is a function, each $x$ is mapped to a unique best response $s_r(x)$. Thus, all pairs in $I$ have distinct first coordinates, which implies $|I| = |\{x \in \cg{X}: r(s_r(x)) = h(x)\}|$.
+		
+		We now show that $I$ is an independent set in $G_h$. Let $(\ibb,\kbb)$ and $(\jbb,\lbb)$ be distinct elements of $I$, where $\kbb = s_r(\ibb), r(\kbb) = h(\ibb)$ and $\lbb = s_r(\jbb), r(\lbb) = h(\jbb)$. We verify that neither of the edge conditions in Definition~\ref{def:Sender's graph} is satisfied:
+		\begin{itemize}
+			\item Condition (a): If $\ibb = \jbb$, then since $s_r$ is a single-valued function, $\kbb = s_r(\ibb) = s_r(\jbb) = \lbb$, which makes the two nodes identical, a contradiction. Hence $\ibb = \jbb$ and $\kbb \neq \lbb$ cannot occur. If $\kbb = \lbb$, then $r(\kbb) = r(\lbb)$, which implies $h(\ibb) = r(s_r(\ibb)) = r(\kbb) = r(\lbb) = r(s_r(\jbb)) = h(\jbb)$. Hence $h(\ibb) \neq h(\jbb)$ and $\kbb = \lbb$ cannot occur either. Thus condition (a) does not hold.
+			\item Condition (b): Suppose $h(\ibb) \neq h(\jbb)$. Since $\kbb = s_r(\ibb)$ is a best response for sender $\ibb$ and $r(\kbb) = h(\ibb)$, the payoff at $\kbb$ is $-C(\kbb,\ibb)$. If sender $\ibb$ instead reported $\lbb$, the payoff would be $U(r(\lbb),\ibb) - C(\lbb,\ibb) = U(h(\jbb),\ibb) - C(\lbb,\ibb)$. If $U(h(\jbb),\ibb) - C(\lbb,\ibb) + C(\kbb,\ibb) > 0$, sender $\ibb$ strictly prefers $\lbb$ over $\kbb$, contradicting the optimality of $\kbb = s_r(\ibb)$. If $U(h(\jbb),\ibb) - C(\lbb,\ibb) + C(\kbb,\ibb) = 0$, sender $\ibb$ is indifferent between $\kbb$ (which correctly classifies $\ibb$) and $\lbb$ (which misclassifies $\ibb$ since $h(\jbb) \neq h(\ibb)$); under the worst-case best response tie-breaking (Definition~\ref{def:Worst case best response}), the sender would choose the misclassifying action $\lbb$, again contradicting $s_r(\ibb) = \kbb$. Hence $U(h(\jbb),\ibb) - C(\lbb,\ibb) + C(\kbb,\ibb) < 0$. By symmetry, interchanging the roles of $\ibb$ and $\jbb$ gives $U(h(\ibb),\jbb) - C(\kbb,\jbb) + C(\lbb,\jbb) < 0$. Thus condition (b) does not hold.
+		\end{itemize}
+		Since neither condition holds, no edge connects $(\ibb,\kbb)$ and $(\jbb,\lbb)$. Thus, $I$ is an independent set in $G_h$.
+	\end{enumerate}
+\end{proof}
+
+We now provide the proof of Theorem~\ref{thm:Stackelberg equilibrium for discrete feature space}.
+
+\begin{proof}[Proof of Theorem \ref{thm:Stackelberg equilibrium for discrete feature space}]\label{proof:Stackelberg discrete}
+	\begin{enumerate}[label=(\alph*)]
+		\item Let $I^{\star}$ be a maximum independent set of $G_h$, so that $|I^\star| = \alpha(G_h)$, where $\alpha(G_h)$ denotes the independence number of $G_h$. Consider the receiver strategy $\rs(\cdot) := r(\cdot; I^{\star})$. By Lemma~\ref{lem:1-1 correspondance between independence set and recoverable feature vector}(a), the number of feature vectors correctly classified by $\rs$ satisfies
+		\begin{equation*}
+			|\{x \in \cg{X}: \rs(s_{\rs}(x)) = h(x)\}| \geq |I^{\star}| = \alpha(G_h).
+		\end{equation*}
+		Conversely, for any arbitrary receiver strategy $r \in \msf{R}$, by Lemma~\ref{lem:1-1 correspondance between independence set and recoverable feature vector}(b), the set $I_r := \{(x,s_r(x)): r(s_r(x)) = h(x)\}$ is an independent set in $G_h$. Hence,
+		\begin{equation*}
+			|\{x \in \cg{X}: r(s_r(x)) = h(x)\}| = |I_r| \leq \alpha(G_h).
+		\end{equation*}
+		Therefore, no receiver strategy can correctly classify strictly more than $\alpha(G_h)$ feature vectors. Since $\rs$ correctly classifies at least $\alpha(G_h)$ feature vectors, it correctly classifies exactly $\alpha(G_h)$ feature vectors, which is the maximum possible. Thus, $\rs$ minimizes the classification error $\cg{E}(r,s_r;h,D)$, and is therefore a Stackelberg equilibrium.
+		
+		\item Conversely, let $\rs$ be a Stackelberg equilibrium. By Lemma~\ref{lem:1-1 correspondance between independence set and recoverable feature vector}(b), $I^{\star} := \{(x,\srs(x)): \rs(\srs(x)) = h(x)\}$ is an independent set in $G_h$, and $|I^\star| = |\{x \in \cg{X}: \rs(s_{\rs}(x)) = h(x)\}|$. Suppose for contradiction that $I^{\star}$ is not a maximum independent set. Then there exists an independent set $J$ in $G_h$ such that $|J| > |I^\star|$. By Lemma~\ref{lem:1-1 correspondance between independence set and recoverable feature vector}(a), the strategy $r(\cdot; J)$ satisfies
+		\begin{equation*}
+			|\{x \in \cg{X}: r(s_{r(\cdot;J)}(x); J) = h(x)\}| \geq |J| > |I^\star| = |\{x \in \cg{X}: \rs(s_{\rs}(x)) = h(x)\}|.
+		\end{equation*}
+		This contradicts the optimality of $\rs$ as a Stackelberg equilibrium. Therefore, $I^{\star}$ is a maximum independent set in $G_h$.
+	\end{enumerate}
+\end{proof}

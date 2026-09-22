@@ -1,0 +1,1 @@
+Figures ch2_*.pdf are direct vector crops of Compiled_Thesis/main.pdf, PDF pages 41, 42, 43 and 48 (printed pages 26, 27, 28 and 33). Original diagrams were not redrawn. Experiment PDFs are linked directly from their original chapter figure directories.

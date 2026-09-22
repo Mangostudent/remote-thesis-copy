@@ -1,0 +1,145 @@
+In this section, we address the learning problem, where the receiver is unaware of the true function and is limited to employing only deterministic strategies. Let $\cg{F} \subseteq \{f \mid f:\cg{X} \rightarrow \cg{Y}\}$  denote a hypothesis class, and let  $$ l(x,y; f) := \mathbbm{1}_{f(x) \neq y} $$
+be the \textit{zero-one loss function}, where $x \in \cg{X}, y \in \cg{Y}$ and $f \in \cg{F}$.
+Let $(X,Y)$ be a random variable over $(\cg{X},\cg{Y})$ and $D$ be its corresponding probability law.
+Let $L_{D}(f)$ denote the \textit{risk function} corresponding to the zero-one loss function and be defined as 
+\begin{equation}\label{eqn:risk function}
+    L_D(f) :=
+    \E_{D}[l(X,Y;f)].
+\end{equation}
+Suppose $Y = h(X)$, where $h$ is the true function. Then we modify the definition of risk function given in \eqref{eqn:risk function}.
+Let $X$ random variable over $\cg{X}$ and $D$ be it corresponding probability law. Then $L_D(f;h)$ denotes the \textit{$h$-risk function} corresponding to the zero-one loss function and be defined as 
+\begin{equation}
+    L_D(f;h) :=   \E_{D}[l(X,h(X);f)].
+\end{equation}
+In the absence of strategic interactions between the sender and the receiver, a hypothesis class is PAC (Probably Approximately Correct) learnable if it satisfies the following definition (which is the same as Definition 3.1 in \cite{shalev-shwartz_ben-david_2014}).
+
+\begin{defn}\label{def:PAC learning}\index{PAC learning|textbf}
+A hypothesis class $\cg{F}$ is PAC learnable if there exists a function $m_{\cg{F}}^{\mathrm{PAC}}: (0,1)^2 \to \N$ and a learning algorithm $A: \cup_{n=1}^\infty (\cg{X} \times \cg{Y})^n \to \cg{F}$ such that for every $(\eps, \dlt) \in (0,1)^2$, for every true function $h \in \cg{F}$ and every probability law $D$ over $\cg{X}$, the following holds:
+Let $S = \{(x_i, h(x_i))\}_{i=1}^m$ be a sample where $x_i$'s are drawn i.i.d. from  $D$ and $m \geq m_{\cg{F}}^{\mathrm{PAC}}(\eps,\dlt)$. Then
+\[
+D^{\otimes m}\left( L_{D}(A(S);h)  < \eps \right) > 1 - \dlt.
+\]
+\end{defn}
+There exists a more general notion of PAC learning called agnostic PAC learning which is defined in the following definition (which is the same as Definition 3.3 in \cite{shalev-shwartz_ben-david_2014}).
+\begin{defn}\label{def:agnostic PAC learning}\index{Agnostic PAC learning|textbf}\index{PAC learning!agnostic|textbf}
+A hypothesis class $\cg{F}$ is agnostic PAC learnable if there exists a function $m_{\cg{F}}^{\mathrm{agn}}: (0,1)^2 \to \N$ and a learning algorithm $A: \cup_{n=1}^\infty (\cg{X} \times \cg{Y})^n \to \cg{F}$ such that for every $(\eps, \dlt) \in (0,1)^2$ and every probability law $D$ over $\cg{X} \times \cg{Y}$, the following holds: Let $S = \{(x_i, y_i)\}_{i=1}^m$ be a sample where 
+$(x_i, y_i)$'s are drawn i.i.d. from  $D$ and 
+$m \geq m_{\cg{F}}^{\mathrm{agn}}(\eps, \dlt)$. Then
+\[
+D^{\otimes m}\left( L_{D}(A(S)) - \inf_{f \in \cg{F}} L_{D}(f) < \eps \right) > 1 - \dlt.
+\]
+\end{defn}
+An algorithm $A$ is a \textit{successful PAC/agnostic PAC learner} of $\cg{F}$ if $\cg{F}$ is PAC/agnostic PAC learnable and $A$ is the corresponding learning algorithm defined in Definition \ref{def:PAC learning}/\ref{def:agnostic PAC learning}. Consider the learning algorithm Empirical risk minimization (ERM) 
+\[\text{ERM}:\cup_{n=1}^\infty(\cg{X}\times \cg{Y})^n \rightarrow \cg{F} \text{ defined as } 
+\text{ERM}(\{(x_i, y_i)_{i=1}^m\}) := \arg\min_{f \in \cg{F}} \frac{1}{m} \sum_{i=1}^m l(x_i, y_i; f).
+\]
+A hypothesis class $\cg{F}$ is said to have the \textit{uniform convergence property} if there exists a function $m_{\cg{F}}^{\mathrm{UC}}: (0,1)^2 \to \N$ such that for every $(\eps, \dlt) \in (0,1)^2$ and every probability law $D$ over $\cg{X} \times \cg{Y}$, if $S = \{(x_i, y_i)\}_{i=1}^m$ is a sample drawn i.i.d. from $D$ with $m \geq m_{\cg{F}}^{\mathrm{UC}}(\eps, \dlt)$, then
+\[
+D^{\otimes m}\left( \sup_{f \in \cg{F}} \left| \frac{1}{m} \sum_{i=1}^m l(x_i, y_i; f) - L_D(f) \right| < \eps \right) > 1 - \dlt.
+\]
+The following theorem shows that uniform convergence, PAC learnability, agnostic PAC learnability, and the success of ERM rules are all characterized by the finiteness of the VC dimension.
+
+\begin{thm}[Fundamental theorem of statistical learning]\label{thm:Fundamental theorem of statistical learning}\index{Fundamental Theorem of Statistical Learning|textbf}\index{VC dimension|textbf}
+Let  $\cg{F} \subseteq \{f \mid f:\cg{X} \rightarrow \cg{Y}\}$ be a hypothesis class of functions from domain $\cg{X}$ to $\cg{Y} = \{0,1\}$ and let the loss function be the $0-1$ loss. Then, the following statements are equivalent:
+
+\begin{enumerate}[label=\alph*)]
+    \item $\cg{F}$ has the uniform convergence property.
+    \item Any ERM rule is a successful agnostic PAC learner for $\cg{F}$.
+    \item $\cg{F}$ is agnostic PAC learnable.
+    \item $\cg{F}$ is PAC learnable.
+    \item Any ERM rule is a successful PAC learner for $\cg{F}$.
+    \item $\cg{F}$ has finite VC dimension ($\text{VC dim}(\cg{F}) < \infty$).
+\end{enumerate}
+Furthermore, if $\text{VC dim}(\cg{F}) = d < \infty$, there exist absolute constants $C_1, C_2 > 0$ such that for any $(\eps,\dlt) \in (0,1)^2$, the sample complexities satisfy:
+\begin{enumerate}[1.]
+    \item $\cg{F}$ has the uniform convergence property with sample complexity
+    \begin{equation}\label{eqn:sample complexity:UC}
+    C_1\frac{d + \log\left(\frac{1}{\dlt}\right)}{\eps^2} \leq m_{\cg{F}}^{\mathrm{UC}}(\eps,\dlt) \leq C_2\frac{d + \log\left(\frac{1}{\dlt}\right)}{\eps^2},
+    \end{equation}
+    \item $\cg{F}$ is agnostic PAC learnable with sample complexity
+    \begin{equation}\label{eqn:sample complexity:thm:Fundamental theorem of statistical learning}
+    C_1\frac{d + \log\left(\frac{1}{\dlt}\right)}{\eps^2} \leq m_{\cg{F}}^{\mathrm{agn}}(\eps,\dlt) \leq C_2\frac{d + \log\left(\frac{1}{\dlt}\right)}{\eps^2},
+    \end{equation}
+    \item $\cg{F}$ is PAC learnable with sample complexity
+    \begin{equation}\label{eqn:sample complexity:PAC}
+    C_1\frac{d + \log\left(\frac{1}{\dlt}\right)}{\eps} \leq m_{\cg{F}}^{\mathrm{PAC}}(\eps,\dlt) \leq C_2\frac{d \log\left(\frac{1}{\eps}\right) + \log\left(\frac{1}{\dlt}\right)}{\eps}.
+    \end{equation}
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+Refer to Theorems 6.7 and 6.8 in \cite{shalev-shwartz_ben-david_2014}.
+\end{proof}
+
+We now establish a similar learning criterion for a hypothesis class $\cg{F}$ in the context of strategic classification. Recall that for a true function $f \in \cg{F}$ and probability law $D \in \fk{D}$, $r^\star_{f,D}$ denotes the Stackelberg equilibrium as defined in Definition \ref{def:Stackelberg equilibrium}. Define $\widetilde{\cg{F}} := \{r^\star_{f,D} \circ s_{r^\star_{f,D}} : f \in \cg{F}, D \in \fk{D}\}$, referred to as the \emph{Stackelberg hypothesis class}, which represents the space of receiver Stackelberg equilibria derived from $\cg{F}$ and $\fk{D}$. A hypothesis class $\cg{F}$ is strategically learnable if it satisfies the following definition.
+
+\begin{defn}[Strategically learnable class]\label{def:Strategically learnable class}\index{Strategically learnable class|textbf}\index{Strategic learnability|textbf}
+A hypothesis class $\cg{F}$ is strategically learnable if there exists a function $m_{\cg{F}}: (0,1)^2 \to \N$ and a learning algorithm $A: \cup_{n=1}^\infty (\cg{X} \times \cg{Y})^n \to \widetilde{\cg{F}}$ such that for any true function $h \in \cg{F}$, any probability law $D \in \fk{D}$, and any $(\eps, \dlt) \in (0,1)^2$, the following holds: Let $S = \{(x_i, h(x_i))_{i=1}^m\}$ be a sample where $x_i$ are drawn i.i.d. from $D$ and $m \geq m_{\cg{F}}(\eps, \dlt),$
+then
+\begin{equation}\label{def: strategically learnable}
+D^{\otimes m}\Big( \cg{E}(A(S); h, D) - \cg{E}(r^\star_{h, D}; h, D) < \eps \Big) > 1 - \dlt.
+\end{equation}
+The function $m_{\cg{F}}(\eps, \dlt)$ is called the sample complexity of the algorithm.
+\end{defn}
+
+
+Our definition of strategic learnability is different from \cite{sundaram2021pac} because we let the algorithm search over the Stackelberg equilibrium hypothesis class (i.e., over $r_f, f \in \mathcal{F}$) rather than the original hypothesis class (i.e., over $f \in \mathcal{F}$). 
+
+
+We propose two algorithms for learning a strategic classifier: \textit{vanilla ERM} and \textit{strategy aware ERM} (defined in Section \ref{subsec:Vanilla ERM} and \ref{subsec:Stragically aware ERM} respectively). We show that a hypothesis class is strategically learnable if and only if it is learnable under the strategy-aware ERM algorithm. 
+However, there exist strategically learnable hypothesis classes which are not
+learnable under the vanilla ERM algorithm.
+
+Assuming the hypothesis class is learnable by each algorithm, we compare their ease of learning (compared in Section \ref{subsec:comparision}). This is controlled by the VC dimension of the hypothesis class, which determines the sample complexity in PAC learning. We observe that when the hypothesis class is complex (i.e., contains functions with many decision boundaries), strategy-aware ERM makes learning easier, as it can reduce the VC dimension of the effective learning space. Conversely, for simpler hypothesis classes, vanilla ERM is often the the more direct and efficient approach.
+
+
+\subsection{Some results on hypothesis class with multiple decision boundaries}
+
+A point is called a \textit{decision boundary}, if it assigns different labels to its left and right neighbours. 
+The hypothesis class we consider for our learning algorithms comprises of functions with multiple decision boundaries, requiring us to extend the results established in Theorem \ref{thm:Deterministic Stackelberg equilibrium strategy} (which only had one decision boundary). To achieve this, we examine a generalized version of a decision problem where the true function has multiple decision boundaries. Let $\cg{X} = [0,1]$ represent the feature vector space, and let $\cg{Y} = \{-1, +1\}$ be the label space, and $D \in \fk{D}$ a probability law on $\cg{X}$. Decompose $\cg{X} \text{ as } \cg{X} = O_1 \cup O_2 \cup \cdots \cup O_{d-1}$, where each $O_n$ is a disjoint interval defined as $O_n = [o_{(n)}, o^{(n)})$ for $n < d-1$, $O_{d-1} = [o_{d-1}, 1]$, and $o^{(n)} = o_{(n+1)}$. Define the true function $h(x)$ as follows:
+\begin{equation}\label{eqn:multiple boundary true function}
+    h(x) = \begin{cases}
+        \minus & \text{if } x \in O_n, \; n \text{ is even}, \\
+        \plus & \text{if } x \in O_n, \; n \text{ is odd}.
+    \end{cases}
+\end{equation}
+Let the cost kernel be $\phi(x) = x$, and let $\Delta$ denote the penalty label (as considered in Section \ref{sec:Problem formulation}). Define the utility function $U(y,x)$ as:
+\begin{equation}\label{eqn:Utility2}
+    U(y,x) := \begin{cases}
+        \uu & \text{if } x \in O_n, \; y = \plus, \; n \text{ is even}, \\
+        \uu & \text{if } x \in O_n, \; y = \minus, \; n \text{ is odd}, \\
+        0 & \text{if } y = h(x), \\
+        -\infty & \text{if } y = \Delta.
+    \end{cases}
+\end{equation}
+The structure of the Stackelberg equilibrium strategy generalizes Theorem \ref{thm:Deterministic Stackelberg equilibrium strategy} (when $\up = \um$) and is stated in the following proposition.
+
+\begin{prop}\label{prop:Deterministic Stackelberg equilibrium for multiple decision boundaries}
+	Let $D$ be a probability law on $\cg{X}$, and let $h(x)$ be the true function. Suppose a Stackelberg equilibrium exists for the receiver. Then there exist intervals $\Theta_n \subseteq O_n$ for $n \in \{1, \dots, d-1\}$, such that the receiver strategy $r$ defined by
+	\begin{equation}\label{eqn:stack multiple}
+		r(x;\Theta_1,\cdots,\Theta_{d-1}) = \begin{cases}
+			h(x) & \text{if } x \in \cup_{n=1}^{d-1} \Theta_n, \\
+			\Delta & \text{if } x \not\in \cup_{n=1}^{d-1} \Theta_n,
+		\end{cases}
+	\end{equation}
+	is a Stackelberg equilibrium, and $r \circ s_r$ is of the form
+	\begin{equation*}
+		r(s_r(x)) = \begin{cases}
+			h(x) & \text{if } x \in \cup_{n=1}^{d-1} \Theta_n, \\
+			-h(x) & \text{if } x \not\in \cup_{n=1}^{d-1} \Theta_n.
+		\end{cases}
+	\end{equation*}
+\end{prop}
+
+
+\begin{proof} The proof of the proposition is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:Deterministic Stackelberg equilibrium for multiple decision boundaries}).
+\end{proof}
+
+Our next theorem establishes the VC dimension of a hypothesis class containing hypotheses with multiple decision boundaries.
+
+\begin{prop}\label{prop: VC dimension}
+    Let the hypothesis class $\mathcal{F} \subset \{f| f:\cg{X} \rightarrow \cg{Y}\}$ be a collection of all functions with at most $d-1$ decision boundaries. Then VC dim$(\mathcal{F}) = d$.
+\end{prop}
+
+\begin{proof} The proof of the proposition is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:VC_dimension}).
+\end{proof}

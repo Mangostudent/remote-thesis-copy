@@ -1,0 +1,84 @@
+One intuitive algorithm for the receiver to learn the strategic classifier is to estimate the true function from the sample data. The receiver then plays the screening game under this estimated function, treating it as the true function, and outputs the corresponding Stackelberg equilibrium. The vanilla ERM algorithm expresses this idea.
+Let $D \in \fk{D}$ be a probability law on $\cg{X}$, $h$ be the true function and let $S = \{(x_i, h(x_i))_{i=1}^m\}$ be a sample where $x_i$ are drawn i.i.d. from $D$. Let $D(S)$ be the empirical law of sample $S$ defined as:
+\begin{equation}\label{eqn:empirical measure}
+D(S)(B) := \frac{1}{m}\sum_{i=1}^m \mathbbm{1}_{x_i \in B}  
+\end{equation}
+where $B$ is a Borel measurable set in $\cg{X}$. 
+
+\begin{center}
+	\begin{algorithm2e}[H]\label{algo:Vanilla ERM}\index{Vanilla ERM algorithm|textbf}\index{Empirical Risk Minimization!vanilla ERM|textbf}
+		\SetAlgoLined
+		\DontPrintSemicolon
+		\KwData{$\text{Hypothesis class }\cg{F}, \text{ Sample } S = \{(x_i,h(x_i))\}_{i=1}^m$,\\ $\text{Zero-one loss function } l_h(f,x) := \mathbbm{1}_{\{f(x) \neq h(x)\}}$}
+		
+		\KwResult{Hypothesis $\hat{r}_{erm}$}
+		\BlankLine
+		\tcp{Estimation}
+		$A(S) := \arg\min_{f \in \cg{F}} \sum_{i=1}^m \mathbbm{1}_{\{f(x_i) \neq h(x_i)\}}$\\
+		$D(S) :=\text{Empirical law }$ \\
+		\BlankLine
+		\tcp{Decision}
+		$\hat{r} := r^\star_{A(S),D(S)}$, i.e., Stackelberg equilibrium under true function $\hat{h}$ and probability law $D(S)$\;
+		\caption{Vanilla ERM algorithm}
+	\end{algorithm2e}
+\end{center}
+
+The Algorithm \ref{algo:Vanilla ERM} is initialized by providing a hypothesis class $\cg{F}$ and a sample $S$. In the first step, the algorithm calculates $A(S)$, which estimates the true function $h$ from the sample $S$ via the ERM subroutine. In the second step, it calculates the empirical law $D(S)$ of sample $S$, which is an estimate of the input law $D$ on $\cg{X}$ from which the $x_i$'s in $S$ were chosen. In the third step, it calculates the Stackelberg equilibrium $r^\star_{A(S),D(S)}$ (refer Definition \ref{def:Stackelberg equilibrium}) under the (estimated) true function $A(S)$ and the probability law $D(S)$ on $\cg{X}$, as given in Theorem \ref{thm:Deterministic Stackelberg equilibrium strategy}. 
+
+We show that if the hypothesis class $\cg{F}$ has finite VC dimension, then it is strategically learnable under the Algorithm \ref{algo:Vanilla ERM}.
+
+\begin{thm}\label{thm:Startegic learning for vanilla ERM}
+Let $\mathcal{F} \subseteq \{ f \mid f: \cg{X} \rightarrow \cg{Y} \}$ be a hypothesis class consisting of all functions with at most $d-1$ decision boundaries, where $d <\infty$. Let $A: \cup_{n=1}^\infty (\cg{X} \times \cg{Y})^n \rightarrow \mathcal{F}$ denote the Algorithm \ref{algo:Vanilla ERM} (vanilla ERM algorithm) and let $B: \cg{F} \rightarrow \widetilde{\cg{F}}$ map a hypothesis to its corresponding Stackelberg equilibrium. Then $\cg{F}$ is strategically learnable (cf. Definition \ref{def:Strategically learnable class}) under $B \circ A$.
+\end{thm}
+
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:strategic_learning_vanilla_erm}).
+\end{proof}
+
+We prove the theorem with the help of the following two lemmas. The first lemma states that for a fixed true function $f \in \cg{F}$, the classification errors of the Stackelberg equilibrium strategies $r^\star_{f,D}$ and $r^\star_{f,D(S)}$ are similar for all $D \in \fk{D}$.
+
+\begin{lem}\label{lem:same true function}\index{Dvoretzky--Kiefer--Wolfowitz (DKW) inequality|textbf}
+Let $(\eps, \dlt) \in (0,1)^2$. Let $f \in \cg{F}$ be a true function with at most $K$ true-label intervals (i.e., at most $K-1$ decision boundaries), and let $D \in \fk{D}$ be a probability law on $\cg{X}$. Let $S = \{(x_i, h(x_i))\}_{i=1}^m$ be a sample of size $m$, where the $x_i$'s are drawn i.i.d. according to a probability law $D$, and let $D(S)$ be the empirical law of the sample $S$. Let $r^{\star}_{D(S)}$ and $r^{\star}_{D}$ be the Stackelberg equilibrium under the true function $f$ for probability law $D(S)$ and $D$ respectively. Then, there exists an $\bar{m}(\eps,\dlt)$ such that for all $m > \bar{m}(\eps,\dlt)$ the following holds:
+    \begin{equation*}
+        D^{\otimes m}\big(\cg{E}(r^\star_{f,D(S)};f, D) - \cg{E}(r^\star_{f,D};f, D) \le 4K\eps\big) > 1 - 2e^{-2m\eps^2}.
+    \end{equation*}
+\end{lem}
+
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:same true function}).
+\end{proof}
+
+The next lemma states that for a fixed probability law $D \in \fk{D}$, the classification errors of the Stackelberg equilibrium strategies $r^\star_{A(S),D}$ and $r^\star_{h,D}$ are similar. 
+\begin{rem}
+Notice that $r_{A(S),D}$ is the Stackelberg equilibrium when the estimated true function $A(S)$ is considered the true function. To avoid confusion with the actual true function $h$, which generated the samples, we will refer to $h$ as the \textit{ground true function} and $A(S)$ as the \textit{estimated true function} whenever there is potential for ambiguity.
+\end{rem}
+
+\begin{lem}\label{lem:same distribution}
+Let $(\eps, \dlt) \in (0,1)^2$.
+Let $\mathcal{F} \subseteq \{ f \mid f: \cg{X} \rightarrow \cg{Y} \}$ be a hypothesis class consisting of all functions with at most $d-1$ decision boundaries. Let $A: \cup_{n=1}^\infty (\cg{X} \times \cg{Y})^n \rightarrow \mathcal{F}$ denote the algorithm described in Algorithm \ref{algo:Vanilla ERM} (vanilla ERM algorithm).
+For every ground true function $h \in \mathcal{F}$ and every probability law $D \in \fk{D}$ on $\cg{X}$, the following holds. Let $S = \{(x_i, h(x_i))\}_{i=1}^m$ be a sample of size $m$, where $x_i$ are drawn i.i.d. according to $D$. Let $r^\star_{A(S),D}$ and $r^\star_{h,D}$ be the Stackelberg equilibria under $D$ and the estimated true function $A(S)$ and the ground true function $h(x)$, respectively. Then there exists $\underline{m}(\eps,\dlt) := m_{\cg{F}}^{\mathrm{PAC}}(\eps,\dlt)$ such that for all $m \geq \underline{m}(\eps,\dlt)$, the following holds.
+
+\begin{enumerate}[label=(\alph*)]
+    \item \label{lem:same distribution (a)} The following inequality holds uniformly over all receiver strategies $r \in \msf{R}$:
+    \begin{equation*}
+        D^{\otimes m}\left(\sup_{r \in \msf{R}} |\mathcal{E}(r; h,D) - \mathcal{E}(r; A(S), D)| < \eps\right) > 1 - \dlt.
+    \end{equation*}
+
+    \item \label{lem:same distribution (b)} For receiver Stackelberg equilibria $r^\star_{A(S),D}$ and $r^\star_{h,D}$, we have \begin{equation}\label{eqn:lem:vanilla ERM PAC bound}
+    D^{\otimes m}\big(\mathcal{E}(r^\star_{A(S),D}; h,D) - \mathcal{E}(r^\star_{h,D}; h, D) < 2\eps\big) > 1 - \dlt.
+\end{equation}
+
+Furthermore, the sample complexity $\underline{m}(\eps,\dlt)$ satisfies
+\begin{equation}\label{eqn:sample complexity:lem:same distribution}
+    \begin{aligned}
+        C_1 \frac{d + \log\left(\frac{1}{\dlt}\right)}{\eps} &\leq \underline{m}(\eps,\dlt) \leq C_2 \frac{d \log\left(\frac{1}{\eps}\right) + \log\left(\frac{1}{\dlt}\right)}{\eps}
+    \end{aligned}.
+\end{equation}
+Here $C_1, C_2 > 0$ are constants.
+\end{enumerate}
+
+\end{lem}
+
+
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:same distribution}).
+\end{proof}
+
+The previous theorem only provides sufficient conditions for strategic learnability. We will now present an algorithm that is both a necessary and sufficient condition for a hypothesis class to be strategically learnable.

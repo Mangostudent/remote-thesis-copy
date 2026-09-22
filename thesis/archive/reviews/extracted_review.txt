@@ -1,0 +1,44 @@
+### Progress Tracker
+
+* **Total Findings in Review:** 31 issues
+  * **P0 (Blocking):** 7 issues
+  * **P1 (Substantial):** 16 issues
+  * **P2 (Localized):** 8 issues
+* **Completed so far:** 1 (C2-01 is completely resolved!)
+* **Remaining:** 30 issues
+
+---
+
+### Breakdown by Chapter
+
+| Chapter | Findings | Status |
+| :--- | :--- | :--- |
+| **Ch 1: Introduction** | C1-01 (P1), C1-02 (P2), C1-03 (P2) | 0/3 done |
+| **Ch 2: Strategic Classification** | **C2-01 (P0)** ✅, C2-02 (P0), C2-03 (P1), C2-04 (P1), C2-05 (P2) | **1/5 done** |
+| **Ch 3: Side Information** | C3-01 (P0), C3-02 (P1), C3-03 (P1), C3-04 (P1), C3-05 (P2) | 0/5 done |
+| **Ch 4: Strategic Revelation** | C4-01 (P0), C4-02 (P0), C4-03 (P1), C4-04 (P1), C4-05 (P1), C4-06 (P1), C4-07 (P1) | 0/7 done |
+| **Ch 5: IPO Regulation** | C5-01 (P0), C5-02 (P0), C5-03 (P0), C5-04 (P1), C5-05 (P0), C5-06 (P1), C5-07 (P1), C5-08 (P2) | 0/8 done |
+| **Ch 6: Conclusion** | C6-01 (P1), C6-02 (P1), C6-03 (P2) | 0/3 done |
+
+***
+
+### Next Issue: C2-02 — VC necessity changes the problem (P0 - Blocking)
+
+**Locations:** 
+* `Chapter_2_Strategic_Classification/Sections/4B_strategically_aware_erm.tex:3`
+* `Chapter_2_Strategic_Classification/Sections/A6_proofs_4B.tex:27`
+* `Chapter_2_Strategic_Classification/Sections/A5_proofs_4A.tex:141`
+
+#### What the Reviewer Flagged:
+In Chapter 2 (Section 4B), you claim an **"if and only if"** result: that strategic learnability is possible *if and only if* a certain class has finite VC dimension.
+
+The reviewer identified a logical gap in the **necessity direction** ($\implies$):
+1. Your setup starts from **deterministic / realizable targets** $Y = h(X)$, where $h \in \mathcal{F}$.
+2. To prove that infinite VC implies not learnable (necessity), your proof invokes standard **agnostic PAC learnability** lower bounds. But standard agnostic PAC lower bounds construct adversarial joint distributions over $(X, Y)$ where labels are noisy/random. A lower bound under arbitrary joint laws $(X,Y)$ does **not** automatically prove that the problem is unlearnable when labels are deterministic $Y = h(X)$.
+3. In strategic classification, the effective classifier is $r \circ s_r$, and sender utility depends on the true function $h$. It is not a fixed, target-independent hypothesis class.
+
+#### Reviewer's Proposed Fix:
+* **Option 1 (Easiest & Safest):** Withdraw the claim of "if and only if". Change the theorem to state that finite VC (or uniform convergence of the strategic loss class) is a **sufficient condition** (an "if" statement) for strategic learnability.
+* **Option 2:** If you really want "if and only if", supply an explicit lower-bound reduction with the exact realizable quantifiers, showing that if the class has infinite VC, no strategic learner can learn it under $Y = h(X)$.
+
+What are your thoughts on this one? Do you have an explicit realizable necessity proof, or is dropping "only if" (keeping it as a sufficient condition) acceptable to you?

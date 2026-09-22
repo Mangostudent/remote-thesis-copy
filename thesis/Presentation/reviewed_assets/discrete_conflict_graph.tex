@@ -1,0 +1,46 @@
+\documentclass[tikz,border=3pt]{standalone}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{positioning}
+\definecolor{IITBNavy}{RGB}{0, 51, 102}
+\definecolor{DarkRed}{RGB}{180, 30, 30}
+\definecolor{SafeGreen}{RGB}{34, 139, 34}
+
+\begin{document}
+\begin{tikzpicture}[
+    scale=1.1,
+    ball/.style={circle, draw=IITBNavy, thick, minimum size=1.1cm, inner sep=1pt, font=\small},
+    mis/.style={ball, draw=SafeGreen, fill=SafeGreen!20, line width=1.5pt},
+    conflict/.style={ball, draw=DarkRed, fill=red!15, line width=1.2pt},
+    clash/.style={ball, draw=gray, dashed, fill=gray!10, text=gray!70}
+  ]
+
+  % Nodes (pairs (i,k))
+  \node[mis] (n11) at (0, 2.2) {$(1,1)$};
+  \node[conflict] (n22) at (2.4, 0.6) {$(2,2)$};
+  \node[mis] (n33) at (4.8, 2.2) {$(3,3)$};
+  \node[clash] (n23) at (2.4, 2.8) {$(2,3)$};
+
+  % True labels annotations
+  \node[above=2pt of n11, font=\scriptsize, text=SafeGreen] {$h(1)=\mathbf{-}$};
+  \node[below=2pt of n22, font=\scriptsize, text=DarkRed] {$h(2)=\mathbf{-}$};
+  \node[above=2pt of n33, font=\scriptsize, text=SafeGreen] {$h(3)=\mathbf{+}$};
+  \node[above=2pt of n23, font=\scriptsize, text=gray] {gaming report};
+
+  % Edges
+  \draw[line width=1.8pt, DarkRed] (n22) -- node[midway, below right=1pt, font=\scriptsize\bfseries, text=DarkRed] {gaming conflict} (n33);
+  \draw[thick, DarkRed, dashed] (n22) -- node[midway, left=2pt, font=\tiny, text=DarkRed] {unique report} (n23);
+  \draw[thick, DarkRed, dashed] (n23) -- node[midway, above right=1pt, font=\tiny, text=DarkRed] {label clash} (n33);
+
+  % Legend / Status badges
+  \node[draw=SafeGreen, fill=SafeGreen!10, rounded corners=3pt, font=\scriptsize, align=left] at (0.2, 0.4) {
+    \textbf{MIS Nodes} $I^\star = \{(1,1), (3,3)\}$\\
+    $\implies r(1)=\mathbf{-},\; r(3)=\mathbf{+}$
+  };
+
+  \node[draw=DarkRed, fill=red!10, rounded corners=3pt, font=\scriptsize, align=left] at (4.6, 0.4) {
+    \textbf{Excluded Node} $(2,2)$\\
+    $\implies \mathbf{r(2) = \Delta}$ (penalty)
+  };
+
+\end{tikzpicture}
+\end{document}

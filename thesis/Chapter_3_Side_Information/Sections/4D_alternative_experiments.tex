@@ -1,0 +1,98 @@
+\iffalse
+% Alternative experiment section, added 15 September 2026.
+% The original simulation section is intentionally retained.
+\subsection{Alternative Simulation Study: Predictive Cost of Endpoint Restriction}
+\label{subsec:psil_alternative_experiments}
+
+This study examines the practical effect of allowing interior regularization values. We compare the prediction risk of a model selected from a full regularization grid with that of a model selected only from the smallest admissible regularizer and the feature-only limit. The comparison concerns the risk of fitted models, rather than the minimizer of a theoretical upper bound. In particular, it neither assumes unconditional threshold-based behavior nor uses an estimated signal-imputation ratio to certify a theoretical condition.
+
+\subsubsection{Data-generating model and information available to each procedure}
+
+We generate bounded features and noisy binary variables according to
+\begin{equation}
+X\sim\operatorname{Unif}[-1,1],\qquad
+\mathbb P(Z=1\mid X=x)=\sigma(\beta x),\qquad
+\mathbb P(Y=1\mid X=x,Z=z)=\sigma(x+\gamma z).
+\label{eq:psil_alt_generator}
+\end{equation}
+The unrestricted population logistic minimizers are consequently
+$u^\star=(0,\beta)$ and $w^\star=(0,1,\gamma)$.
+The primary family uses all nine combinations
+$\beta\in\{0.5,2,8\}$ and $\gamma\in\{-2,0.5,2\}$.
+Here $\beta$ controls the predictability of $Z$ from $X$, while $\gamma$ controls its conditional contribution to predicting $Y$.
+The feature distribution is bounded and absolutely continuous, both conditional label probabilities lie strictly between zero and one, and the limiting imputer is $\phi^\star(x)=\operatorname{sign}(x)$ almost surely. Its augmented design $(1,X,\phi^\star(X))$ is nondegenerate. These properties match the structural conditions proposed for the corrected upper bound; we do not claim that the finite sample sizes exceed its potentially conservative theoretical thresholds.
+
+For each repetition, independent samples contain $n=1600$ observations of $(X,Y)$ and $m=400$ observations of $(X,Z)$. The PSIL training procedure does not access the missing coordinate in either partition. We fit the imputer with average logistic loss plus $\mu\|u\|^2$, where $\mu=m^{-1/2}$, and threshold its score at zero, assigning $+1$ only for a strictly positive score. We then fit the primary model with average logistic loss and penalties $\lambda_c=\lambda_x=n^{-1/2}$. All coefficients, including intercepts, are penalized as in the mathematical objective; no coefficient constraint is imposed.
+
+The candidate set contains the 33 finite values
+\[
+\lambda_z=0.025\,10^{j/8},\qquad j=0,\ldots,32,
+\]
+and a separately fitted feature-only model with $w_z=0$, representing $\lambda_z=\infty$. Thus the lower endpoint is exactly $n^{-1/2}=0.025$, and the largest finite grid point, $250$, is not identified with infinity.
+
+An independent validation sample of 2000 jointly observed $(X,Y,Z)$ observations selects the candidate of lowest observed-$Z$ logistic loss. We use the same validation sample to select between the two endpoint candidates. This joint validation sample is additional information beyond the partitioned training protocol: the experiment evaluates retrospective model selection when that information is available, not a target-risk tuning procedure achievable from the two partitions alone. Exact ties use the first candidate in the ordered list, with increasing finite regularizers followed by infinity.
+
+Final evaluation uses numerical integration of the known population risk, rather than reusing validation loss. At each quadrature node for $X$, both values of $Z$ and the conditional law of $Y$ are integrated out. We use 256-point Gauss--Legendre quadrature and check the resulting risk values against 512 points. The maximum discrepancy across the fitted PSIL paths was below $10^{-12}$. Fits use Newton's method with a line search; the maximum absolute objective-gradient residual was below $2.1\times10^{-10}$. These checks concern numerical accuracy and do not establish a general statistical theorem.
+
+Each configuration is repeated 60 times with independent draws. Shaded bands and error bars show the sample mean plus or minus $1.96$ standard errors across repetitions. They describe Monte Carlo uncertainty, not simultaneous coverage over an entire risk curve. Population evaluation is never used to select the validation-based methods. A fully observed training baseline, where shown, uses the true $Z$ values from the primary sample and therefore has strictly more training information than PSIL.
+
+\subsubsection{Risk curves and endpoint-only selection in the primary family}
+
+Figure~\ref{fig:psil_alt_paths} displays mean population logistic risk along the fitted regularization paths. The dashed line is the risk of the fitted feature-only model, whereas the dotted line is the population joint oracle $R(w^\star)$. Their different roles should be distinguished: the latter is a benchmark based on the known generator, not a model learned from partitioned data.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth]{Chapter_3_Side_Information/Alternative_Experiments_20260915/primary/risk_paths.pdf}
+\caption{Population risk across the primary family, with $n=1600$, $m=400$ and 60 repetitions per configuration. Curves correspond to finite regularizers; the feature-only action is fitted separately. Shading shows pointwise Monte Carlo uncertainty.}
+\label{fig:psil_alt_paths}
+\end{figure}
+
+The primary family exhibits predominantly endpoint selections. In each configuration, the interior selection frequency is at most $1/60$. The mean difference between endpoint-only and full-search selection is zero or a small negative value, with magnitude below $8\times10^{-6}$ logistic-loss units. A negative difference is possible because both methods are selected using a finite validation sample: enlarging the candidate set does not guarantee smaller independently evaluated risk in every repetition. These results describe this family and do not imply that interior regularizers are generally unnecessary.
+
+Figure~\ref{fig:psil_alt_selection} reports both selection frequencies and the paired risk difference
+\[
+D=R(\hat w_{\mathrm{endpoint\ selection}})
+-R(\hat w_{\mathrm{full\ search}}).
+\]
+Positive values mean that restricting the search to endpoints incurs a predictive cost. Paired differences use the same training and validation draws within each repetition.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Chapter_3_Side_Information/Alternative_Experiments_20260915/primary/selection_and_cost.pdf}
+\caption{Primary family: validation-selection frequencies (left) and paired population-risk cost of endpoint-only selection (right). The finite upper grid endpoint is counted as an interior finite action; only the separately fitted $w_z=0$ model represents infinity. Error bars are $1.96$ Monte Carlo standard errors.}
+\label{fig:psil_alt_selection}
+\end{figure}
+
+\subsubsection{Exploratory sensitivity study with a weak side-information effect}
+
+After observing endpoint dominance in the primary family, we performed a separate exploratory sensitivity study with $\gamma=0.1$, retaining $\beta\in\{0.5,2,8\}$ and all other fitting and evaluation conventions. This follow-up is reported separately, and all primary-family results are retained. It is not presented as a pre-specified confirmatory test.
+
+The risk curves in Figure~\ref{fig:psil_alt_weak} show that interior regularization can become useful when the conditional side-information effect is weak. For $\beta=2$, the full search selected an interior value in 58 of 60 repetitions. Its mean population logistic risk was $0.654624$, compared with $0.655528$ for endpoint-only selection and $0.655056$ for the fitted feature-only model. The paired endpoint-restriction cost was $0.000904$. Its approximate Monte Carlo uncertainty interval ranges from $0.000649$ to $0.001159$, calculated as the mean plus or minus $1.96$ standard errors.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Chapter_3_Side_Information/Alternative_Experiments_20260915/weak_signal/weak_signal.pdf}
+\caption{Exploratory weak-effect sensitivity study: mean population logistic risk with $\gamma=0.1$, $n=1600$, $m=400$, and 60 repetitions. Interior minima need not yield large predictive gains. The bands summarize pointwise Monte Carlo uncertainty.}
+\label{fig:psil_alt_weak}
+\end{figure}
+
+For $\beta=0.5$ and $\beta=8$, interior selection occurred in 35 of 60 repetitions in each case. The respective paired endpoint-restriction costs were approximately $0.000063$ and $0.000228$. The former was small relative to its Monte Carlo uncertainty. Thus frequent interior selection is not by itself evidence of a large practical benefit; the corresponding risk difference must also be reported.
+
+As a diagnostic distinct from validation-based selection, we also computed the best population-evaluated risk on each fitted grid and the best population-evaluated risk among its endpoints. For $\beta=2,\gamma=0.1$, the mean difference was $0.000665$. This retrospective grid diagnostic uses knowledge of the generator and is not a deployable selection rule. It indicates that the observed benefit is not solely an artifact of validation selecting the wrong endpoint. It does not prove optimality over all positive regularizers.
+
+\subsubsection{Auxiliary sample size and interpretation}
+
+We additionally vary $m\in\{100,400,1200\}$ at fixed $n=1600$, with $\gamma=2$ and the three values of $\beta$. The $m=400$ results reuse the primary-family repetitions; the other sample-size cells use independent repetitions. Figure~\ref{fig:psil_alt_m} includes PSIL with full-grid and endpoint-only selection, the feature-only fit, a model trained with jointly observed primary data, and the population joint oracle. The two PSIL curves coincide in these configurations because the same endpoint was selected by both searches in every repetition.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{Chapter_3_Side_Information/Alternative_Experiments_20260915/primary/auxiliary_sample_size.pdf}
+\caption{Effect of auxiliary sample size at fixed primary sample size. Joint-data training uses additional training information and is included as a comparison, not as a partitioned-data method. Error bars show $1.96$ Monte Carlo standard errors across 60 repetitions.}
+\label{fig:psil_alt_m}
+\end{figure}
+
+For $\beta=0.5$, mean PSIL risk decreases from approximately $0.6341$ at $m=100$ to $0.6080$ at $m=1200$. For $\beta=2$ and $\beta=8$, the respective values change from $0.4892$ to $0.4828$ and from $0.3359$ to $0.3308$. Changes are not strictly monotone in every finite Monte Carlo comparison, and improvement with $m$ need not eliminate the risk gap to the joint-data benchmark. These experiments do not identify an asymptotic irreducible component merely from a finite-sample plateau.
+
+The combined results support evaluating regularization through risk curves and the cost of a restricted search, rather than requiring every distribution to display the same selection pattern. Endpoints can suffice in one family while interior regularization offers a modest benefit in another. This observation is compatible with a conditional result for the upper-bound optimizer, but it does not validate its thresholds: no population-envelope certificate or bound-based selection is used here. The source code, seeds, all per-repetition risks and selection outcomes, and numerical checks are retained in the accompanying alternative-experiment folder.
+\FloatBarrier
+\fi

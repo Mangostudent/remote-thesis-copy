@@ -1,0 +1,66 @@
+We now provide the steps of the calculations used in Example~\ref{ex:eps stochastic strategy}.
+
+\noindent \textbf{Calculation of Example \ref{ex:eps stochastic strategy}:} \label{cal:eps stochastic strategy}
+ We divide the task of finding $ s_r $ over $ \cg{X} $ into various subintervals of $ \cg{X} $.
+
+\noindent \textit{Case (i):} $ x \in [0,\ibeps) $.\\
+    Let $s_r(x) = x'$. We will show that in the current case, $x=x'$.   
+    If $x' = x$, then $$\mathbb{U}(x;r,s_r) = -|x-x'| = 0.$$ 
+    If $x' \neq x$ and $x' \in [0,\ibeps)$, then $$\mathbb{U}(x;r,s_r) = -|x-x'| < 0.$$
+    If $x' \in [\ibeps,\jbeps]$, then $$\mathbb{U}(x;r,s_r) = 2\uu q_{\eps}(x') - x' + x = \frac{\uu}{\uu + \eps}(x' - \ibeps) - x' + x < x' - \ibeps -x' + x = -\ibeps + x \leq 0,$$ where we have used \eqref{eqn:q eps formula} to expand $q_{\eps}(x')$.
+    If $x' \in (\jbeps,1]$, then $$\mathbb{U}(x;r,s_r) = 2\uu - x' + x < \jbeps - \ibeps - x' + x < -\ibeps  + x < 0,$$ where we have used the fact that $\jbeps - \ibeps > 2\uu$.
+Thus for $x' \neq x$, we have $\mathbb{U}(x;r,s_r) < 0$ whereas for $x' = x$, $\mathbb{U}(x;r,s_r) = 0$. Hence $s_r(x) = x$. 
+        
+
+
+\noindent \textit{Case (ii):} $ x \in [\ibeps,\h] $.\\
+Let $s_r(x) = x'$. We will show that in the current case, $x=x'$. If $x'=x$, then 
+\[\mathbb{U}(x;r,s_r) = 2\uu q_{\eps}(x') - x + x' = \frac{\uu}{\uu+\eps}(x'-\ibeps) -x +x' = \frac{\uu}{\uu+\eps}(x-\ibeps),\] where we have used \eqref{eqn:q eps formula} to expand $q_{\eps}(x')$.    
+If $x' \in [0,\ibeps)$, then 
+\[\mathbb{U}(x;r,s_r) = -x + x' < 0.\]
+If $x' \in [\ibeps,x]$ and $x' \neq x$, then
+\[\mathbb{U}(x;r,s_r) = 2\uu q_{\eps}(x') - x + x' <\frac{\uu}{\uu + \eps}(x- \ibeps),\] where we have used \eqref{eqn:q eps formula} to expand $q_{\eps}(x')$.    
+If $x' \in (x,\jbeps]$, then
+\[\mathbb{U}(x;r,s_r) = 2\uu q_{\eps}(x') - x' + x <  \frac{\uu}{\uu + \eps}(x-\ibeps),\] where we have used \eqref{eqn:q eps formula} to expand $q_{\eps}(x')$. If $x' \in (\jbeps,1]$, then 
+\[\mathbb{U}(x;r,s_r) = 2\uu - x' + x < x - \ibeps - 2\eps < \frac{\uu}{\uu+\eps}(x-\ibeps),\] where we used the fact that $\jbeps - \ibeps =  2\uu + 2\eps$. 
+Thus for $x' \neq x$, we have $\mathbb{U}(x;r,s_r) < \frac{\uu}{\uu+\eps}(x-\ibeps)$ whereas for $x' = x$, $\mathbb{U}(x;r,s_r) =\frac{\uu}{\uu+\eps}(x - \ibeps)$. Hence $s_r(x) = x$.
+
+
+\noindent \textit{Case (iii):} $ x \in [\h, \jbeps] $.\\
+   Let $s_r(x) = x'$. We will show that in the current case, $x=x'$. If $x'=x$, then 
+\[\mathbb{U}(x;r,s_r) = 2\uu(1-q_{\eps}(x')) - x' + x = \frac{-\uu}{\uu+\eps}(x-\ibeps) + 2\uu,\] where we have used \eqref{eqn:q eps formula} to expand $q_{\eps}(x')$.    
+If $x' \in [0,\ibeps)$, then 
+\[\mathbb{U}(x;r,s_r) = 2\uu - x + x' \leq 2\uu + \frac{-u}{\uu + \eps}(x-\ibeps).\]
+If $x' \in (\ibeps,x]$ and $x' \neq x$, then
+\[\mathbb{U}(x;r,s_r) = 2\uu(1-q_{\eps}(x')) - x + x' < 2\uu + \frac{-\uu}{\uu+\eps}(x-\ibeps),\] where we have used \eqref{eqn:q eps formula} to expand $q_{\eps}(x')$.    
+If $x' \in (x,\jbeps]$, then
+\[\mathbb{U}(x;r,s_r) = 2\uu(1- q_{\eps}(x')) - x' + x < \frac{-\uu}{\uu+\eps}(x-\ibeps) + 2\uu,\] where we have used \eqref{eqn:q eps formula} to expand $q_{\eps}(x')$. If $x' \in (\jbeps,1]$, then 
+\[\mathbb{U}(x;r,s_r) = -x' + x < 0.\] 
+Thus for $x' \neq x$, we have $\mathbb{U}(x;r,s_r) < 2\uu - \frac{\uu}{\uu+\eps}(x-\ibeps)$ whereas for $x' = x$, $\mathbb{U}(x;r,s_r) = 2\uu - \frac{\uu}{\uu+\eps}(x-\ibeps)$. Hence $s_r(x) = x$. 
+
+\noindent \textit{Case (iv):} $ x \in (\jbeps, 1] $.\\
+      Let $s_r(x) = x'$. We will show that in the current case, $x=x'$. If $x'=x$, then 
+\[\mathbb{U}(x;r,s_r) = -|x'-x| = 0.\]    
+If $x' \in [0,\ibeps)$, then 
+\[\mathbb{U}(x;r,s_r) < 2\uu - \jbeps +\ibeps = -2\eps < 0\]
+If $x' \in [\ibeps,\jbeps]$, then
+\begin{equation*}
+    \begin{aligned}
+        \mathbb{U}(x;r,s_r) &= 2\uu(1-q_{\eps}(x')) - x + x' = 2\uu + \frac{-\uu}{\uu+\eps}(x' - \ibeps) - x + x' \\
+        &< 2\uu + \frac{-\uu}{\uu +\eps}(x'-\ibeps + x - x')  \leq 2\uu + \frac{-\uu}{\uu + \eps}(\jbeps-\ibeps) =0.
+    \end{aligned}
+\end{equation*}
+ where we have used \eqref{eqn:q eps formula} to expand $q_{\eps}(x')$.    
+If $x' \in (\jbeps,1]$ and $x' \neq x$, then 
+\[\mathbb{U}(x;r,s_r) = -|x'-x| <  0.\] 
+Thus for $x' \neq x$, we have $\mathbb{U}(x;r,s_r) < 0$ whereas for $x' = x$, $\mathbb{U}(x;r,s_r) = 0$.  Hence $s_r(x) = x$. 
+
+Hence, by combining all the cases, we conclude that $ s_r(x) = x $. Therefore,
+    \[
+    T(x; r, s_r) = \prob_{r}\{Y \neq h(x) \mid X' = s_r(x)\} = \begin{cases}
+        0 & \text{if } x \in [0, \ibeps) \cup (\jbeps, 1], \\
+        q_{\eps}(x) & \text{if } x \in [\ibeps, \h], \\
+        1 - q_{\eps}(x) & \text{if } x \in (\h, \jbeps].
+    \end{cases}
+    \]
+    Since $ \cg{E}(r) = \int_\cg{X} T(x) \, dx $, it follows that $ \cg{E}(r) = \frac{\uu + \eps}{2} $.

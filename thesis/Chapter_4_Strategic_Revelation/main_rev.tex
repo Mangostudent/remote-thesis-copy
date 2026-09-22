@@ -1,0 +1,13 @@
+\chapter{Learning under Strategic Feature Revelation}
+\label{ch:strat_rev}
+\graphicspath{{Chapter_4_Strategic_Revelation/figures/}}
+
+In this chapter, we study regression under strategic feature disclosure, where a sender strategically decides whether to voluntarily reveal or withhold features from a receiver. We model this interaction as a screening game and examine three problems that arise under different information structures available to the receiver. First, we study the decision problem, where the environment is known to the receiver. We define the strategic advantage $\Delta(\mathcal{E})$ as the receiver's performance gain from voluntary feature revelation over the mandatory baseline and establish a necessary and a sufficient conditions on the environment for this advantage to be positive. Second, we study the offline learning problem where the receiver has access to finite training data that includes the sender's preferences. We propose an ERM-based algorithm that estimates the strategic advantage and achieves a uniform generalization bound of $\mathcal{O}\left(\frac{d^3 \sqrt{\log n}}{\sqrt{n}} + d^2\sqrt{\frac{\log(1/\delta)}{n}}\right)$, where $d$ is the dimension of the feature space and $n$ is the size of the training data. Third, we study the online learning problem under bandit feedback. We show that the expected risk functions arising in our setting lie in a Sobolev space $H^{\nu+d/2}$ with $\nu=5/2$ whenever the joint density $p_{U,X,Y}$ is smooth and has compact support. Thus, the regularity assumptions underlying the standard Matérn-kernelized Gaussian-process Thompson sampling (GP-TS) algorithm are satisfied in our setting, allowing us to apply GP-TS and obtain its regret guarantee of $\widetilde{\mathcal{O}}\bigl(T^{\frac{5+3d}{10+2d}}\bigr)$.
+
+\input{Chapter_4_Strategic_Revelation/sections/1_introduction}
+\input{Chapter_4_Strategic_Revelation/sections/2_formulation}
+\input{Chapter_4_Strategic_Revelation/sections/3_decision}
+\input{Chapter_4_Strategic_Revelation/sections/4_offline_learning}
+\input{Chapter_4_Strategic_Revelation/sections/5_online_learning}
+\input{Chapter_4_Strategic_Revelation/sections/6_conclusion}
+\input{Chapter_4_Strategic_Revelation/sections/7_postponed_proofs}

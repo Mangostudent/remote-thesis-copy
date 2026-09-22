@@ -1,0 +1,56 @@
+To motivate the solution of the decision problem, we digress and recall a related problem from \cite{singh22strategic}. The problem formulation is almost the same as described in Section \ref{sec:Problem formulation}, and we only highlight the differences.
+Let $\cg{X} = \{1,2,\cdots,n\}$ be a finite set, and $h:\cg{X} \rightarrow \cg{Y}$ be the true function.
+Let $U: \cg{Y} \times \cg{X} \rightarrow \R$ be the utility function such that $U(h(x),x) = 0$ and $C: \cg{X} \times \cg{X} \rightarrow \R$ be the cost function such that $C(x,x) = 0$. We now characterise the Stackelberg equilibrium strategy in terms of the independence number of a sender graph.  The \textit{sender graph} is defined as follows.
+\begin{defn}\label{def:Sender's graph}\index{Sender's graph|textbf}
+	Let $G_h = (V,E)$ be a graph whose node set is $V = \cg{X}^2$. The edge set $E \subset \cg{X}^2 \times \cg{X}^2$ contains an undirected edge between distinct nodes $(\ibb,\kbb)$ and $(\jbb,\lbb)$ if at least one of the following conditions holds:
+	\begin{enumerate}[label=(\alph*)]
+		\item Either $\ibb = \jbb$ and $\kbb \neq \lbb$; or $h(\ibb) \neq h(\jbb)$ and $\kbb = \lbb$.
+		\item $h(\ibb) \neq h(\jbb)$ and either
+		\begin{equation*}
+			\begin{aligned}
+				&U(h(\jbb),\ibb) - C(\lbb,\ibb) + C(\kbb,\ibb) \geq 0 \text{ or}\\
+				&U(h(\ibb),\jbb) - C(\kbb,\jbb) + C(\lbb,\jbb) \geq 0.
+			\end{aligned}
+		\end{equation*}
+	\end{enumerate}
+\end{defn}
+Recall that a subset of nodes in a graph is called an independent set if no edge connects any two nodes in that subset. The next theorem characterises the Stackelberg equilibrium strategy in terms of the maximum independent set of the sender graph.
+\begin{thm}\label{thm:Stackelberg equilibrium for discrete feature space}
+	Let $I$ be an independent set of the graph $G_h$ and $r(\cdot;I)$ be a receiver strategy defined as
+	\begin{equation*}
+		r(\kbb;I) := \begin{cases}
+			h(\ibb) & \text{if } \exists \ibb \text{ such that } (\ibb,\kbb) \in I\\
+			\Delta & \text{otherwise}.
+		\end{cases}
+	\end{equation*}
+	The following statements hold.
+	\begin{enumerate}[label=(\alph*)]
+		\item If $I^{\star}$ is a maximum independent set of $G_h$, then $\rs(\cdot) := r(\cdot;I^{\star})$ is a Stackelberg equilibrium.	
+		\item Conversely, if $\rs(\cdot)$ is a Stackelberg equilibrium, then $I^{\star} := \{(x,\srs(x)): \rs(\srs(x)) = h(x)\}$ is a maximum independent set in $G_h$. 
+	\end{enumerate}
+\end{thm}
+
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:Stackelberg discrete}).
+\end{proof}
+
+To establish the equivalence between an independent set of graph $G_h$ and the correct classification of feature vectors, we rely on the following structural lemma.
+
+\begin{lem}\label{lem:1-1 correspondance between independence set and recoverable feature vector}
+	Let $I$ be an independent set of the graph $G_h$ and $r(\cdot;I)$ be a receiver strategy defined as
+	\begin{equation*}
+		r(\kbb;I) := \begin{cases}
+			h(\ibb) & \text{if } \exists \ibb \text{ such that } (\ibb,\kbb) \in I\\
+			\Delta & \text{otherwise}.
+		\end{cases}
+	\end{equation*}
+    By the definition of $I$, $r(\cdot;I)$ is well defined. The following statements hold:
+	\begin{enumerate}[label=(\alph*)]
+		\item If $I$ is an independent set of $G_h$, then for the receiver strategy $r(\cdot) := r(\cdot;I)$, every feature vector $\ibb$ for which there exists $\kbb$ such that $(\ibb,\kbb) \in I$ is correctly classified, i.e., $r(s_r(\ibb)) = h(\ibb)$. In particular, $|\{x \in \cg{X}: r(s_r(x)) = h(x)\}| \geq |I|$.
+		\item If $r(x)$ is a receiver strategy, then $I := \{(x,s_r(x)): r(s_r(x)) = h(x)\}$ is an independent set in $G_h$, and $|I| = |\{x \in \cg{X}: r(s_r(x)) = h(x)\}|$. 
+	\end{enumerate}
+\end{lem}
+
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:lem independence set}).
+\end{proof}
+
+We have shown that for the decision problem for a discrete feature vector set, the Stackelberg equilibrium strategy $r$ is better than the naive classifier $h$. One of the reasons for this is that $r$ can strategically choose to ignore feature vectors that are manipulation-prone.

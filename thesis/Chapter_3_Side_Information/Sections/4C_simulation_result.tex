@@ -1,0 +1,116 @@
+%!TEX root = ../../main.tex
+\subsection{Simulation Studies}
+
+% OLD CONTENT
+Corollary \ref{cor: three candidates} provides theoretical guidance on the choice of $\lamz$ to minimize the upper bound on excess risk. However, it does not guarantee that the same value of $\lamz$ minimizes the excess risk in practice. To investigate this, we conduct simulations to identify the values of $\lamz$ that minimize the risk of our algorithm on the test set (which is same as minimizing the excess risk).
+
+Let 
+\begin{equation*}
+    \lamz^* := \arg\min_{\lamz} R(\whl),
+\end{equation*}
+ where $R(\cdot)$ denotes the risk evaluated on the test set, serving as a proxy for the population risk.
+
+Our simulation study evaluates the behavior of $\lamz^*$ value, across two distinct scenarios: a collection of toy datasets and a collection of real-world datasets.\coderef{subsec:code_side_exp} 
+\paragraph{Toy DataSet:}
+We generate $100$ different toy distributions over $(X, Y, Z)$, each constructed as follows:
+
+\begin{enumerate}
+    \item The features $X$ are sampled from a Gaussian mixture model, whose parameters and mixing probabilities are randomly chosen.
+    
+    \item Then the weight vectors $u$ and $w$ are sampled from standard normal distribution.    
+    Given fixed weights $u$, the binary variables $Z$ is sampled via logistic models:
+    \[ Z \sim \sigma((1,X)^\top u).\]
+    Once we obtain $Z$, for a fixed weight $w$, the binary variable $Y$ is sampled via a logistic model:
+    \[ Y \sim \sigma((1,X,Z)^\top w).\]
+    
+\end{enumerate}
+
+This process is repeated $100$ times, each with a new random choice of parameters, resulting in a diverse family of distributions. For each distribution, we generate $m=1000$ samples for the $(X, Z)$ dataset (used for learning $X \to Z$), $n=4000$ samples for the $(X, Y)$ dataset (used for learning $X \times Z \to Y$), and $t=20000$ samples for the test set $(X, Y, Z)$ to compute the risk. 
+For every $\lamz \in \{10^{-1}, \cdots, 10^6\}$,
+a logistic regression model is trained and evaluated. The $\lamz^*$ value for each distribution is chosen as the value that yields the lowest risk of the algorithm on the test set.
+
+The frequency of each candidate $\lambda$ value being chosen as $\lamz^*$ across the $100$ distributions is shown in Figure~\ref{fig:figure1}. The simulation results, summarized in the frequency plot, show a strong preference for the extreme values of the regularization parameter $\lamz$. This pattern provides empirical evidence supporting the conditional threshold-like behaviour of $\lambda_z$ established in Corollary \ref{cor: bang_bang}.
+
+Importantly, our goal in this simulation is to evaluate the structural properties of the risk surface, not to propose an operational model-selection protocol. Therefore, rather than selecting $\lamz$ via cross-validation on the training set (which would introduce finite-sample model-selection noise), we perform a retrospective scan using the test set risk to approximate the true population risk. While evaluating on the test set is a form of data snooping in an applied setting, here it serves strictly as an exploratory oracle to compute the best-case $\lamz^*$. Because the threshold-like preference relies on the population signal-to-noise ratio $\rho$, this oracle approach confirms that the algorithm empirically exhibits the conditional threshold-like behavior in practice, reflecting the theoretical bound.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.42\textwidth]{fig1}
+\caption{Frequency of $\lamz^*$ across 100 distributions.}
+\label{fig:figure1}
+\end{figure}
+
+
+
+\paragraph{Real World Data Set:}
+
+
+To validate the threshold-like behavior in practical settings, we examine the $\lamz^*$ values across eight real-world datasets from the OpenML repository. For each dataset, we identify a primary label $Y$ and a relevant binary side-information variable $Z$, while the remaining covariates are treated as features $X$. The datasets are summarized in Table~\ref{tab:realworld-datasets}.
+
+\begin{table}[htbp]
+\centering
+\small
+\caption{Real-world datasets used in the simulation study.}
+\label{tab:realworld-datasets}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l r l l l}
+\toprule
+\textbf{Dataset} & \textbf{Total Size} & \textbf{$Y$ (Label)} & \textbf{$Z$ (Side Info)} & \textbf{$X$ (Features)} \\
+\midrule
+Adult Income & $48{,}842$ & Income ($\le$\$50K / $>$\$50K) & Sex (Male / Female) & 13 demographic features \cite{openml:adult} \\
+Bank Marketing & $45{,}211$ & Class (1 / 2) & V7 (Yes / No) & 15 client features (V1--V16) \cite{openml:bank} \\
+Mushroom & $8{,}124$ & Edibility (Edible / Poisonous) & Bruises (Yes / No) & 21 physical features \cite{openml:mushroom} \\
+Spambase & $4{,}601$ & Email Type (Spam / Non-Spam) & Word ``make'' (Pres. / Abs.) & 56 word/capital statistics \cite{openml:spambase} \\
+Titanic Survivor & $1{,}309$ & Survival (Survived / Died) & Sex (Male / Female) & 3 features (class, age, fare) \cite{openml:titanic} \\
+German Credit & $1{,}000$ & Credit Risk (Good / Bad) & Foreign Worker (Yes / No) & 19 credit/financial features \cite{openml:credit-g} \\
+Diabetes & $768$ & Diabetes Status (+ / --) & Age ($\le 30$ / $> 30$) & 7 medical measurement features \cite{openml:diabetes} \\
+Breast Cancer & $699$ & Diagnosis (Benign / Malignant) & Clump Thickness ($\le 5$ / $> 5$) & 8 cell measurement features \cite{openml:breast-w} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+We employ a 70/30 train-test split for each dataset. The training portion is then partitioned using two regimes: an 80/20 split (80\% feature-label, 20\% feature-side information) and a 50/50 split (equal feature-label and feature-side information). Within each regime, for every value of $\lamz \in \{10^{-1}, \cdots, 10^6\}$,
+a model is trained and evaluated. The $\lamz^*$ value for each distribution is chosen as the value that yields the lowest risk of the algorithm on the test set.
+
+The results are reported as follows. For all eight datasets, we present a bar plot of the value of $\lambda_z^*$ under both the 80/20 and 50/50 regimes (Figure~\ref{fig:figure2}). The results broadly support the theoretical prediction: in both regimes, most datasets select $\lambda_z^*$ near one of the two extreme values of the candidate grid rather than settling at an intermediate value, with only a few exceptions. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.52\textwidth]{fig2}
+\caption{$\lambda_z^*$ across datasets (80/20 and 50/50 regimes).}
+\label{fig:figure2}
+\end{figure}
+
+Furthermore, for the three largest datasets (Adult, Bank, and Mushroom), we present progressive risk plots (Figure~\ref{fig:figure3}) that illustrate how the test risk evolves as the training pool size increases, under both the 80/20 and 50/50 partitioning regimes. Each panel directly compares three approaches: \emph{Full Side Info} (using both $X$ and $Z$ for prediction), \emph{No Side Info} (using only $X$), and \emph{Partitioned Side Info} (our Algorithm~\ref{alg: side information algorithm}, evaluated at the smallest and largest candidate values of $\lambda_z$). The results in Figure~\ref{fig:figure3} show that, for the partitioned side information algorithm, the minimum risk achieved over the smallest and largest candidate values of $\lamz$ consistently lies between the Full Side Info and No Side Info plots.
+
+\begin{figure}[htbp] 
+\centering
+\includegraphics[width=.44\textwidth]{fig3}
+\caption{Risk plots for largest datasets (80/20 and 50/50 regimes).}
+\label{fig:figure3}
+\end{figure}
+
+\FloatBarrier
+
+In this section, we present simulation studies comparing the theoretical upper bound on excess risk (Theoretical RHS) with the actual observed test-set excess risk (Actual LHS), each evaluated at the bound-minimizing regularization parameter $\lambda_z^\star$ \coderef{subsec:code_side_exp}. The simulation strictly implements the Partitioned Side Information Learning (PSIL) procedure defined in Algorithm~\ref{alg: side information algorithm}, directly optimizing the regularized objectives for both the hard imputer $\hat{\phi}(x) \in \{-1, +1\}$ and the primary classifier $\hat{w}_\lambda$, and evaluating deployment risk using observed side information $z$ at test time.
+
+To investigate the theoretical guarantees across diverse distributional regimes, we first evaluate three synthetic toy distributions where the covariates $X \in \mathbb{R}^5$ are sampled from a three-component Gaussian mixture model truncated to a compact Euclidean ball to satisfy Assumption (C1). The distributions represent three distinct regimes: highly informative side information, a moderate signal-imputation balance, and noisy side information. For each distribution, we vary the primary sample size $n \in \{500, 1000, 2000, 5000\}$ with auxiliary sample size $m = n$. We calculate the theoretical upper bound evaluated at the optimal candidate $\lambda_z^\star$ using the envelope constants ($C_1 = C_2 = \mathsf{W} = 1$) and compare it with the empirical excess risk achieved on an independent held-out test set of $20{,}000$ samples across $20$ independent repetitions, displaying $99\%$ confidence bands. As shown in Figure~\ref{fig:excess_risk_toy}, the actual excess risk closely tracks the shape and decay rate of the theoretical upper bound across all three regimes.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_excess_risk_toy.pdf}
+\caption{Theoretical Upper Bound (RHS) and Actual Excess Risk (LHS) with 99\% confidence bands across sample size $n$ ($m=n$) for three truncated Gaussian mixture toy distributions.}
+\label{fig:excess_risk_toy}
+\end{figure}
+
+We conduct an evaluation on three real-world benchmark datasets from the OpenML repository: Adult Income, Bank Marketing, and Mushroom. To ensure strict separation between model selection and evaluation, each dataset is partitioned into three disjoint splits: a training pool ($70\%$) from which $(S, D)$ are sampled across varying sample sizes $n$ ($m = n$), a separate oracle sample ($15\%$) used exclusively to estimate population parameters and select the candidate regularizer $\lambda_z^\star$, and a held-out test set ($15\%$) used solely to evaluate test-set deployment risk. No test observations influence model selection or regularizer tuning. As displayed in Figure~\ref{fig:excess_risk_real}, the actual excess risk decays steadily with increasing sample size, demonstrating consistent alignment with the trajectory of the theoretical upper bound across diverse tabular feature domains.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{fig_excess_risk_real.pdf}
+\caption{Theoretical Upper Bound (RHS) and Actual Excess Risk (LHS) with 99\% confidence bands across sample size $n$ ($m=n$) for Adult Income, Bank Marketing, and Mushroom under strict 3-way sample partitioning.}
+\label{fig:excess_risk_real}
+\end{figure}
+
+\FloatBarrier

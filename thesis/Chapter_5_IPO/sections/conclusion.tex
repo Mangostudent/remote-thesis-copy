@@ -1,0 +1,19 @@
+%======================================================================
+\section{Conclusion, Limitations, and Future Work}
+\label{sec:conclusion}
+%======================================================================
+
+
+
+In this chapter, we presented a game-theoretic framework for strategic IPO regulation, modeling the interaction between a welfare-maximizing financial regulator and a capital-maximizing issuing firm capable of feature window-dressing under a regulatory enforcement budget $\varepsilon$.
+
+Under the \emph{Decision Problem}, we established that the issuing firm's optimal presentation and pricing strategy reduces to solving $2^k-1$ constrained convex optimization subproblems corresponding to candidate buyer subpopulations. We showed that expected social welfare need not be monotone in regulatory tolerance: overly rigid enforcement can prevent viable firms with low perceived valuations at their baseline features from raising sufficient capital, while excessively lax enforcement can enable non-viable firms to mislead investors. An intermediate enforcement level can therefore allow viable firms to improve their market prospects while limiting the ability of non-viable firms to mislead investors.
+
+
+
+
+Under the \emph{Learning Problem}, we modeled online regulatory search as a continuum-armed bandit problem. We established that when the market distribution of $(X,Y,\{N_j\})$ has compact support and admits a smooth probability density function with bounded density and derivatives, 
+the expected welfare function belongs to the Reproducing Kernel Hilbert Space (RKHS) of a Matérn-$5/2$ kernel. Using the established Gaussian Process Thompson Sampling (GP-TS) algorithm, we obtained a provably sublinear cumulative regret of $\widetilde{\mathcal{O}}(T^{2/3})$.
+
+A key limitation of our formulation is the assumption of naive face-value investors who purchase based directly on their personal valuation of the presented features. Promising directions for future work include considering more sophisticated investors and richer dynamics in which the regulator and the issuing firm adaptively learn the market distribution and respond strategically to one another over time.
+

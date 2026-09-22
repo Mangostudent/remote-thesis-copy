@@ -1,0 +1,120 @@
+In this section, we allow the receiver to use a randomized classifier and characterize the Stackelberg equilibrium of the game. This chapter improves upon our previous study in \cite{singh2024optimal} by refining key assumptions and proofs. Let the cost kernel  $\phi(x)$ be $\phi(x) = x$, and let $D$, the probability law of $X$, be uniform. Let $\cg{P}(\cg{Y} \cup \Delta)$ be the set of probability laws on $\cg{Y} \cup \Delta$. A receiver strategy $r$ is a randomized classifier if it is of the form $r: \cg{X} \to \cg{P}(\cg{Y} \cup \Delta)$. This means that for each $x$, $r(x)$ is a probability law on $\cg{Y} \cup \Delta$. In the strategic classification problem, the receiver observes the values of $\cg{X}$ as communicated by the sender. Let $X'$ denote the random variable representing the receiver's observation of $\cg{X}$ that is communicated by the sender, and let $D'$ denote the corresponding probability law. For a sender strategy $s \in \msf{S}$ , the random variable $X'$ is given by $X' = s(X)$, and the probability law $D'$ is given by
+\[
+D'_s(X' \in A) = D(X \in \{x : s(x) \in A\}) = \int_{x : s(x) \in A} dx, \quad \text{for } A \subseteq \cg{X}.
+\]
+We define a joint random variable $(X',Y)$ over $(\cg{X} \times \cg{Y})$ whose probability law is given by
+\[\prob_r(X' \in [x_i,x_j],Y=y) := \int_{x_i}^{x_j}\prob_r(Y=y|X'=x)dD'
+\]
+where
+\begin{equation}\label{eqn:conditional}
+  \prob_{r}(Y=y|X'=x) := r(x)(\{y\}), y \in \cg{Y}\cup \Delta.
+\end{equation}
+We further constrain $r$ such that
+\begin{equation}\label{eqn:receiver condition 1}
+    \exists x \in \cg{X} \text{ for which } \prob_r(\Delta \mid X' = x) = 0.
+\end{equation}
+and the sets
+\begin{equation}\label{eqn:receiver_condition_2}
+\begin{aligned}
+    &\{x : \prob_r(- \mid X' = x) + \prob_r(+ \mid X' = x) = 1, x \leq \h\} \text{ and } \\
+    &\{x : \prob_r(- \mid X' = x) + \prob_r(+ \mid X' = x) = 1, x \geq \h\} \text{ are closed.}
+\end{aligned}
+\end{equation}
+The receiver's strategy set is defined as
+\begin{equation}\label{defn:stochastic_receiver}
+	\msf{R} := \{r \mid r: \cg{X} \to \cg{P}(\cg{Y} \cup \Delta), \; r \text{ satisfies } \eqref{eqn:receiver condition 1} \text{ and } \eqref{eqn:receiver_condition_2}\}.
+\end{equation}
+For a receiver strategy $r$, let
+$$p(x) := \prob_r(Y=\minus|X'=x) \text{ and } q(x) := \prob_r(\{Y=\plus|X'=x\})$$
+be the probabilities of assigning labels $-$ and $+$ to the feature vector $x$, respectively. Consequently, the strategy $r(x)$ be represented as the triplet $(p(x), q(x), 1 - p(x) - q(x))$. Let $$\fk{U}(x;r,s) := \sum_{y \in \cg{Y}\cup \Delta}\prob_r(Y=y|X'=s(x))U(y,x),$$ where $U$ is defined in \eqref{eqn:Utility}.
+Since $r$ is a randomized classifier, the sender's payoff for the receiver's strategy $r$ at the feature vector $x$ is modified to
+\begin{equation*}
+	\mathbb{U}(x; r, s) := \fk{U}(x;r,s)-|s(x),x|.
+\end{equation*}
+We further assume that $0 < \up = \um = 2\uu \ll \min\{\h,1-\h\}$. Let the error function $T(x; r, s, h): \cg{X} \to [0,1]$ be defined as:
+\begin{equation}\label{eqn:error function}
+    T(x; r, s, h) := \prob_{r} \{Y\neq h(x) \mid X' = s(x)\}.
+\end{equation}
+The error function quantifies the error made at each feature vector $x$ by the sender strategy $s$ and the receiver strategy $r$ under the true function $h$. Since $r$ is a randomized classifier, the receiver's payoff is modified to
+\begin{equation}\label{eqn:Receiver_average_error}
+	\cg{E}(r, s; h) := \int_\cg{X} T(x; r, s, h) \, dx.
+\end{equation}
+
+\begin{notn}
+    We sometimes drop some of the arguments from $T(\cdot, \cdot, \cdot, \cdot)$ when it is apparent from the context.
+\end{notn}
+
+For a receiver strategy $r$, the sender's worst-case lazy best response is defined as follows.
+
+\begin{defn}[Worst-case Lazy Best Response]\label{def:Lazy_best_response}\index{Worst-case lazy best response|textbf}\index{Best response!worst-case lazy|textbf}
+Let $r$ be a receiver strategy. Let the set $V(x; r)$ be given as
+	\[
+	V(x; r) := \arg\max_{x' \in \cg{X}}\Big(\sum_{y \in \cg{Y} \cup \Delta} \prob_r(Y=y|X'=x')(U(y,x)-|x'-x|)\Big).
+	\]
+	Let $\bar{B}(r)$ be the set of sender strategies $s$ defined as
+	\begin{equation}
+	\begin{aligned}
+        \bar{B}(r) := \left\{ s : \mathcal{X} \to \mathcal{X} \;\middle\vert{}\; s(x) \in \arg\min_{x' \in V(x; r)} \vert{}x' - x\vert{}, \; \forall x \in \mathcal{X} \right\}.
+	\end{aligned}
+	\end{equation}
+	A sender strategy $s_r$ is called a worst-case lazy best response to a receiver strategy $r$ if
+	\begin{equation*}
+		s_r \in \arg\max_{s' \in \bar{B}(r)} \cg{E}(r, s'; h),
+	\end{equation*}
+	and there does not exist $s' \in \bar{B}(r)$ such that
+	\[
+	T(x; r, s') \geq T(x; r, s_r) \quad \forall x \in \cg{X},
+	\]
+	with $T(x_i; r, s') > T(x_i; r, s_r)$ for some $x_i \in \cg{X}$.
+\end{defn}
+Next, we define the Stackelberg equilibrium strategy.
+\begin{defn}
+	Let $h$ be the true function. A strategy $(r^\star_h,s_{r^\star_h})$ is  a Stackelberg equilibrium if
+	\[r^\star_{h} := \arg\min_{r \in \msf{R}}\cg{E}(r, s_r; h)\] and
+    $s_{r^\star_h}$ is its worst-case lazy best response.
+\end{defn}
+\begin{notn}
+    Sometimes, we refer $r^\star$ itself as Stackelberg equilibrium if $s_{r^\star}$ and $h$ are apparent from the context.
+\end{notn}
+
+There are several reasons for considering the setup where the sender adopts the worst-case lazy best response. First, the existence of a Stackelberg equilibrium under the worst-case best response is hard to guarantee. This stands in stark contrast to the worst-case lazy best response, where we explicitly construct a Stackelberg equilibrium. Second, the error in the Stackelberg equilibrium under the worst-case lazy best response provides a lower bound on the error of the Stackelberg equilibrium (if it exists) under the worst-case best response. This, combined with other results, allows us to calculate the error of the Stackelberg equilibrium under the worst-case best response without having to explicitly construct the equilibrium itself.
+The following proposition and corollary illustrate these points.
+
+\begin{proposition}\label{prop:comparing sender strategy types}
+    Let $r \in \msf{R}$ be a receiver strategy such that its worst-case best response and worst-case lazy best response exist. Let $s$ denote the worst-case best response to $r$, and let $s'$ denote the worst-case lazy best response to $r$. Then, the receiver's error satisfies
+    \[
+    \cg{E}(r, s; h) \geq \cg{E}(r, s'; h).
+    \]
+\end{proposition}
+
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:comparing_sender_types}).
+\end{proof}
+
+\begin{cor}\label{cor:Stackelberg worst case best response error}
+    Suppose there exists a Stackelberg equilibrium $(r^\star, s_{r^\star})$ under the setup where the sender plays the worst-case best response. Then, $\cg{E}(r^\star,s_{r^\star}) = \frac{\uu}{2}$.
+\end{cor}
+
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:Stackelberg worst case best response error}).
+\end{proof}
+
+
+\begin{notn}
+In this subsection, $s_r$ denotes the worst-case lazy best response, not the worst-case best response unless mentioned otherwise.
+\end{notn}
+
+The next theorem gives the structure of a Stackelberg equilibrium.
+
+\begin{thm}\label{thm:Stochastic Stackelberg equilibrium}
+Let the feature space be $\cg{X} = [0,1]$, let $D$ be the uniform distribution on $\cg{X}$, and let the cost kernel be $\phi(x) = x$. Let $h: \cg{X} \to \cg{Y}$ be the true function defined in \eqref{eqn:True function} with class boundary $\h \in (0,1)$. Assume the sender's utility parameters satisfy $0 < \up = \um = 2\uu$, where $\uu < \min\{\h, 1-\h\}$. Let $\hminus := \h - \uu$ and $\hplus := \h + \uu$. Then the randomized receiver strategy $r(\cdot;\hminus,\hplus): \cg{X} \to \cg{P}(\cg{Y} \cup \Delta)$, defined for all $x \in \cg{X}$ by
+\begin{equation}\label{eqn:stochastic_stackelberg}
+		r(x;\hminus,\hplus) := \begin{cases}
+			(1,0,0) & \text{if } x \in [0, \hminus], \\
+			\left(1-\frac{x-\hminus}{2\uu},\, \frac{x-\hminus}{2\uu},\, 0\right) & \text{if } x \in (\hminus,\hplus), \\
+			(0,1,0) & \text{if } x \in [\hplus,1],
+		\end{cases}
+	\end{equation}
+is a Stackelberg equilibrium under the sender's worst-case lazy best response, and the receiver's error is $\cg{E}(r) = \frac{\uu}{2}$.
+\end{thm}
+
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:stochastic_stackelberg_eq}).
+\end{proof}

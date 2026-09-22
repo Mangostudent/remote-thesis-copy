@@ -1,0 +1,34 @@
+\subsection{Proofs of Corollaries for the Upper Bound}\label{subsec:proofs_corollaries_upper_bound}
+
+This subsection contains the proofs of Corollaries \ref{cor: three candidates} and \ref{cor: bang_bang}, which characterize the optimal regularization parameter $\lambda_z^*$ and resulting excess risk bounds.
+
+\begin{proof}[Proof of Corollary \ref{cor: three candidates}]\label{proof:cor_three_candidates}
+ Recall the upper bound on the excess risk from Theorem \ref{thm: main theorem} (excluding the independent $\bigO(1/\sqrt{n})$ term). Setting $a = |\wsz|^2$, $\Delta = T(\vs) - R(\ws)$, and $b_m = \frac{4}{\ln 2}(L(\us) + \frac{C_2}{\sqrt{m}})$, we aim to minimize:
+ \begin{equation*}
+     F(\lamz) = \min\{a\lamz, \Delta\} + b_m \min\left\{\mathsf{W}, \frac{1}{2\lamz}\right\}
+ \end{equation*}
+ over the extended domain $[\lambda_0, \infty]$, where $\lambda_0 = 1/\sqrt{n}$, and $F(\infty) = \Delta$.
+ If $a=0$, the oracle is feature-only and $\Delta=0$, so $F(\lamz)=b_m\min\{\mathsf{W}, 1/(2\lamz)\}$, which is minimized at $\lambda_0$ or $\infty$. We thus assume $a>0$ and $\Delta>0$. 
+ 
+ Let $t = 1/(2\mathsf{W})$ and $s = \Delta/a$. The function $F(\lamz)$ has two breakpoints. Below both breakpoints ($\lamz \le \min\{s, t\}$), $F$ increases since $F'(\lamz) = a > 0$. Above both breakpoints ($\lamz \ge \max\{s, t\}$), $F$ decreases since $F'(\lamz) = -b_m/(2\lamz^2) < 0$. If $s < t$, the intervening plateau is $\Delta + b_m \mathsf{W} > \Delta$. If $t < s$, the intervening expression is $a\lamz + b_m/(2\lamz)$, which has a stationary point at $\lambda_I = \sqrt{b_m/(2a)}$. The derivative jumps downward at both kinks, so neither kink introduces an additional strict local minimum. Therefore, a minimizer can be selected from at most three extended candidate points: the lower endpoint $\lambda_0$, the upper endpoint $\infty$, or the interior point $\lambda_I$.
+ \end{proof}
+ 
+ \begin{proof}[Proof of Corollary \ref{cor: bang_bang}]\label{proof:cor_bang_bang}
+ Assume $a > 0$, $\Delta > 0$, and $L(u^*) > 0$. We hold the population constants and confidence fixed, and let $m, n \to \infty$. 
+ Define the constants:
+ \begin{equation*}
+     d = \Delta / a, \quad c_0 = 4/\ln 2, \quad A = 2c_0/d^2, \quad B = c_0 \mathsf{W}^2/2, \quad T = c_0 \mathsf{W} / d.
+ \end{equation*}
+ As $m, n \to \infty$, we evaluate $F$ at the three candidates. The limiting values are $V_\infty = \Delta$, $V_0 = c_0 L(u^*) \mathsf{W}$, and $V_I = L(u^*) \sqrt{2c_0 \rho}$, where $\rho = a/L(u^*)$ is the signal-imputation ratio.
+ The interior candidate beats $\infty$ if and only if $\rho > A$, and it beats the lower endpoint if and only if $\rho < B$. The lower endpoint beats $\infty$ if and only if $\rho > T$.
+ Therefore, we set the critical thresholds as:
+ \begin{equation*}
+     \rho_{\rm low} = \min\{A, T\}, \qquad \rho_{\rm high} = \max\{B, T\}.
+ \end{equation*}
+ \begin{itemize}
+     \item If $\rho < \rho_{\rm low}$, then $\rho < A$ (interior loses to $\infty$) and $\rho < T$ ($\lambda_0$ loses to $\infty$), so the upper endpoint strictly dominates: $\lambda_z^\star = \infty$.
+     \item If $\rho > \rho_{\rm high}$, then $\rho > B$ (interior loses to $\lambda_0$) and $\rho > T$ ($\infty$ loses to $\lambda_0$), so the lower endpoint strictly dominates: $\lambda_z^\star = \lambda_0$.
+     \item If $\mathsf{W}d > 2$, then $A < T < B$. For $\rho \in (A, B) = (\rho_{\rm low}, \rho_{\rm high})$, the interior strictly beats both endpoints, giving $\lambda_z^\star = \lambda_I$. If $\mathsf{W}d \le 2$, then $B \le T \le A$, so $\rho_{\rm low} = \rho_{\rm high} = T$, and the interior is never strictly preferred.
+ \end{itemize}
+ For strict inequalities away from the thresholds, these comparisons persist for sufficiently large finite $m, n$.
+ \end{proof}

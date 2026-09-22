@@ -1,0 +1,86 @@
+In this subsection, we address the decision problem formulated in Section \ref{sec:Problem formulation}. We analyze the problem for various cases of utility functions.\\
+
+\subsubsection{Case 1: $\um, \up \leq 0$}
+We show that this case is uninteresting as the objectives of the sender and the receiver are aligned as seen in the next theorem.
+
+
+\begin{thm}\label{thm:aligned_utilities} Let $\up,\um \leq 0$. Then,
+$r(x) \equiv h(x)$ is a Stackelberg equilibrium.
+\end{thm}
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:aligned_utilities}).
+\end{proof}
+
+
+\subsubsection{Case 2: $\up \geq 1 \geq \um$}
+
+For this case we show that any receiver $r$ whose range contains the $\plus$ label, can at most only correctly classify  feature vectors whose true label is $\plus$.
+
+
+
+\begin{thm}\label{prop:constant is equib}
+The receiver strategy $r(x) \equiv c$ for all $x \in \cg{X}$, where $c$ is the majority label, is a Stackelberg equilibrium.
+\end{thm}
+
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:constant_is_equib}).
+\end{proof}
+
+
+\subsubsection{Case 3: $\um, \up \geq 1$}
+For this case, we show that for any receiver strategy $r$ whose range contains both $\minus$ and $\plus$ labels does not correctly classify any feature vector.
+
+\begin{thm}\label{thm:large_utilities}
+The receiver strategy $r(x) \equiv c$ for all $x \in \cg{X}$, where $c$ is the majority label is a Stackelberg equilibrium.
+\end{thm}
+
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:large_utilities}).
+\end{proof}
+
+
+\subsubsection{Case 4: $1 \geq \up \geq 0$ and $-\up < \um \leq \up$}
+This case includes scenarios where the sender has a strictly non-uniform preference ($\um \geq 0$) as well as scenarios where the sender has a uniform preference ($-\up < \um < 0$).
+We show that in each of these cases, there exists a receiver Stackelberg equilibrium strategy that belongs to the family of strategies $\sr{R}$ defined as follows.
+
+Let $\hminus,\hplus$ be such that $0 \leq \hminus \leq \h < \hplus \leq 1$ and $\phi(\hplus) - \phi(\hminus) = \up$. Since $\phi$ is a continuously increasing function, such $\hminus$, $\hplus$ exist. Let $r(\cdot;\hminus,\hplus)$ denote a receiver strategy defined as follows
+	\begin{equation*}\label{eqn:simple strategies}
+		r(x;\hminus,\hplus) := \begin{cases}
+			h(x) & \text{if } x \in [0,\hminus] \cup [\hplus,1] \\
+			\Delta & \text{if } x \in (\hminus,\hplus)
+		\end{cases}.
+	\end{equation*}
+Let $$\sr{R}_1 := \{r(\cdot;\hminus,\hplus): 0 \leq \hminus \leq \h < \hplus \leq 1, \phi(\hplus) - \phi(\hminus) = \up\}.$$
+The strategy $r(\cdot,\hminus,\hplus) \in \sr{R}_1$ is identical to the true function $h$ except in the interval $(\hminus,\hplus)$, where it maps the feature vectors to label $\Delta$.
+Let$$\sr{R}_2 := \{r(\cdot): r(\cdot) \equiv \minus\} \cup \{r(\cdot): r(\cdot) \equiv \plus\},$$  be the set of constant-label receiver strategies. Let $\sr{R} := \sr{R}_1 \cup \sr{R}_2$.
+
+
+We define dominance between receiver strategies as follows: for a given probability law $D$ on $\cg{X}$, a strategy $r$ dominates another strategy $\rt$ if $\cg{E}(r) \leq \cg{E}(\rt)$. The next theorem shows that the family of receiver strategies $\sr{R}$ dominates every other receiver strategy. Hence, a receiver can restrict its search for a Stackelberg equilibrium to the set $\sr{R}$ itself.
+\begin{thm}\label{thm:Deterministic Stackelberg equilibrium strategy} Let $D \in \fk{D}$ be a law on $\cg{X}$ and let $h(x)$ be a true function. Let $\phi$ be a cost kernel, with $0 < \up \le 1$ and $-\up < \um \le \up$. Then there exists a Stackelberg equilibrium strategy $r(\cdot) \in \sr{R}$.
+\end{thm}
+
+
+
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:Deterministic Stackelberg equilibrium strategy}).
+\end{proof}
+
+
+
+\subsubsection{Case 5: $1 \geq \up \geq 0$ and $\um \leq -\up$}
+
+This case corresponds to the sender having a uniform preference towards $\plus$ label. The next theorem specifies a Stackelberg equilibrium.
+
+\begin{thm}\label{thm:u_ < - u_+}
+	Let $D \in \fk{D}$ be a probability law on $\cg{X}$ and let $h(x)$ be a true function. If $\phi(\h) + \up \le 1$, let $\hplus \in \cg{X}$ be such that $\phi(\hplus) - \phi(\h) = \up$. Then the receiver strategy
+	\[ r(x;\h,\hplus):=
+	\begin{cases}
+		\minus & \text{for } x \in [0,\h],\\
+		\Delta & \text{for } x \in (\h,\hplus),\\
+		\plus & \text{for } x \in [\hplus,1],
+	\end{cases}\]
+	is a Stackelberg equilibrium with $\cg{E}(r) = 0$.
+\end{thm}
+
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch2} (Proof~\ref{proof:u_ < - u_+}).
+\end{proof}
+
+\begin{rem}
+For the case where $1 \ge \up \ge 0$, $\um \le -\up$, and $\phi(\h) + \up > 1$, we do not yet have an analytical structure for the Stackelberg equilibrium that holds for all $D \in \fk{D}$.
+\end{rem}

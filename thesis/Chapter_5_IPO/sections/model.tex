@@ -1,0 +1,90 @@
+%======================================================================
+\section{Problem Formulation}
+\label{sec:model}
+%======================================================================
+
+We consider a financial market consisting of a regulator, an issuing firm preparing for an initial public offering (IPO), and a population of prospective retail investors. We model the interaction between the regulator and the issuing firm as a Stackelberg screening game, with the regulator acting as the leader and the issuing firm as the follower. Let $\mathcal{X} \subset \mathbb{R}^d$ be a compact, convex feature space representing fundamental business and financial attributes of the firm, and let $X$ be a random variable defined on $\mathcal{X}$.\index{Initial Public Offering (IPO)|textbf}\index{Strategic window dressing|textbf} The total investor population $\mathcal{N}$ is partitioned into $k \ge 2$ heterogeneous investor subpopulations $\{N_j\}_{j=1}^k$ of random sizes such that $\sum_{j=1}^k N_j = \mathcal{N}$. Each subpopulation $j \in \{1, \dots, k\}$ possesses a bounded, concave valuation function $V_j(z)$ over presented features $z \in \mathcal{X}$. The true stock valuation $Y(X)$ is a random variable given by $Y(X) = V_j(X)$ with probability $\gamma_j(X)$, where $\sum_{j=1}^k \gamma_j(X) = 1$ for all $X \in \mathcal{X}$.
+
+
+Let $\mathcal{R} := [0, \infty)$ denote the domain of enforcement tolerance levels available to the regulator. Given an enforcement level $\varepsilon \in \mathcal{R}$, the firm's feasible presentation space is bounded within an $\varepsilon$-ball around its true feature vector, $\mathcal{F}_Z(x, \varepsilon) := \{z \in \mathcal{X} : \|x - z\|_2 \le \varepsilon\}$, while its pricing space is $\mathcal{F}_P := \mathbb{R}_+$.\index{Regulatory enforcement tolerance|textbf}\index{Feasible presentation space|textbf} A strategy profile $(\varepsilon, \mathcal{Z}, \mathcal{P})$ maps each feature-enforcement pair $(x, \varepsilon) \in \mathcal{X} \times \mathcal{R}$ to a presentation choice $\mathcal{Z}(x, \varepsilon) \in \mathcal{F}_Z(x, \varepsilon)$ and a posted price $\mathcal{P}(x, \varepsilon) \in \mathcal{F}_P$.
+
+The issuing firm offers a total share supply of $S = \eta \mathcal{N}$, where $\eta \in (0,1]$ represents the supply ratio. Given a presented feature $Z = \mathcal{Z}(X, \varepsilon)$ and posted price $P = \mathcal{P}(X, \varepsilon)$, investors in subpopulation $j$ purchase a share if and only if their personal valuation satisfies $V_j(Z) \ge P$. The aggregate market demand is given by $D(Z, P, \{N_j\}) = \sum_{j=1}^k N_j \mathbf{1}\{V_j(Z) \ge P\}$. Because total supply is capped at $\eta \mathcal{N}$, in the event of demand oversubscription, shares are allocated uniformly among interested buyers. The actual traded volume is given by $Q(Z, P, \{N_j\}, \varepsilon) := \min\{\eta \mathcal{N},\, D(Z, P, \{N_j\})\}$. Total capital raised by the firm and surplus realized by investors are $\Pi_F = P \cdot Q$ and $\Pi_I = (Y(X) - P) \cdot Q$ respectively.\index{Firm capital raised|textbf}\index{Investor valuation profiles|textbf} The realized per-capita social welfare is defined as
+\begin{equation}\label{eqn:social_welfare_def}\index{Social welfare|textbf}
+W(X, Y, \{N_j\}, \varepsilon; Z, P) := \frac{\Pi_F + \Pi_I}{\mathcal{N}} = \frac{Q(Z, P, \{N_j\}, \varepsilon)\, Y(X)}{\mathcal{N}}.
+\end{equation}
+
+The sequence of events in the market proceeds chronologically as follows
+\begin{enumerate}[(i)]
+    \item \textit{Regulatory Commitment:} The regulator publicly commits to an enforcement tolerance limit $\varepsilon \in \mathcal{R}$.
+    \item \textit{Nature's Move:} Nature samples the firm's true feature $X \sim P_X$, subpopulation sizes $\{N_j\}_{j=1}^k$, and valuation realization $Y(X) = V_j(X)$ with probability $\gamma_j(X)$.
+    \item \textit{Firm Strategy:} The firm observes baseline feature $X$ and regulatory limit $\varepsilon$, choosing an optimal presentation $Z = \mathcal{Z}(X, \varepsilon) \in \mathcal{F}_Z(X, \varepsilon)$ and price $P = \mathcal{P}(X, \varepsilon) \in \mathcal{F}_P$.
+    \item \textit{Market Clearing \& Welfare:} Investors evaluate $V_j(Z)$ and buy if $V_j(Z) \ge P$. Traded volume $Q = \min\{\eta \mathcal{N}, D\}$ yields firm revenue $\Pi_F$ and investor surplus $\Pi_I$, generating realized social welfare $W$.
+\end{enumerate}
+
+We examine this formulation under two distinct regulatory information structures: the \emph{Decision Problem} and the \emph{Learning Problem}.
+
+\subsection{Decision Problem}
+
+In the Decision Problem, the subpopulation valuation functions $\{V_j(x)\}_{j=1}^k$ and the joint probability distribution of $(X, Y, \{N_j\})$ are common knowledge. The regulator knows the joint distribution but not the realized instance $(X, Y, \{N_j\})$, whereas the firm observes its realized baseline feature $X=x$.
+
+For any regulatory enforcement action $\varepsilon \in \mathcal{R}$, the firm selects a presentation and pricing strategy to maximize its expected capital raised at realization $X=x$. This \emph{best response} strategy solves
+
+\begin{equation}
+\label{eq:firm_br}
+\begin{aligned}
+&\bigl(\mathcal{Z}^*(x, \varepsilon),\, \mathcal{P}^*(x, \varepsilon)\bigr) \\
+&\quad \in \arg\max_{z \in \mathcal{F}_Z(x, \varepsilon),\, p \ge 0} \mathbb{E}_{\{N_j\}}\bigl[\Pi_F(z, p, \{N_j\}, \varepsilon)\bigr].
+\end{aligned}
+\end{equation}
+
+The regulator seeks to maximize overall expected social welfare. Anticipating the firm's optimal best response $(\mathcal{Z}^*, \mathcal{P}^*)$ for any enforcement tolerance $\varepsilon$, the regulator solves the Stackelberg optimization problem
+
+\begin{equation}
+\label{eq:reg_opt}
+\begin{aligned}
+\varepsilon^* \in \arg\max_{\varepsilon \in \mathcal{R}} \mathbb{E}_{X,\{N_j\},Y}\Bigl[ &W\bigl(X, Y, \{N_j\}, \varepsilon; \\
+&\mathcal{Z}^*(X, \varepsilon), \mathcal{P}^*(X, \varepsilon)\bigr)\Bigr].
+\end{aligned}
+\end{equation}
+The resulting strategy tuple $(\varepsilon^*, \mathcal{Z}^*, \mathcal{P}^*)$ constitutes the \emph{Stackelberg equilibrium} of the game.
+
+Let
+\begin{equation}
+\mathcal{W}(\varepsilon) := \mathbb{E}_{X,\{N_j\},Y}\Bigl[ W\bigl(X, Y, \{N_j\}, \varepsilon; \mathcal{Z}^*(X, \varepsilon), \mathcal{P}^*(X, \varepsilon)\bigr) \Bigr]
+\end{equation}
+denote the expected social welfare objective function in~\eqref{eq:reg_opt}. To guarantee that $\mathcal{W}(\varepsilon)$ exhibits regular structural properties, we impose the following regularity condition on the market distribution.
+
+
+\begin{assumption}[Regularity of Market Distribution]
+\label{ass:regularity}
+The baseline feature vector $X$ has a smooth, bounded probability density function $f_X(x)$ supported on the compact convex domain $\mathcal{X} \subset \mathbb{R}^d$, the discrete valuation types $Y(X) \in \{V_1(X), \dots, V_k(X)\}$ are governed by smooth conditional probabilities $\gamma_j(x)$, and the resulting expected social welfare function $\mathcal{W}(\varepsilon)$ belongs to the RKHS $\mathcal{H}_k([0, \varepsilon_{\max}])$.
+\end{assumption}
+
+\begin{remark}[Continuous Density on the Subpopulation Simplex]
+\label{rem:simplex}
+For tractability, we model the realized subpopulation sizes $(N_1,\dots,N_k)$ by first drawing $(\pi_1,\dots,\pi_k)$ from a continuous distribution over the positive orthant $\mathbb{R}_+^k$ and then setting
+\[
+N_j = \frac{\pi_j}{\sum_{i=1}^k \pi_i}\mathcal{N},
+\qquad j=1,\dots,k,
+\]
+so that $\sum_{j=1}^k N_j=\mathcal{N}$.
+\end{remark}
+
+\subsection{Learning Problem}
+
+In the Learning Problem, the underlying joint distribution of $(X, Y)$ is unknown to the regulator. To preserve analytical tractability, we consider $k=2$ subpopulations with deterministic, equal subpopulation sizes $N_j = \mathcal{N}/2$ almost surely. The concave valuation functions $\{V_j\}_{j=1}^k$ remain common knowledge. The firm knows the marginal distribution of $X$ and observes its realized feature $X_t$ at each round $t$, whereas the regulator must learn the optimal enforcement tolerance $\varepsilon^*$ through repeated market interactions over a finite horizon $T$. Each round consists of the regulator prescribing tolerance $\varepsilon_t$, the firm choosing best response $(\mathcal{Z}_t^*, \mathcal{P}_t^*)$, and the regulator observing the realized social welfare $W_t$.
+
+A \emph{learning algorithm} for the regulator is a sequence of decision rules $\mathcal{A} = \{\mathcal{A}_t\}_{t=1}^T$, where $\mathcal{A}_t : \mathcal{H}_{t-1} \to \mathcal{R}$ maps historical interactions $\mathcal{H}_{t-1} = \{(\varepsilon_\tau, W_\tau)\}_{\tau=1}^{t-1}$ to enforcement level $\varepsilon_t$. The performance of algorithm $\mathcal{A}$ over horizon $T$ is evaluated by its cumulative pseudo-regret:
+
+\begin{equation}
+\label{eq:pseudo_regret}
+R_T := \sum_{t=1}^T \bigl(\mathcal{W}(\varepsilon^*) - \mathcal{W}(\varepsilon_t)\bigr),
+\end{equation}
+and its realized regret:
+\begin{equation}
+\label{eq:regret}
+\operatorname{Reg}_{\text{real}}(T) := R_T - \sum_{t=1}^T \xi_t,
+\end{equation}
+where $\xi_t = W_t - \mathcal{W}(\varepsilon_t)$ is the zero-mean observation noise. A learning algorithm $\mathcal{A}$ achieves \emph{sublinear pseudo-regret} if $R_T = o(T)$.
+
+% Applied Fix: Decoupled RKHS membership from smooth density assumption.

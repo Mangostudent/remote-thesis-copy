@@ -1,0 +1,43 @@
+\chapter{Code Appendix: Simulation and Implementation Scripts}
+\label{ch:code_appendix}
+
+This appendix provides the Python source code used for the simulations presented across the chapters of this dissertation. To ensure full scientific reproducibility, all scripts fix explicit global pseudo-random seeds (\texttt{seed=42}) across NumPy, Python's \texttt{random}, and scikit-learn estimators, guaranteeing exact reproducibility of all simulation trajectories, numerical outputs, and figures.
+
+\section{Learning with Side Information from Partitioned Data (Chapter 3)}
+\label{sec:code_side_info}
+
+The following script implements the empirical evaluation presented in Chapter 3 comparing the theoretical upper bound on excess risk (RHS) with the empirical test-set excess risk (LHS) across varying sample sizes $n$ and $m$ for three Gaussian mixture toy distributions (Figure~\ref{fig:excess_risk_toy}) and three real-world benchmark datasets (Figure~\ref{fig:excess_risk_real}), corroborating the theoretical rate and conditional threshold-like regularization behavior.
+
+\subsection{Partitioned Side Information Learning Pipeline}
+\label{subsec:code_side_exp}
+\lstinputlisting[language=Python, label={lst:code_side_exp}]{Chapter_3_Side_Information/code/side_information_exp.py}
+
+\section{Strategic Feature Revelation (Chapter 4)}
+\label{sec:code_strat_rev}
+
+The following scripts execute the decision boundary analysis, offline ERM learning bounds under a fat-tailed Student-$t$ mixture distribution, and online Mat\'ern kernelized Thompson Sampling algorithms for strategic feature revelation.
+
+\subsection{Decision Problem Parameter Sweep}
+\label{subsec:code_reg_decision}
+\lstinputlisting[language=Python, label={lst:code_reg_decision}]{Chapter_4_Strategic_Revelation/code/1_regression_decision.py}
+
+\subsection{Offline ERM Learning Gap Analysis}
+\label{subsec:code_reg_learning}
+\lstinputlisting[language=Python, label={lst:code_reg_learning}]{Chapter_4_Strategic_Revelation/code/2_regression_learning.py}
+
+\subsection{Online Kernelized Thompson Sampling}
+\label{subsec:code_online_learning}
+\lstinputlisting[language=Python, label={lst:code_online_learning}]{Chapter_4_Strategic_Revelation/code/3_online_learning.py}
+
+\section{Strategic IPO Regulation (Chapter 5)}
+\label{sec:code_ipo}
+
+The following scripts simulate the firm's optimal window-dressing decision problem across the sensitivity sweep ($\gamma$-sweep) demonstrating the prominent inverted-V non-monotonic welfare trajectory (Figure~\ref{fig:decision_sim}) and implement the regulator's online Gaussian Process Thompson Sampling policy learning procedure.
+
+\subsection{Firm Decision Problem Simulation}
+\label{subsec:code_ipo_decision}
+\lstinputlisting[language=Python, label={lst:code_ipo_decision}]{Chapter_5_IPO/code/decision_sim.py}
+
+\subsection{Regulator Online Bandit Learning}
+\label{subsec:code_ipo_learning}
+\lstinputlisting[language=Python, label={lst:code_ipo_learning}]{Chapter_5_IPO/code/learning_sim.py}

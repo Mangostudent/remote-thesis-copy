@@ -1,0 +1,13 @@
+% !TEX root = ../main.tex
+\chapter{Strategic IPO Regulation under Complete and Incomplete Information}
+\label{ch:ipo}
+\graphicspath{{Chapter_5_IPO/}}
+
+In this chapter, we study the strategic interaction between a financial regulator, responsible for balancing market growth and investor protection, and an issuing firm preparing for an initial public offering (IPO). The regulator prescribes an enforcement tolerance level $\varepsilon$, which bounds the budget by which the firm can window-dress its fundamental feature vector into a presented feature vector while jointly choosing the presentation and share price. The market consists of $k \ge 2$ heterogeneous investor subpopulations with distinct personal valuation functions over the presented features. While the firm seeks to maximize total capital raised, the regulator aims to maximize social welfare by facilitating capital raising by viable firms while curbing misallocations to non-viable firms. We model this interaction as a Stackelberg screening game with the regulator as the leader and the firm as the follower. We analyze this game under two distinct information structures: the \textit{Decision Problem}, in which the feature-valuation distributions are known to the regulator, and the \textit{Learning Problem}, in which these distributions are unknown. In the Decision Problem, we characterize the structure of the firm's optimal pricing and window-dressing decisions and show, through an example, that the optimal regulatory enforcement level can be attained at an interior point. In the Learning Problem, we show that a regulator using a Gaussian Process Thompson Sampling (GP-TS) algorithm with a Mat\'ern-$5/2$ kernel learns the optimal enforcement policy with a sublinear cumulative regret bound of $\widetilde{\mathcal{O}}(T^{2/3})$.
+
+\input{Chapter_5_IPO/sections/intro}
+\input{Chapter_5_IPO/sections/model}
+\input{Chapter_5_IPO/sections/decision}
+\input{Chapter_5_IPO/sections/learning}
+\input{Chapter_5_IPO/sections/conclusion}
+\input{Chapter_5_IPO/sections/postponed_proofs}

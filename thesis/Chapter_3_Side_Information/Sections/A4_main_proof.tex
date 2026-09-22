@@ -1,0 +1,127 @@
+\subsection{Proof of the Main Theorem}\label{subsec: proof of main theorem}
+
+We now present the proof of Theorem \ref{thm: main theorem}.
+
+\begin{proof}[Proof of Theorem \ref{thm: main theorem}]
+    Let $\delta\in(0,1)$. We apply a four-event probability union bound, allocating a failure budget of $\delta/4$ to each of the following events:
+    1. Imputer empirical coercivity holds on $S$ (Lemma \ref{lem: norm bound on u hat}), ensuring $\|\uh\| \le U$.
+    2. Imputer uniform concentration holds on $S$ (Lemma \ref{lem: learning theory on X,Z}), ensuring $L(\uh) - L(\us) \le \eps_{\fk{u}}$. We denote $Q_m := L(\us) + \eps_{\fk{u}}$.
+    3. Primary classifier empirical coercivity holds on $D$ (Lemma \ref{lem: whl bounding}), ensuring $\|\whl\| \le W \le \mathsf{W}$ for all candidate $\lambda$.
+    4. Primary uniform concentration holds on $D$ over the deterministic ball of radius $\mathsf{W}$ (Lemma \ref{lem: uniform ball deviation}), bounding empirical deviations.
+    
+    By the union bound, all four events hold simultaneously with probability at least $1-\delta$. Conditioned on this joint success event, we decompose the LHS of \eqref{eqn: main equation} as follows:
+    The LHS of \eqref{eqn: main equation} can be decomposed as:
+    \begin{equation*}
+    \begin{aligned}
+        R(\whl) - R(w^*) &=
+        \underbrace{R(\whl) - \rph(\whl)}_{(A)} +
+        \underbrace{\rph(\whl) - \rph(\wsl)}_{(B)} +
+        \underbrace{\rph(\wsl) - R(\wsl)}_{(C)} +
+        \underbrace{R(\wsl) - R(w^*)}_{(D)}.
+    \end{aligned}
+    \end{equation*}
+    We will first address the sum of terms $(A)$ and $(C)$.
+    \begin{claim}
+       Conditioned on the joint success event,
+        \begin{equation*}
+        \begin{aligned}
+            R(\whl) - \rph(\whl) + \rph(\wsl) - R(\wsl)
+            \leq \frac{4}{\ln(2)} Q_m \min\Bigg\{\frac{1}{2\lambda_z}, \mathsf{W}\Bigg\}.
+        \end{aligned}
+        \end{equation*}
+    \end{claim}
+
+    \begin{proof}[Proof of Claim]
+        From Lemma \ref{lem: gap in risk when z is replaced with phi hat}, we have,
+        \begin{equation*}
+            |R(\whl) - \rph(\whl)|
+            \leq 2|\whlz|L_{(0,1)}(\uh),\textrm{ and }
+            |R(\wsl) - \rph(\wsl)|
+            \leq 2|\wslz|L_{(0,1)}(\uh).
+        \end{equation*}
+        The pointwise inequality
+        $\ln(1+e^{-t})\geq\ln(2)\mathbbm{1}_{\{t\leq0\}}$
+        gives $L_{(0,1)}(u)\leq L(u)/\ln(2)$.
+        Thus, we get
+        \begin{equation*}
+            \begin{aligned}
+                  R(\whl) - \rph(\whl) + \rph(\wsl) - R(\wsl) &\leq |R(\whl) - \rph(\whl)| + |R(\wsl) - \rph(\wsl)|\\
+                  &\leq 2L_{(0,1)}(\uh)(|\whlz| + |\wslz|) \leq \frac{2}{\ln(2)}L(\uh)(|\whlz| + |\wslz|)
+            \end{aligned}
+        \end{equation*}
+        From the joint success event, we have $L(\uh) \le Q_m$, yielding
+        \begin{equation*}
+            R(\whl) - \rph(\whl) + \rph(\wsl) - R(\wsl) \leq \frac{2}{\ln(2)}Q_m(|\whlz| + |\wslz|).
+        \end{equation*}
+        Lemma \ref{lem: bound weights in terms of lambda} gives
+        $|\whlz|,|\wslz|\leq 1/(2\lambda_z)$.
+        From the joint success event, both magnitudes are also bounded by the deterministic population envelope $\mathsf{W}$. Taking the minimum of the two upper bounds, their sum is at most twice the common cap. Hence
+        \[
+        (A)+(C)\leq\frac{4Q_m}{\ln2}
+        \min\left\{\frac{1}{2\lambda_z},\mathsf W\right\}.
+        \]
+        This proves the claim.
+    \end{proof}
+
+    We next address the sum of terms $(B)$ and $(D)$.
+    \begin{claim}
+    Conditioned on the joint success event, setting the radius to the deterministic envelope $\mathsf{W}$, we obtain for all $\lambda_z \geq n^{-1/2}$,
+    \[
+    (B)+(D)\leq
+    \min\{\lambda_z|w_z^\star|^2,T(\vs)-R(\ws)\}
+    +\frac{C_1(\mathsf{W},\delta)}{\sqrt n},
+    \]
+    where
+    \[
+     C_1(\mathsf{W},\delta)=2\Gamma(\mathsf{W},K_Z,\delta/4)
+     +\max\{|w_c^\star|^2+\|w_x^\star\|^2,\|\vs\|^2\},
+     \]
+     where $K_Z$ is the feature bound for $(1,X,Z)$.
+    \end{claim}
+    \begin{proof}[Proof of Claim]
+    Let $\varepsilon_n=\Gamma(\mathsf{W},K_Z,\delta/4)/\sqrt n$ and
+    $J_\lambda(w)=n^{-1/2}(|w_c|^2+\|w_x\|^2)+\lambda_z|w_z|^2$.
+    By the empirical optimality of $\whl$, we have $\rhph(\whl)+J_\lambda(\whl) \leq \rhph(\wsl)+J_\lambda(\wsl)$. On our joint success event, both $\|\whl\|$ and $\|\wsl\|$ are bounded by $\mathsf{W}$. Thus, applying the uniform deviation bound from Lemma \ref{lem: uniform ball deviation} on the ball of radius $\mathsf{W}$, we obtain
+    \begin{equation}\label{eqn: replacing w hat with w lambda star}
+    \rph(\whl)+J_\lambda(\whl)
+    \leq\rph(\wsl)+J_\lambda(\wsl)+2\varepsilon_n,
+    \end{equation}
+    which rearranges to $\rph(\whl) - \rph(\wsl) \leq J_\lambda(\wsl) - J_\lambda(\whl) + 2\varepsilon_n$.
+    Recalling that $(B) = \rph(\whl) - \rph(\wsl)$ and $(D) = R(\wsl) - R(\ws)$, adding them yields
+    \begin{equation}\label{eqn: imputed risk of whl - imputed risk of wsl}
+    \begin{aligned}
+    (B)+(D) &\leq R(\wsl)+J_\lambda(\wsl)-R(\ws) - J_\lambda(\whl) + 2\varepsilon_n.
+    \end{aligned}
+    \end{equation}
+    Next, from Corollary \ref{cor: v star and w star infinity}, subtracting $R(\ws)$ from both sides of \eqref{eqn: population comparator bound} gives
+    \begin{equation}\label{eqn: risk of whl minus risk of ws}
+    \begin{aligned}
+    R(\wsl)+J_\lambda(\wsl)-R(\ws)
+    \leq\min\Big\{&
+       \lambda_z|w_z^\star|^2+
+       \frac{|w_c^\star|^2+\|w_x^\star\|^2}{\sqrt n},\\
+       &T(\vs)-R(\ws)+\frac{\|\vs\|^2}{\sqrt n}\Big\}.
+    \end{aligned}
+    \end{equation}
+    Substituting \eqref{eqn: risk of whl minus risk of ws} into \eqref{eqn: imputed risk of whl - imputed risk of wsl} and noting that $-J_\lambda(\whl) \leq 0$, we have
+    \begin{equation*}
+    \begin{aligned}
+    (B)+(D) &\leq \min\Big\{\lambda_z|w_z^\star|^2+
+       \frac{|w_c^\star|^2+\|w_x^\star\|^2}{\sqrt n},\,
+       T(\vs)-R(\ws)+\frac{\|\vs\|^2}{\sqrt n}\Big\} + 2\varepsilon_n \\
+       &\le \min\big\{\lambda_z|w_z^\star|^2,\, T(\vs)-R(\ws)\big\} + \frac{C_1(\mathsf{W},\delta)}{\sqrt n},
+    \end{aligned}
+    \end{equation*}
+    where $C_1(\mathsf{W},\delta) = 2\Gamma(\mathsf{W},K_Z,\delta/4) + \max\{|w_c^\star|^2+\|w_x^\star\|^2,\, \|\vs\|^2\}$. This proves the claim.
+    \end{proof}
+
+    Finally, combining the bound on $(A)+(C)$ from the first claim with the bound on $(B)+(D)$ from the second claim, we obtain the excess-risk inequality:
+    \begin{equation*}
+    \begin{aligned}
+        R(\whl) - R(\ws) &= (A) + (B) + (C) + (D) \\
+        &\leq \frac{C_1(\mathsf{W},\delta)}{\sqrt n} + \min\big\{\lambda_z|w_z^\star|^2,\, T(\vs)-R(\ws)\big\} \\
+        &\quad + \frac{4Q_m}{\ln(2)}\min\left\{\frac{1}{2\lambda_z},\, \mathsf{W}\right\},
+    \end{aligned}
+    \end{equation*}
+    which completes the proof of Theorem \ref{thm: main theorem}.
+\end{proof}

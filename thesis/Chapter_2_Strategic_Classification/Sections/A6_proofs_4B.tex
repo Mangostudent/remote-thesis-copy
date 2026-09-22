@@ -1,0 +1,45 @@
+We begin with the proof of Theorem~\ref{thm:Fundamental theorem of strategic learning}.
+
+\begin{apdxproof}(Proof of Theorem \ref{thm:Fundamental theorem of strategic learning})\label{proof:Fundamental theorem of strategic learning}
+Let $D \in \fk{D}$ be the probability law on $\cg{X}$ and let $(\eps,\dlt) \in (0,1)^2$. Let $h \in \cg{F}$ be the true function and let $S = \{(x_i,y_i)\}_{i=1}^m$ be an $m$-sized sample where $x_i$'s are drawn i.i.d. from $D$. Let $\cg{E}(r,f) := \cg{E}(r,s_r,f,D)$. The strategy-aware ERM algorithm is similar to the vanilla ERM algorithm but applied to the modified hypothesis class $\widetilde{\cg{F}}$ under the zero-one loss function 
+\[
+\ell_h(r \circ s_r, x) = \mathbbm{1}_{\{r(s_r(x)) \neq h(x)\}}.
+\]
+We first prove the if part.
+Let $A(S)$ be the hypothesis obtained from the strategy-aware ERM algorithm. Since $\text{VC dim}(\widetilde{\cg{F}}) < \infty$, we know that $\widetilde{\cg{F}}$ is agnostic PAC learnable from Theorem~\ref{thm:Fundamental theorem of statistical learning}. Furthermore, from Theorem~\ref{thm:Fundamental theorem of statistical learning}, for $m \geq m_{\widetilde{\cg{F}}}^{\mathrm{agn}}(\eps,\dlt)$, we have
+\begin{equation}\label{eqn:lem:startegic learnable}
+    \begin{aligned}
+        D^{\otimes m}\left(\cg{E}(A(S), h) - \min_{r \circ s_r \in \widetilde{\cg{F}}} \cg{E}(r, h) < \eps\right) > 1 - \dlt.
+    \end{aligned}
+\end{equation}
+Note that by construction of $\widetilde{\cg{F}}$, we have
+\[
+    \min_{f \in \cg{F}} \cg{E}(r^\star_{f,D}, s_{r^\star_{f,D}}, h, D) = \min_{r \circ s_r \in \widetilde{\cg{F}}} \cg{E}(r, s_r, h, D).
+\]
+Substituting $\min_{r \circ s_r \in \widetilde{\cg{F}}} \cg{E}(r, h) = \cg{E}(r^\star_{h,D}; h, D)$ into \eqref{eqn:lem:startegic learnable}, we obtain
+\begin{equation}\label{eqn:thm:fundamental theorem of strategic learning}
+    \begin{aligned}
+        D^{\otimes m}\left(\cg{E}(A(S), h) - \cg{E}(r^\star_{h,D}; h, D) < \eps\right) > 1 - \dlt.
+    \end{aligned}
+\end{equation}
+Since the choice of $D \in \fk{D}$, $(\eps,\dlt) \in (0,1)^2$, and $h \in \cg{F}$ were arbitrary, \eqref{eqn:thm:fundamental theorem of strategic learning} shows that $\cg{F}$ is strategically learnable under $A$ with sample complexity $m_{\cg{F}}(\eps,\dlt) = m_{\widetilde{\cg{F}}}^{\mathrm{agn}}(\eps,\dlt)$.
+
+\noindent Next, we prove the only if part. 
+Suppose $\cg{F}$ is strategically learnable under Algorithm $A$ (Strategy-aware ERM). Then by Definition~\ref{def:Strategically learnable class}, 
+\begin{equation}\label{eqn:thm:fundamental strategic learning bound}
+    D^{\otimes m}\Big( \cg{E}(A(S); h, D) - \cg{E}(r^\star_{h, D}; h, D) < \eps \Big) > 1 - \dlt
+\end{equation}
+holds for $m \geq m_{\cg{F}}(\eps,\dlt)$.
+Note that from the definition of $r^\star_{h,D}$, we have $\cg{E}(r^\star_{h,D};h,D) \leq \cg{E}(r;h,D)$ for all $r \circ s_r \in \widetilde{\cg{F}}$, which means $\cg{E}(r^\star_{h, D}; h, D) = \inf_{r \circ s_r \in \widetilde{\cg{F}}} \cg{E}(r; h, D)$. Furthermore, from the definitions of $\cg{E}(\cdot;h)$ and the risk $L_D(\cdot;h)$, we have $\cg{E}(r \circ s_r; h, D) = L_D(r \circ s_r; h)$.
+Therefore, \eqref{eqn:thm:fundamental strategic learning bound} reduces to 
+\begin{equation}\label{eqn:them:fundamanetal strategic learning bound}
+    D^{\otimes m}\Big( L_D(A(S);h) - \inf_{r \circ s_r \in \widetilde{\cg{F}}} L_D(r \circ s_r;h) < \eps \Big) > 1 - \dlt.
+\end{equation}
+Note that Algorithm $A$ outputs $\hat{r}_{\text{serm}} \circ s_{\hat{r}_{\text{serm}}}$, which minimizes the empirical risk over $\widetilde{\cg{F}}$ and is exactly the Empirical Risk Minimization (ERM) rule applied to the hypothesis class $\widetilde{\cg{F}}$. For the ERM rule to guarantee this bound uniformly over all true functions $h \in \cg{F}$ and probability laws $D$, the class $\widetilde{\cg{F}}$ must satisfy the uniform convergence property. By the fundamental theorem of statistical learning (Theorem~\ref{thm:Fundamental theorem of statistical learning}), the uniform convergence of empirical risk to true risk for an ERM rule over a hypothesis class holds if and only if the class has a finite VC dimension. Consequently, we must have $\text{VC dim}(\widetilde{\cg{F}}) < \infty$.
+\end{apdxproof}
+
+Next, we present the proof of Corollary~\ref{cor:SERM is more widely applicable than vanilla ERM}.
+
+\begin{apdxproof}(Proof of Corollary \ref{cor:SERM is more widely applicable than vanilla ERM})\label{proof:SERM is more widely applicable than vanilla ERM}
+From Theorem~\ref{thm:Startegic learning for vanilla ERM}, having a finite VC dimension for $\cg{F}$ ($\text{VC dim}(\cg{F}) < \infty$) is a sufficient condition for $\cg{F}$ to be strategically learnable (via the vanilla ERM algorithm). On the other hand, by Theorem~\ref{thm:Fundamental theorem of strategic learning}, $\text{VC dim}(\widetilde{\cg{F}}) < \infty$ is a necessary and sufficient condition for strategic learnability. Consequently, if $\text{VC dim}(\cg{F}) < \infty$, then $\cg{F}$ is strategically learnable, which by necessity implies that $\text{VC dim}(\widetilde{\cg{F}}) < \infty$.
+\end{apdxproof}

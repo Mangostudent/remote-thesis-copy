@@ -1,0 +1,67 @@
+\chapter{Strategic Classification for Non-uniform Preferences using Penalty Labels and Randomisation}
+\label{ch:strat_class}
+
+Strategic classification is the problem of classifying feature vectors that can be manipulated at the testing phase of the classifier. The classifier aims for its decision rule to be robust against strategic manipulation and also be efficiently learnable. In this chapter, we present two main ideas for the classifier to achieve this goal. The first idea is to enrich the classifier's decision-making capabilities in two ways: ignoring feature vectors and making randomized decisions. This approach helps the classifier classify more feature vectors correctly by limiting the sender's options for manipulation. The second idea is to use the strategic structure of the problem during learning. This approach, in certain contexts, can simplify the learning process. Combining these ideas, we propose and compare two learning algorithms, Vanilla ERM and Strategy-aware ERM, and provide a heuristic for selecting the one that yields a classifier both robust to strategic manipulation and efficiently learnable.
+
+\input{Chapter_2_Strategic_Classification/Sections/1_introduction}
+
+\section{Problem Formulation}\label{sec:Problem formulation}
+\input{Chapter_2_Strategic_Classification/Sections/2_problem_formulation}
+
+\section{Decision Problem}\label{sec:Decision problem}
+\input{Chapter_2_Strategic_Classification/Sections/3_decision_problem}
+
+\subsection{Motivating example: discrete feature space}\label{subsec:Discrete feature space}
+\input{Chapter_2_Strategic_Classification/Sections/3A_discrete_feature_set}
+
+\subsection{Deterministic strategies for the receiver}\label{subsec:Deterministic strategy}
+\input{Chapter_2_Strategic_Classification/Sections/3B_deterministic_strategy}
+
+\subsection{Multi-dimensional decision problem}\label{subsec:Multidimensional decision problem}
+\input{Chapter_2_Strategic_Classification/Sections/3C_multidimensional_decision_problem}
+    
+\subsection{Stochastic strategies for the receiver}\label{subsec:Stochastic strategy}
+\input{Chapter_2_Strategic_Classification/Sections/3D_stochastic_strategy}
+
+\subsection{Examples and comparison}\label{subsec:Examples and comparision}
+\input{Chapter_2_Strategic_Classification/Sections/3E_examples_and_comparison}
+
+\section{Learning the Stackelberg equilibrium}\label{sec:Learning problem}
+\input{Chapter_2_Strategic_Classification/Sections/4_learning}
+
+\subsection{Vanilla ERM}\label{subsec:Vanilla ERM}
+\input{Chapter_2_Strategic_Classification/Sections/4A_standard_erm}
+
+\subsection{Strategy aware ERM}\label{subsec:Stragically aware ERM}
+\input{Chapter_2_Strategic_Classification/Sections/4B_strategically_aware_erm}
+
+\subsection{Comparison between algorithms}\label{subsec:comparision}
+\input{Chapter_2_Strategic_Classification/Sections/4C_comparison_between_algorithms}
+
+\section{Conclusion, Limitations, and Future Work}
+\input{Chapter_2_Strategic_Classification/Sections/5_conclusion}
+
+\section{Proofs and Supporting Results}\label{sec:proofs_ch2}
+
+This section contains the proofs and supporting arguments for the results presented in this chapter.
+
+\subsection{Proofs for Discrete Feature Space}\label{subsec:proofs_discrete_feature_space}
+\input{Chapter_2_Strategic_Classification/Sections/A0_proofs_3A}
+
+\subsection{Proofs for Deterministic Strategies}\label{subsec:proofs_deterministic_strategy}
+\input{Chapter_2_Strategic_Classification/Sections/A1_proofs_3B}
+
+\subsection{Proofs for the Multi-Dimensional Decision Problem}\label{subsec:proofs_multidimensional_decision}
+\input{Chapter_2_Strategic_Classification/Sections/A2_proofs_3C}
+
+\subsection{Proofs for Stochastic Strategies}\label{subsec:proofs_stochastic_strategy}
+\input{Chapter_2_Strategic_Classification/Sections/A3_proofs_3D}
+
+\subsection{Calculations for Examples and Comparison}\label{subsec:proofs_examples_comparison}
+\input{Chapter_2_Strategic_Classification/Sections/A4_calculations_3E}
+
+\subsection{Proofs for Multiple Decision Boundaries and Vanilla ERM}\label{subsec:proofs_vanilla_erm}
+\input{Chapter_2_Strategic_Classification/Sections/A5_proofs_4A}
+
+\subsection{Proofs for Strategy-Aware ERM}\label{subsec:proofs_strategy_aware_erm}
+\input{Chapter_2_Strategic_Classification/Sections/A6_proofs_4B}

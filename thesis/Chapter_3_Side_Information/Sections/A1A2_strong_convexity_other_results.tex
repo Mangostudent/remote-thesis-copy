@@ -1,0 +1,225 @@
+\subsection{Lemmas About Generalization Gap from Existing Literature}
+
+In this section, we review key results from \cite{della2021regularized} that will be used in the proof of the main theorem (Theorem \ref{thm: main theorem}). For convenience, we restate these theorems below. Before doing so, we summarize the assumptions and notation on which those results rely.
+
+Let $\cg{H}$ be the hypothesis space, $\cg{H}^\star$ (the dual space of $\cg{H}$) be the feature space, and $\cg{B}$ the label space. Let $\mathtt{l}(b, r) \in \R$ denote the loss function, where $b \in \cg{B}$ and $r$ is the score given by the inner product between the hypothesis and the feature vector. Consider the following assumptions.
+
+
+\begin{enumerate}
+    \item[(AI)] Let $\cg{H}$ be a real separable Hilbert space with inner product $\langle \cdot, \cdot \rangle$, and let $\cg{B}$ be a Polish space.
+    Let $(A, B)$ be a random variable taking values in $\cg{H} \times \cg{B}$ with distribution $P$, and suppose there exists $\alpha > 0$ such that $\|A\| \leq \alpha$ almost surely.   
+
+    \item[(AII)] The loss function $\mathtt{l}: \cg{B} \times \R \rightarrow [0,\infty)$ is Lipschitz in its second argument, namely there exists $G > 0$ such that for all $b \in \cg{B}$ and $r,r' \in \R$, we have $|\mathtt{l}(b,r) - \mathtt{l}(b,r')| \leq G|r-r'|$.
+    \item[(AIII)] Let $\fk{L}(\mathtt{w}) := \int_{\mathcal{H} \times \mathcal{B}} \mathtt{l}(b, \langle \mathtt{w}, a \rangle) \, dP(a, b)$ denote the population risk. Suppose there exists $\mathtt{w}_* \in \mathcal{H}$ such that $\fk{L}(\mathtt{w}_*) = \inf_{\mathtt{w} \in \mathcal{H}} \fk{L}(\mathtt{w})$. For $\lambda > 0$, let $\widehat{\mathtt{w}}_\lambda \in \mathcal{H}$ be defined by $\widehat{\mathtt{w}}_\lambda := \arg\min_{\mathtt{w} \in \mathcal{H}} \frac{1}{n} \sum_{i=1}^n \mathtt{l}(b_i, \langle \mathtt{w}, a_i \rangle) + \lambda \|\mathtt{w}\|^2$.
+\end{enumerate}
+
+
+We first restate Theorem 1 from \cite{della2021regularized}.
+\begin{lem}[Theorem 1, \cite{della2021regularized}]
+Suppose the assumptions (AI), (AII), and (AIII) hold. Then for sample size $n$ and for all $\lambda > 0$ and $0 < \delta < 1$, with probability at least $1 - \delta$, the following inequality holds:
+\begin{equation*}
+    \fk{L}(\widehat{\mathtt{w}}_\lambda) - \fk{L}(\mathtt{w}_*) \leq \frac{G^2\alpha^2 \ln(1/\delta)}{\lambda n} + \lambda \|\mathtt{w}_*\|^2.
+\end{equation*}
+Hence letting $\lambda = \frac{G\alpha}{\|\mathtt{w}_*\|}\sqrt{\frac{\ln(1/\delta)}{n}}$ leads to a rate of $\cg{O}\Big(\|\mathtt{w}_*\|\sqrt{\frac{\ln(1/\delta)}{n}}\Big)$.
+\end{lem}
+
+We now use this theorem to establish an upper bound on the excess risk between $\uh$ (which parameterizes $\ph$) and $\us$ (which parameterizes $\ps$).
+
+\begin{lem}\label{lem: learning theory on X,Z}
+    Let $\uh$ and $\us$ be defined in \eqref{eqn: u star} and \eqref{eqn: u hat}, respectively. Let $S = \{(x_j, z_j)\}_{j=n+1}^{n+m}$ and $\delta \in (0,1)$. Let $\mu = \frac{1}{\|\us\|}\sqrt{\frac{\ln(1/\delta)}{m}}$. Then, with probability at least $1-\delta$, we have
+    \begin{equation}\label{eqn: rhs eps}
+        L(\uh) - L(\us) \leq \eps_{\fk{u}}, 
+    \end{equation}
+    where $\eps_{\fk{u}} = \cg{O}\Big(\|\us\|\sqrt{\frac{\ln(1/\delta)}{m}}\Big)$.
+\end{lem}
+
+\begin{proof}
+Apply Theorem 1 in \cite{della2021regularized} with $G = 1$, $\mathtt{w}_* = \us$, $\widehat{\mathtt{w}}_\lambda = \uh$, $n = m$, $\mathcal{H} = \mathbb{R}^{d+1}$, $\mathcal{B} = \mathcal{Z}$, and $\lambda = \mu$.
+\end{proof}
+
+We next restate Lemma 2 from Appendix B of \cite{della2021regularized}.
+\begin{lem}[Lemma 2, \cite{della2021regularized}] Suppose the assumptions (AI), (AII), and (AIII) hold. Then for sample size $n$ and every $\delta \in (0,1)$, with probability at least $1-\delta$, the following inequality holds simultaneously for all $\mathtt{w}\in\mathcal H$.
+\begin{equation*}
+    \fk{L}(\mathtt{w}) - \hat{\fk{L}}(\mathtt{w}) \leq  \frac{4G(1+\alpha\|\mathtt{w}\|)}{\sqrt{n}}\Big(1 + \sqrt{\ln(2+\log_2(1+\alpha\|\mathtt{w}\|)) + \ln(1/\delta)}\Big).
+\end{equation*}
+\end{lem}
+
+We use this lemma to quantify the gap between the empirical and population risk for any hypothesis $w$ when side information is imputed by a classifier $\phi : \cg{X} \to \cg{Z}$.
+
+\begin{lem}\label{lem: empirical and population risk gap}
+    Let $\ph$ be defined in \eqref{eqn: phi star and phi hat} and let $\kappa$ be as given in (C1) in \eqref{eqn: distribution conditions}. Let $D= \{(x_i, y_i)\}_{i=1}^n$ and $\delta \in (0,1)$. Conditional on $S$, with probability at least $1-\delta$ over the independent sample $D$, the following inequality holds
+    \begin{equation*}
+    \begin{aligned}
+        \rph(w) - \rhph(w) \leq
+        \frac{4(1+\sqrt{\kappa^2+2}\|w\|)}{\sqrt{n}}\Big(1+\sqrt{\ln(2+\log_2(1+\sqrt{\kappa^2+2}\|w\|)) +
+        \ln(1/\delta)}\Big).
+    \end{aligned}
+    \end{equation*}
+\end{lem}
+
+\begin{proof}
+    Conditional on $S$, the map $\ph$ is fixed and the observations in $D$ remain i.i.d. Apply Lemma 2 in Appendix B of \cite{della2021regularized} with $\mathcal H=\R^{d+2}$, $A=(1,X,\ph(X))$, $B=Y$, $G=1$, and $\alpha=\sqrt{\kappa^2+2}$. 
+\end{proof}
+
+ 
+
+\begin{lem}\label{lem: finite norm for optimal weights}
+Let $A=(1,\mathsf X)\in\R^{k+1}$ be bounded, let $\mathsf Y\in\{-1,1\}$, and assume
+$\mathbb E[AA^\top]\succ0$ and $0<\mathbb P(\mathsf Y=1\mid A)<1$ almost surely.
+For
+\[
+L(a)=\mathbb E\!\left[\ln(1+\exp(-\mathsf Y a^\top A))\right],
+\]
+there exists $\chi>0$ such that $L(a)\geq\chi\|a\|$ for every $a$.
+Consequently $L$ attains its minimum at a finite weight $a^\star$, with
+$\|a^\star\|\leq\ln(2)/\chi < \infty$.
+\end{lem}
+
+\begin{proof}
+Write $[t]_+=\max\{t,0\}$. For a unit vector $u$, let $h(u)=\mathbb E[(-\mathsf Y u^\top A)_+]$. The positive definiteness of $\mathbb E[AA^\top]$ implies that $\mathbb P(u^\top A\neq0)>0$. Furthermore, conditioned on this event, $-\mathsf Y u^\top A>0$ holds if and only if $\mathsf{Y} = -\text{sign}(u^\top A)$. From the non-separability condition (C4) in \eqref{eqn: distribution conditions}, we have $\prob(\mathsf{Y} = -\text{sign}(u^\top A) \mid A) > 0$; thus, $h(u) > 0$. Applying the Lipschitz and Cauchy--Schwarz inequalities, we obtain 
+\[
+|h(u)-h(v)|\leq\mathbb E\|A\|\,\|u-v\|.
+\]
+Thus, $h$ is continuous on the compact unit sphere, and we define $\chi:=\min_{\|u\|=1}h(u)>0$. Since $\ln(1+e^{- t})\geq[-t]_+$, for any vector $a$ we have $L(a) \ge \E[(-\mathsf Y a^\top A)_+] = \|a\|h\big(\frac{a}{\|a\|}\big) \ge \chi\|a\|$. Hence, $L$ is continuous and coercive, and it attains its minimum value at a point denoted by $a^\star$. Since $L(0)=\ln2$, we conclude that $\|a^\star\|\le\frac{\ln2}{\chi} < \infty$.
+\end{proof}
+
+% The assumptions apply to $L$ and $T$ by (C1), (C3), and (C4).
+% They also apply to $R$: if
+% $a_c+a_x^\top X+a_zZ=0$ almost surely, the two conditional values of $Z$
+% from (C4) force $a_z=0$ and then (C3) forces $(a_c,a_x)=0$.
+% Therefore $\mathbb E[(1,X,Z)(1,X,Z)^\top]\succ0$.
+
+\subsection{Bounding Optimal Weights}\label{sec: Bounding optimal weights}
+
+Algorithm \ref{alg: side information algorithm} trains on the partitioned datasets $D$ and $S$ and returns a classifier with weights $\whl \in \mathbb{R}^{d+2}$. In the proof of Theorem \ref{thm: main theorem}, we will show that the excess risk associated with $\whl$ admits an upper bound involving terms of order $\frac{\lVert \whl \rVert}{\sqrt{n}}$. Since $\whl$ is a random variable, we do not know a priori how terms like $\frac{\lVert \whl \rVert}{\sqrt{n}}$ scale with the sample size $n$. We therefore show that, with high probability, $\lVert \whl \rVert$ lies in a bounded subset of $\R^{d+2}$. A crucial property required for this analysis is the non-separability assumption given in (C4) in \eqref{eqn: distribution conditions}. The lemmas in this section provide such a bound on $\lVert \whl \rVert$ and establish $\mathsf{W} < \infty$, where $\mathsf{W}$ is defined in Proposition \ref{cor: uniform bound on weights}.
+
+
+We now give the definition of strong convexity.
+
+\begin{defn}\label{defn: strong convex series}
+    A differentiable function $f: \fk{Dom} \subseteq \R^k \rightarrow \mathbb{R}$ on a convex domain is strongly convex if there exists a strong convexity parameter $\alpha > 0$ such that
+    \begin{equation*}
+        f(w) \geq f(w') + \nabla f(w')^\top (w-w') + \frac{\alpha}{2}\|w-w'\|^2
+    \end{equation*}
+    for all  $w, w' \in \fk{Dom} $.
+\end{defn}
+An equivalent definition in terms of Hessian is given as follows.
+\begin{defn}\label{defn: strong convex hessian}
+    A twice continuously differentiable function $f$ on an open convex domain $\fk{Dom}\subseteq\R^k$ is strongly convex with parameter $\alpha>0$ if and only if
+    \begin{equation*}
+        z^\top (\nabla^2 f(w)) z \geq \alpha\|z\|^2,
+    \end{equation*}
+    for every $w\in\fk{Dom}$ and every direction $z\in\R^k$. 
+\end{defn}
+
+To show that $\|\whl\|$ is upper-bounded with high probability, we establish that $\ph(x)$ is close to $\ps(x)$ on average over the distribution of $X$. For this, we prove an intermediate result that shows that the logistic population risk $L(u)$ is strongly convex on a bounded deterministic domain. We first use empirical coercivity to define a deterministic envelope $U$ for the imputer weights $\uh$.
+
+\begin{lem}\label{lem: norm bound on u hat}
+    Let $\uh$ be defined in \eqref{eqn: u hat}. Under the continuous density assumption (ND) and non-separability condition (C4), there exists a deterministic population radius $U < \infty$ and a sample size $m_0$ such that for all $m \ge m_0$, with probability at least $1-\delta/4$,
+    $\lVert \uh \rVert \leq U$.
+\end{lem}
+
+\begin{proof}
+    By the non-separability assumption (C4) on $(X,Z)$, there is no perfect separating hyperplane. Defining the unit-sphere coercivity constant $\chi_{u} = \min_{\lVert v \rVert=1} \mathbb{E}[(-Z v^\top (1, X))_+] > 0$, the expected logistic risk grows at least linearly: $L(r \cdot v) \ge r \cdot \chi_{u}$.
+    By uniform convergence on the unit sphere, for sufficiently large $m \ge m_0$, the empirical coercivity constant satisfies $\hat{\chi}_u \ge \chi_{u} / 2 > 0$ with probability at least $1-\delta/4$.
+    Since $\uh$ minimizes the regularized empirical risk on $S$, its objective value is bounded by the value at the origin $u=0$, which is exactly $\ln 2$. Using the empirical coercivity bound, we obtain:
+    \begin{equation*}
+        \lVert \uh \rVert \cdot (\chi_u / 2) \le \ln 2 \implies \lVert \uh \rVert \le \frac{2 \ln 2}{\chi_u} := U.
+    \end{equation*}
+    This establishes that $\uh$ remains inside the deterministic ball of radius $U$.
+\end{proof}
+
+Next, we show that $L(u)$ is strongly convex on the deterministic ball $\cg{B}_U := \{u: \lVert u \rVert \le U\}$.
+\begin{lem}\label{lem: Strongly convex} Let $U$ be the deterministic radius from Lemma \ref{lem: norm bound on u hat}. Then the logistic risk $L(u)$ is strongly convex on $\cg{B}_U$.
+\end{lem}
+
+\begin{proof}
+The Hessian of the logistic risk $L(u)$ is
+\begin{equation*}
+    \nabla^2 L(u) = \mathbb{E}_{(X,Z)}[ \sigma(Zs)\big(1 - \sigma(Zs)\big) (1, X)(1, X)^\top ],
+\end{equation*}
+where  $s = u_c + u_x^\top X$.
+Set $K_S=\sqrt{1+\kappa^2}$.
+For every $u\in\cg{B}_U$, $|Zs|\leq K_S U$.
+The positive continuous function $\sigma(t)(1-\sigma(t))$ has a
+strictly positive minimum $q_U$ on $[-K_S U, K_S U]$. Consequently
+\[
+\nabla^2L(u)\succeq q_U\,\mathbb E[(1,X)(1,X)^\top]\succeq\alpha I,
+\qquad
+\alpha=q_U\,\lambda_{\min}\!\left(\mathbb E[(1,X)(1,X)^\top]\right)>0.
+\]
+The ball $\cg{B}_U$ is convex.
+This uniform bound establishes strong convexity on $\cg{B}_U$.
+\end{proof}
+
+Using this, we now show in the following lemma that $\ph(x)$ is close to $\ps(x)$ on average over the distribution of $X$. Specifically, we quantify the expected disagreement between the learned classifier $\ph: \cg{X} \rightarrow \cg{Z}$ and the optimal classifier $\ps: \cg{X} \rightarrow \cg{Z}$ under the joint distribution of $(X, Z)$.
+
+\begin{lem}\label{lem: difference between classifier from cg{X} to cg{Z}}
+     Let $\ph$ and $\ps$ be defined as in equation \eqref{eqn: phi star and phi hat} and let $S$ be defined in \eqref{eqn: partitioned dataset}. Let $\delta \in (0,1)$. Then, with probability at least $1-\delta/4$, we have
+     \begin{equation*}
+         \mathbb{E}_X \Big[| \ph(X) - \ps(X) |\Big] \le 2\prob_X\left(|s^\star(X)| \le K_S \sqrt{2\eps_{\fk{u}}/\alpha}\right),
+     \end{equation*}
+     where $s^\star(x) := \us_c + {\us_x}^\top x$, $\alpha$ is the strong convexity parameter of $L(u)$ on $\cg{B}_U$, and $\eps_{\fk{u}}$ is the bound from Lemma \ref{lem: learning theory on X,Z}.
+ \end{lem}
+ 
+ \begin{proof}
+     From \eqref{eqn: phi star and phi hat}, $\us$ and $\uh$ are the weights corresponding to $\ps(x)$ and $\ph(x)$. We first upper bound $\|\uh - \us\|$ on the event from Lemma \ref{lem: learning theory on X,Z} (which holds with probability at least $1-\delta/4$). 
+     
+     From Lemma \ref{lem: norm bound on u hat}, both $\uh \in \cg{B}_U$ and $\us \in \cg{B}_U$ (since $\us$ is the population minimizer). From Lemma \ref{lem: Strongly convex}, $L(u)$ is strongly convex on $\cg{B}_U$ with parameter $\alpha$. Since $\nabla L(\us)=0$, from Definition \ref{defn: strong convex series} we have
+     \begin{equation}\label{eqn: strong convex for x z}
+         L(\uh) \geq L(\us) + \frac{\alpha}{2}\lVert \uh-\us \rVert^2.
+     \end{equation}
+     From Lemma \ref{lem: learning theory on X,Z}, we have $L(\uh) - L(\us) \leq \eps_{\fk{u}}$. Substituting this gives $\|\uh-\us\|\leq\sqrt{2\eps_{\fk u}/\alpha}$.
+ 
+     Since $\ph$ and $\ps$ are step functions (hard classifiers), a disagreement $\ph(X) \neq \ps(X)$ only occurs if the difference in weights changes the sign of the score. A sign flip requires that the true margin $|s^\star(X)|$ is smaller than the perturbation caused by the estimated weights:
+     \begin{equation*}
+         |s^\star(X)| = |{\us}^\top (1, X)| \le |(\uh - \us)^\top (1, X)| \le K_S \|\uh - \us\| \le K_S\sqrt{2\eps_{\fk u}/\alpha},
+     \end{equation*}
+     where $K_S = \sqrt{1+\kappa^2}$ is the feature bound.
+     
+     This means disagreements are confined to the margin slab $\cg{E} := \{x : |s^\star(x)| \le K_S \sqrt{2\eps_{\fk{u}}/\alpha}\}$. Since the difference between the hard classifiers is exactly $2$ when they disagree and $0$ otherwise, we conclude:
+     \begin{equation*}
+        \mathbb{E}_X\Big[|\ph(X)-\ps(X)|\Big] = 2 \prob_X(\ph(X) \neq \ps(X)) \le 2\prob_X(\cg{E}).
+     \end{equation*}
+     Under the non-degeneracy condition (ND), $\prob_X(|s^\star(X)| = 0) = 0$, so this margin probability tends to zero as $m \to \infty$ (which drives $\eps_{\fk{u}} \to 0$).
+ \end{proof}
+
+
+Finally, we use the non-separability condition (C4) to establish a uniform, deterministic population envelope $W$ for the learned weights. This replaces any sample-dependent supremum with a unit-sphere coercivity argument.
+
+\begin{lem}\label{lem: whl bounding} Let $\whl$ be defined in \eqref{eqn: w hat lambda}. Under the non-degeneracy condition (ND) and non-separability condition (C4), there exist deterministic population constants $W$ and sample sizes $n_0, m_0$ such that for all $n \ge n_0$ and $m \ge m_0$, with probability at least $1-\delta/4$,
+     \begin{equation*}
+         \sup_{(\lamc,\lamx,\lamz)}\lVert \whl \rVert \le 4\ln 2 / \chi_* =: W.
+     \end{equation*}
+ \end{lem}
+ 
+ \begin{proof}
+ By the non-degeneracy condition (ND), for the optimal imputed features $A_* = (1, X, \ps(X))$, there is no separating hyperplane. On the compact unit sphere of directions $\{v : \|v\|=1\}$, we define the population coercivity constant:
+ \begin{equation*}
+     \chi_* = \min_{\lVert v \rVert=1} \mathbb{E}\Big[\big(-Y v^\top A_*\big)_+\Big] > 0.
+ \end{equation*}
+ The logistic loss satisfies $\ln(1+e^{-t}) \ge (-t)_+$. To transfer this to the empirical risk with the estimated imputer $\ph$, we condition on $S$. Let $d_m = \prob_X(\ph(X) \neq \ps(X))$. By Lemma \ref{lem: difference between classifier from cg{X} to cg{Z}}, on our high-probability event we have $d_m \le g_m := \prob_X\big(|s^\star(X)| \le K_S \sqrt{2\eps_{\fk{u}}/\alpha}\big)$. Under the regularity condition (C2) and non-degeneracy condition (ND), $X$ has a continuous distribution with $\prob_X(s^\star(X) = 0) = 0$. Since $\eps_{\fk{u}} \to 0$ as $m \to \infty$, the shrinking margin region collapses to a set of measure zero, ensuring $g_m \to 0$. For any $\|v\|\le 1$, the population negative-margin expectations differ by at most $2d_m \le 2g_m$. 
+
+Independently, over the primary sample $D$, with conditional probability at least $1-\delta/4$, standard uniform bounds yield:
+\begin{equation*}
+    \sup_{\|v\|\le 1} \left| (\hat{P}_n - P)(-Y v^\top A_{\ph})_+ \right| \le \zeta_n := \frac{4K}{\sqrt{n}} + K\sqrt{\frac{\ln(8/\delta)}{2n}},
+\end{equation*}
+where $K = \sqrt{1+\kappa^2+1}$ bounds $\|A_{\ph}\|$. Thus, the empirical negative margins are bounded below by $\chi_* - 2g_m - \zeta_n$. Since $g_m \to 0$ and $\zeta_n \to 0$, there exist sample sizes $n_0, m_0$ such that for all $n \ge n_0$ and $m \ge m_0$, we have $2g_m + \zeta_n \le \chi_*/2$. Hence, the empirical objective satisfies $\rhph(w) \ge (\chi_*/2)\|w\|$.
+ 
+ Algorithm 3.1 minimizes the regularized empirical risk $\rhph(w) + \text{Reg}(w)$. At the origin $w = 0$, the empirical logistic loss is exactly $\ln 2$, and the penalty is zero. Since $\whl$ is the minimizer,
+ \begin{equation*}
+     (\chi_* / 2)\lVert\whl\rVert \le \rhph(\whl) \le \rhph(\whl) + \text{Reg}(\whl) \le \ln 2 \implies \lVert\whl\rVert \le \frac{2\ln 2}{\chi_*} < \frac{4\ln 2}{\chi_*} = W.
+ \end{equation*}
+ This radius $W$ uniformly bounds the learned weights $\whl$ for all candidate values of $\lambda$.
+ \end{proof}
+ 
+ To fully bound the objective terms in Theorem \ref{thm: main theorem}, we also require deterministic bounds on the true population paths $\ws_{\lambda}$ (using features and true side information) and $v^\star$ (using features only).
+ 
+ \begin{prop}\label{cor: uniform bound on weights}
+ Let $\chi_R > 0$ and $\chi_Y > 0$ be the population coercivity constants for $(1,X,Z)$ and $(1,X)$ respectively, which are strictly positive under (C4). We define the aggregate deterministic bound:
+ \begin{equation*}
+    \mathsf{W} := \max\left\{\frac{4\ln 2}{\chi_*}, \frac{\ln 2}{\chi_R}, \frac{\ln 2}{\chi_Y}\right\}.
+ \end{equation*}
+ Then on the joint success event, the learned weights satisfy $\|\whl\| \le \mathsf{W}$, and the population comparators satisfy $\sup_\lambda \|\ws_{\lambda}\| \le \mathsf{W}$ and $\|v^\star\| \le \mathsf{W}$. $\mathsf{W} < \infty$ is a purely deterministic population constant.
+ \end{prop}
+

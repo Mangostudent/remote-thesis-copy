@@ -1,0 +1,53 @@
+\section{Problem Formulation}\label{sec:formulation}\index{Strategic feature revelation|textbf}\index{Feature withholding|textbf}
+
+We model regression under strategic feature disclosure as a screening game between a sender (the feature provider) and a receiver (the decision maker). Let $\X \subseteq \R^d$ be the feature space and let the outcome space be $\Y := \R$. Let $(U,X,Y)$ be a tuple of random variables taking values in $\Y \times \X \times \Y$ with joint distribution $P_{(U,X,Y)}$. A realization $(u,x,y)$ represents a sender type with private features $x$, a preferred outcome $u$, and a ground-truth outcome $y$. The receiver predicts the outcome using a regression model $r: \X \cup \{\emptyset\} \to \Y$, and both players evaluate performance using the squared loss $\loss(\alpha,\beta) := (\alpha-\beta)^2$.
+
+Nature draws a sender type $(u,x,y) \sim P_{(U,X,Y)}$. After observing its type, the sender chooses an action $s \in \{\emptyset, x\}$, where $\emptyset$ and $x$ represent withholding or revealing the feature vector, respectively. The chosen action passes through an erasure channel with parameter $q \in [0,1]$, arriving at the receiver as a random message $M \in \X \cup \{\emptyset\}$ with conditional distribution $P(m \mid s)$ given by
+\begin{equation*}
+    P(m \mid s) = 
+    \begin{cases} 
+    1 & \text{if } s = \emptyset \text{ and } m = \emptyset, \\
+    1-q & \text{if } s = x \text{ and } m = x, \\
+    q & \text{if } s = x \text{ and } m = \emptyset.
+    \end{cases}
+\end{equation*}
+The receiver applies a regression rule $r$ to produce prediction $r(M)$. The sender incurs loss $\loss(r(M),u) = (u - r(M))^2$ and the receiver incurs loss $\loss(r(M),y) = (y - r(M))^2$.
+
+The sender and receiver both seek to minimize their expected losses. The sender's strategy space is the collection of all functions mapping sender types to feasible actions, given by
+\begin{equation*}
+    \Sspace := \{s: \Y \times \X \to \X \cup \{\emptyset\} \mid s(u,x) \in \{\emptyset, x\} \text{ for all } (u,x) \in \Y \times \X\},
+\end{equation*}
+and the receiver's strategy space is\footnote{We restrict the receiver's strategy space to models without an intercept and where the default prediction is zero.}
+\begin{equation*}
+    \Rspace := \{r_b: \X \cup \{\emptyset\} \to \Y \mid r_b(\emptyset) = 0,\; r_b(x) = b^\top x \text{ for some } b \in \R^d\}.
+\end{equation*}
+In the screening game, the receiver first commits to a regression model $r_b \in \Rspace$. The sender, after observing its type $(u,x,y)$ and the receiver strategy $r_b$, best responds with
+\begin{equation*}
+    s_b(u,x) \in \arg\min_{a \in \{\emptyset, x\}} \E_{M \sim P(\cdot \mid a)}[\loss(r_b(M), u)] \quad \text{for all } (u,x) \in \Y \times \X.
+\end{equation*}
+The receiver anticipates this behavior and optimally chooses
+\begin{equation*}
+    b^\star \in \arg\min_{b \in \R^d} \E_{(U,X,Y)}\!\left[\E_{M \sim P(\cdot \mid s_b(U,X))}[\loss(r_b(M), Y)]\right].
+\end{equation*}
+The receiver-sender strategy pair $(r_{b^\star}, s_{b^\star})$ constitutes a Stackelberg equilibrium of the screening game.
+
+We denote the environment by $\env := (U,X,Y,q,\Sspace,\Rspace)$. For an environment $\env$ and a receiver predictor $r_b \in \Rspace$, the vanilla risk is defined as
+\begin{equation*}
+    \RV(b) := q \E_{Y}[\loss(r_b(\emptyset), Y)] + (1-q) \E_{(X,Y)}[\loss(r_b(X), Y)].
+\end{equation*}
+This is the receiver's risk under the mandatory baseline (where the sender always reveals features, and omissions occur solely via channel erasure). Let $\RV^\star := \min_{b \in \R^d} \RV(b)$. For receiver predictor $r_b$ and sender best response $s_b$, the strategic risk is
+\begin{equation*}
+    \RS(b) := \E_{(U,X,Y)}\!\left[\E_{M \sim P(\cdot \mid s_b(U,X))}[\loss(r_b(M), Y)]\right],
+\end{equation*}
+which is the receiver's risk under voluntary feature disclosure. Let $\RS^\star := \min_{b \in \R^d} \RS(b)$. We define the strategic advantage of environment $\env$ as
+\begin{equation*}
+    \Delta(\env) := \RV^\star - \RS^\star.
+\end{equation*}
+A positive strategic advantage, $\Delta(\env) > 0$, indicates that voluntary feature revelation strictly improves receiver performance relative to the mandatory baseline.
+
+Based on the receiver's knowledge of the environment $\env$, we analyze strategic regression under three distinct information structures. The first information structure is when the receiver has complete knowledge of the joint distribution $P_{(U,X,Y)}$, referred to as the \textit{Decision Problem}. The objective is to establish a necessary and a sufficient condition on the environment $\env$ and the receiver strategy space $\Rspace$ under which $\Delta(\env) > 0$.
+
+The second information structure is when the receiver does not know $P_{(U,X,Y)}$, but observes a finite training dataset $D_n = \{(u_k, x_k, y_k)\}_{k=1}^n$ of i.i.d. samples, referred to as the \textit{Offline Learning Problem}. The objective is to learn $\Delta(\env)$ from the training data using an algorithm and derive uniform generalization bounds for it.
+
+The third information structure is when the receiver does not know the environment and sequentially interacts with the unknown environment over $T$ rounds, observing only the realized bandit loss feedback after each action, referred to as the \textit{Online Learning Problem}. The objective is to learn the optimal disclosure regime and regression model from the interaction using an algorithm and derive regret bounds for it.
+% Applied Fix: Replaced exact argmin with infima/approximate minimizers for strategic risk.

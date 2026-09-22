@@ -1,0 +1,328 @@
+\usepackage{silence}
+\WarningFilter{caption}{Unknown document class}
+\WarningFilter{latexfont}{Font shape}
+\WarningFilter{latexfont}{Size substitutions}
+\usepackage{pdfpages}
+\usepackage{dsfont}
+\usepackage{mathtools}
+\usepackage{nameref} 
+\usepackage[utf8]{inputenc}
+\usepackage{mathrsfs}
+% \usepackage{caption}
+% \usepackage{optidef}
+\usepackage{subcaption}
+% enumeration made easy through enumitem:
+\usepackage{siunitx}
+\usepackage{derivative}
+\usepackage{pdfpages}
+\usepackage{tabularray}
+%%% booktab %%%
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{makeidx}
+\makeindex
+%algorithm package
+\usepackage{algorithm} 
+\numberwithin{algorithm}{chapter}
+% \usepackage{algorithmic}  
+\usepackage[linesnumbered,ruled,vlined,algo2e,algochapter]{algorithm2e} 
+\makeatletter
+\renewcommand*{\listof}[2]{%
+  \@ifundefined{ext@#1}{\float@error{#1}}{%
+    \@namedef{l@#1}{\@dottedtocline{1}{0em}{2.3em}}%
+    \float@listhead{#2}%
+    \begingroup\setlength{\parskip}{\z@}%
+      \@starttoc{\@nameuse{ext@#1}}%
+    \endgroup}}
+\providecommand*\l@algorithm{\@dottedtocline{1}{0em}{2.3em}}
+\renewcommand*\l@algorithm{\@dottedtocline{1}{0em}{2.3em}}
+\providecommand*\l@algocf{\@dottedtocline{1}{0em}{2.3em}}
+\renewcommand*\l@algocf{\@dottedtocline{1}{0em}{2.3em}}
+\makeatother
+% color package:
+% \usepackage[usenames, dvipsnames]{xcolor}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{array}
+% tikz for pros:
+\usepackage{tikz}
+% \usepackage{pgfplots}
+% \pgfplotsset{compat=1.18}
+\usetikzlibrary{automata, positioning,shapes.geometric, arrows, matrix}
+\usepackage[export]{adjustbox}
+
+% Listings setup for Code Appendix
+\usepackage{listings}
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\color{NavyBlue}\bfseries,
+  commentstyle=\color{ForestGreen}\itshape,
+  stringstyle=\color{Mahogany},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  numbersep=6pt,
+  showstringspaces=false,
+  breaklines=true,
+  breakatwhitespace=true,
+  frame=single,
+  rulecolor=\color{black!20},
+  backgroundcolor=\color{gray!4},
+  xleftmargin=10pt,
+  xrightmargin=5pt,
+  aboveskip=0.6em,
+  belowskip=0.6em
+}
+
+
+% Command for code appendix references. 
+% To remove code references without leaving broken links, change this to: \newcommand{\coderef}[1]{}
+\newcommand{\coderef}[1]{}
+
+
+%-----------
+% NN STYLING
+%-----------
+\usepackage{listofitems} % for \readlist to create arrays
+\usetikzlibrary{arrows.meta} % for arrow size
+\usepackage[outline]{contour} % glow around text
+\contourlength{1.4pt}
+
+\tikzset{>=latex} % for LaTeX arrow head
+%\usepackage{xcolor}
+\colorlet{myred}{red!80!black}
+\colorlet{myblue}{blue!80!black}
+\colorlet{mygreen}{green!60!black}
+\colorlet{myorange}{orange!70!red!60!black}
+\colorlet{mydarkred}{red!30!black}
+\colorlet{mydarkblue}{blue!40!black}
+\colorlet{mydarkgreen}{green!30!black}
+\tikzstyle{node}=[thick,circle,draw=myblue,minimum size=22,inner sep=0.5,outer sep=0.6]
+\tikzstyle{node in}=[node,green!20!black,draw=mygreen!30!black,fill=mygreen!25]
+\tikzstyle{node hidden}=[node,blue!20!black,draw=myblue!30!black,fill=myblue!20]
+\tikzstyle{node convol}=[node,orange!20!black,draw=myorange!30!black,fill=myorange!20]
+\tikzstyle{node out}=[node,red!20!black,draw=myred!30!black,fill=myred!20]
+\tikzstyle{connect}=[thick,mydarkblue] %,line cap=round
+\tikzstyle{connect arrow}=[-{Latex[length=4,width=3.5]},thick,mydarkblue,shorten <=0.5,shorten >=1]
+\tikzset{ % node styles, numbered for easy mapping with \nstyle
+  node 1/.style={node in},
+  node 2/.style={node hidden},
+  node 3/.style={node out},
+}
+\def\nstyle{int(\lay<\Nnodlen?min(2,\lay):3)} % map layer number onto 1, 2, or 3
+
+
+%%%% widecheck %%%%
+
+\DeclareFontFamily{U}{mathx}{}
+\DeclareFontShape{U}{mathx}{m}{n}{<-> mathx10}{}
+\DeclareSymbolFont{mathx}{U}{mathx}{m}{n}
+\DeclareMathAccent{\widecheck}{0}{mathx}{"71}
+
+\usepackage{calc}
+\usepackage[framemethod=tikz,xcolor=true]{mdframed}
+\newmdenv[%
+    leftmargin=0.5cm,
+    backgroundcolor=yellow!10,%
+    roundcorner=5pt,%
+    tikzsetting={draw=red, line width=2.0pt}%
+    ]{SpecialText}%
+
+% todo notes made easy:
+% \usepackage[colorinlistoftodos, color=blue!20]{todonotes}
+
+\usepackage{newtxtext}
+\usepackage[T1]{fontenc}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage[varg, vvarbb]{newtxmath}
+% \usepackage{subfigure}
+\allowdisplaybreaks
+\setlength{\parskip}{1ex}
+\usepackage{float}
+\usepackage{cite}
+% hyperref:
+\usepackage[colorlinks=true,
+		%raiselinks=true,
+		linkcolor=MidnightBlue,
+		citecolor=Mahogany,
+		urlcolor=ForestGreen,
+		pdfauthor={Manish Kumar Singh},
+		pdftitle={Strategic Learning and Decision-Making under Manipulation and Incomplete Information},
+		pdfkeywords={strategic classification, side information, feature revelation, IPO regulation},
+		pdfsubject={PhD Thesis},
+		plainpages=false]{hyperref}
+\makeatletter
+\AtBeginDocument{%
+  \def\lsthk@EveryPar{%
+    \global\advance\c@lstnumber\lst@advancelstnum
+    \lst@SkipOrPrintLabel
+  }%
+  \renewcommand{\algocf@nl@sethref}[1]{\gdef\@currentlabel{#1}}%
+}
+\makeatother
+%% Special fonts
+\DeclareFontFamily{T1}{pzc}{}
+\DeclareFontShape{T1}{pzc}{m}{it}{<-> [1.2] pzcmi8t}{}
+\DeclareMathAlphabet{\mathpzc}{T1}{pzc}{m}{it}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\let\openbox\relax
+\usepackage{newtxmath}
+
+\usepackage{amsthm}
+\newtheoremstyle{dcthm}{8pt}{4pt}{\slshape}{}{}{:}{ }{\thmname{\textbf{#1}}\thmnumber{\textbf{ #2}}\thmnote{ (\mdseries #3)}}
+\theoremstyle{dcthm}
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{cleveref}
+\usepackage{bookmark}
+\usepackage{cancel}
+\usepackage[shortlabels]{enumitem}
+\setlist{nolistsep}
+\newtheoremstyle{dcdef}{8pt}{4pt}{}{}{}{.}{ }{\textbf{\thmname{#1}\thmnumber{ #2}}\thmnote{ (\mdseries #3)}}
+\theoremstyle{dcdef}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{problem}[theorem]{Problem}
+
+
+
+% \newtheorem{theorem}{Theorem}[section]
+% \newtheorem{proposition}[theorem]{Proposition}
+% \newtheorem{lemma}[theorem]{Lemma}
+% \newtheorem{corollary}[theorem]{Corollary}
+% \newtheorem{claim}[theorem]{Claim}
+% \theoremstyle{definition}
+% \newtheorem{definition}[theorem]{Definition}
+% \newtheorem{example}[theorem]{Example}
+% \theoremstyle{definition}
+% \newtheorem{remark}[theorem]{Remark}
+% \theoremstyle{definition}
+% \newtheorem{assumption}[theorem]{Assumption}
+% \numberwithin{equation}{section}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{bbm}
+\usepackage{amsmath}
+\numberwithin{equation}{chapter}
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\@maketitle}
+  {\ifx\@empty\@dedicatory}
+  {\ifx\@empty\@date \else {\vskip3ex \centering\footnotesize\@date\par\vskip1ex}\fi
+   \ifx\@empty\@dedicatory}
+  {}{}
+\patchcmd{\@adminfootnotes}
+  {\ifx\@empty\@date\else \@footnotetext{\@setdate}\fi}
+  {}{}{}
+\makeatother
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+
+\DeclareMathOperator{\cl}{cl}
+\DeclareMathOperator{\bndry}{bd}
+\DeclareMathOperator{\intr}{int}
+\DeclareMathOperator{\erfc}{erfc}
+\DeclareMathOperator{\erf}{erf}
+\DeclareMathOperator{\sat}{sat}
+\DeclareMathOperator{\vol}{vol}
+\DeclareMathOperator{\linspan}{span}
+\DeclareMathOperator{\sech}{sech}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\Ad}{Ad}
+\DeclareMathOperator{\AbsCont}{AC}
+\DeclareMathOperator{\PCont}{PC}
+\DeclareMathOperator{\Cont}{C}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator*{\minimize}{min}
+\DeclareMathOperator*{\maximize}{maximize}
+\DeclareMathOperator{\domain}{dom}
+\DeclareMathOperator{\image}{image}
+\DeclareMathOperator{\Lift}{Lift}
+\DeclareMathOperator{\Leb}{Leb}
+\DeclareMathOperator*{\indep}{\protect\mathpalette{\protect\independenT}{\perp}}
+\DeclareMathOperator{\eval}{ev}
+\DeclareMathOperator{\id}{id}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\epi}{epi}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\Objects}{Ob}
+\DeclareMathOperator{\Morphisms}{Mor}
+\DeclareMathOperator*{\esssup}{ess\,sup}
+\DeclareMathOperator{\NE}{NE}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\gl}{\mathfrak{gl}}
+\DeclareMathOperator{\SL}{SL}
+\DeclareMathOperator{\essell}{\mathfrak{sl}}
+\DeclareMathOperator{\Stiefel}{St}
+\DeclareMathOperator{\Symplectic}{Sp}
+\DeclareMathOperator{\Ortho}{O}
+\DeclareMathOperator{\identity}{\mathbb{I}}
+\DeclareMathOperator{\ortho}{\mathfrak{o}}
+\DeclareMathOperator{\SpecialOrtho}{SO}
+\DeclareMathOperator{\specialortho}{\mathfrak{so}}
+\DeclareMathOperator{\Grassmann}{Gr}
+
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Herm}{Herm}
+\DeclareMathOperator{\Sesqu}{Sesqu}
+\DeclareMathOperator{\Lis}{Lis}
+\DeclareMathOperator{\Laut}{Laut}
+\DeclareMathOperator{\Hilb}{Hilb}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\Skew}{Skew}
+\DeclareMathOperator{\Pos}{Pos}
+\DeclareMathOperator{\divg}{div}
+
+
+\DeclarePairedDelimiterX\aset[1]\lbrace\rbrace{\def\suchthat{\; \delimsize\vert\;}#1}
+\DeclarePairedDelimiterX\LieBracket[2]\lbrack\rbrack{#1,#2}
+\DeclarePairedDelimiterX\lcro[2]\lbrack\lbrack{#1,#2}
+\DeclarePairedDelimiterX\lm[2]\lparen\rparen{#1;#2}
+\DeclarePairedDelimiterX\expecof[1]\lbrack\rbrack{#1}
+
+% \newcommand{\EE}{\ensuremath{\mathsf{E}}}
+\DeclarePairedDelimiterX\probof[1]\lparen\rparen{#1}
+\DeclarePairedDelimiterX\cprobof[1]\lparen\rparen{\def\given{\: \delimsize\vert\:}#1}
+% \DeclareMathOperator{\trace}{tr}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+% \DeclareMathOperator{\sisdp}{SI-SDP}
+% \DeclarePairedDelimiterX\expecof[1]\lbrack\rbrack{#1}
+\DeclarePairedDelimiterX\cexpecof[1]\lbrack\rbrack{\def\given{\: \delimsize\vert\:}#1}
+
+\def\namedlabel#1#2{\begingroup#2%
+\def\@currentlabel{#2}%
+\phantomsection\label{#1}\endgroup
+}
+
+\DeclarePairedDelimiterX\lcrc[2]\lbrack\rbrack{#1,#2}
+\DeclareMathOperator{\Unif}{Unif}
+\DeclareMathOperator*{\intset}{int}
+\DeclarePairedDelimiterX\lorc[2]\rbrack\rbrack{#1,#2}
+\DeclareMathOperator{\graph}{graph}
+\newcommand{\oprocendsymbol}{\hbox{$\bullet$}}
+\newcommand{\oprocend}{\relax\ifmmode\else\unskip\hfill\fi\oprocendsymbol}
+
+\DeclarePairedDelimiterX\loro[2]\rbrack\lbrack{#1,#2}
+\DeclarePairedDelimiterX\inpr[2]\langle\rangle{#1,#2}
+
+\newcommand{\blue}[1]{{#1}}
+\newcommand{\red}[1]{{\color{red} #1}} 

@@ -1,0 +1,52 @@
+%======================================================================
+\section{Proofs and Supporting Results}
+\label{sec:proofs_ch5}
+%======================================================================
+
+This section provides the proofs for the theoretical results presented in this chapter.
+
+\subsection{Proofs for the Decision Problem}
+
+In this subsection, we provide the proofs of the theoretical results for the decision problem.
+
+\phantomsection
+We now provide the proof of Lemma~\ref{lem:pricing}.
+\begin{proof}[Proof of Lemma~\ref{lem:pricing}: Optimal Pricing Strategy]\label{app:proof_lem_pricing}\label{proof:lem_pricing}
+For any fixed presentation feature $z$, the valuation of each investor subpopulation $j$ is $V_j(z)$. The aggregate market demand $D(z, p, \{N_j\}) = \sum_{j=1}^k N_j \mathbf{1}\{V_j(z) \ge p\}$ is a piecewise-constant step function that is non-increasing in price $p \ge 0$, with jump discontinuities occurring exclusively at price points $p \in \{V_1(z), \dots, V_k(z)\}$. If all investor valuations are strictly negative ($\max_j V_j(z) < 0$), no buyer enters at any non-negative price $p \ge 0$, yielding zero demand and zero capital (the no-trade option). If at least one subpopulation has non-negative valuation, the expected traded volume $\mathbb{E}_{\{N_j\}}[Q(z, p, \{N_j\}, \varepsilon)]$ is constant on each interval $(v_m, v_{m+1}]$, where $v_m$ and $v_{m+1}$ are adjacent values in the sorted set $\{0\} \cup \{V_j(z) : V_j(z) \ge 0\}$. The firm's expected capital raised $p \cdot \mathbb{E}_{\{N_j\}}[Q]$ is strictly increasing on $(v_m, v_{m+1})$, so the supremum on any such interval is attained at its right endpoint. Hence, the optimal non-negative price satisfies $p^*(z) \in \{0\} \cup \{V_j(z) : V_j(z) \ge 0\}$.
+\end{proof}
+
+\phantomsection
+We now provide the proof of Theorem~\ref{thm:firm_opt}.
+\begin{proof}[Proof of Theorem~\ref{thm:firm_opt}: Firm's Optimal Presentation Strategy]\label{app:proof_thm_firm_opt}\label{proof:thm_firm_opt}
+For any target subset $S \subseteq \{1, \dots, k\}$, setting price $p_S(z) = \min_{j \in S} V_j(z)$ ensures participation of at least all groups in $S$, establishing a lower bound $\Pi_F^{(S)}(z) \le \Pi_F(z,\min_{j \in S}V_j)$ given by
+\begin{equation}
+\Pi_F^{(S)}(z) = \Bigl(\min_{j \in S} V_j(z)\Bigr) \cdot \mathbb{E}_{\{N_j\}}\Bigl[\min\Bigl\{\eta \mathcal{N},\, \sum_{j \in S} N_j\Bigr\}\Bigr].
+\end{equation}
+At the optimal strategy $(z^*, p^*)$, Lemma~\ref{lem:pricing} guarantees $p^* = V_{m^*}(z^*)$. For the true buyer set $S^* = \{j : V_j(z^*) \ge p^*\}$, market demand equals $\sum_{j \in S^*} N_j$ exactly, making the lower bound tight, i.e., $\Pi_F^{(S^*)}(z^*) = \Pi_F(z^*, p^*)$. Because $\Pi_F^{(S)}(z) \le \max_{z,p} \Pi_F(z, p)$ for all $S$ and equality is achieved at $(S^*, z^*)$, maximizing these lower bounds over all $S$ and $z$ recovers the exact global maximum. Since each $\Pi_F^{(S)}(z)$ is concave in $z$ (as the pointwise minimum of concave functions), evaluating $\max_z \Pi_F^{(S)}(z)$ over $z \in \mathcal{F}_Z(x, \varepsilon)$ defines a constrained convex optimization subproblem. Therefore, solving these $2^k - 1$ convex subproblems and selecting the maximum yields the global optimum.
+\end{proof}
+
+\phantomsection
+We now provide the proof of Proposition~\ref{prop:saturation}.
+\begin{proof}[Proof of Proposition~\ref{prop:saturation}: Welfare Saturation Threshold]\label{app:proof_prop_saturation}\label{proof:prop_saturation}
+Consider the unconstrained presentation problem where the firm faces no regulatory budget constraints ($\varepsilon = \infty$), yielding optimal presentation $z_{\infty}^*(x) = \arg\max_{z \in \mathcal{X}} \max_S \Pi_F^{(S)}(z, \infty)$. The minimal regulatory budget required to accommodate this unconstrained move is $\varepsilon_{\max}(x) = \|x - z_{\infty}^*(x)\|_2$. Because the baseline feature space $\mathcal{X}$ is a compact subset of $\mathbb{R}^d$, the continuous distance mapping $\varepsilon_{\max}(x)$ achieves a finite supremum $\varepsilon_{\max} = \sup_{x \in \mathcal{X}} \varepsilon_{\max}(x) < \infty$. For any tolerance $\varepsilon \ge \varepsilon_{\max}$, the unconstrained optimal presentation $z_{\infty}^*(x)$ lies within the feasible space $\mathcal{F}_Z(x, \varepsilon)$ for every realization $x \in \mathcal{X}$. Consequently, the firm's optimal presentation and pricing strategies $(\mathcal{Z}^*(x, \varepsilon), \mathcal{P}^*(x, \varepsilon))$ and expected social welfare $\mathcal{W}(\varepsilon)$ remain constant for all $\varepsilon \ge \varepsilon_{\max}$, restricting the optimization domain to $[0, \varepsilon_{\max}]$ without loss of generality.
+\end{proof}
+
+\phantomsection
+We now provide the proof of Proposition~\ref{prop:interior_optimality}.
+\begin{proof}[Proof of Proposition~\ref{prop:interior_optimality}: Non-Monotonicity and Interior Optimality]\label{app:proof_prop_interior_optimality}\label{proof:prop_interior_optimality}
+Evaluating $\mathcal{W}'(\varepsilon)$ at $\varepsilon = 0$ yields $\mathcal{W}'(0) = \frac{\rho}{2} [ \bar{\mu}_\alpha(c) f_{S_\alpha}(c) + \bar{\mu}_\beta(c) f_{S_\beta}(c) ]$. Since $\rho > 0$, $f_{S_j}(c) > 0$, and $\bar{\mu}_j(c) > 0$ by condition~(ii), it follows that $\mathcal{W}'(0) > 0$, showing that social welfare strictly increases locally at $\varepsilon = 0$. Next, since $\varepsilon_{\max} = \max_{j\in\{\alpha,\beta\}} ((c - s_{\min,j})/\rho)$, as $\varepsilon \to \varepsilon_{\max}^-$, we have $c - \rho \varepsilon \to s_{\min, j}^+$. Because $\bar{\mu}_j(s_{\min, j}) < 0$ by condition~(iii), $f_{S_j}(s) > 0$ on $(s_{\min, j}, s_{\max, j})$, and $\rho > 0$, taking the left-hand limit yields $\mathcal{W}'(\varepsilon_{\max}^-) < 0$, showing that social welfare strictly decreases locally at $\varepsilon = \varepsilon_{\max}$. Because $\mathcal{W}'(\varepsilon)$ is continuous on the compact interval $[0, \varepsilon_{\max}]$ with $\mathcal{W}'(0) > 0$ and $\mathcal{W}'(\varepsilon_{\max}^-) < 0$, the Intermediate Value Theorem guarantees the existence of an interior stationary point $\varepsilon^* \in (0, \varepsilon_{\max})$ satisfying $\mathcal{W}'(\varepsilon^*) = 0$. Since the boundary points $\varepsilon \in \{0, \varepsilon_{\max}\}$ yield strictly lower welfare than nearby interior points, the global maximum on $[0, \varepsilon_{\max}]$ must be attained at an interior policy $\varepsilon^* \in (0, \varepsilon_{\max})$. Furthermore, condition~(i) ensures strict monotonicity $\bar{\mu}_j'(s) > 0$, guaranteeing the second-order sufficient condition for a maximum, $\mathcal{W}''(\varepsilon^*) = -\frac{\rho^2}{2} \sum_j \bar{\mu}_j'(c - \rho \varepsilon^*) f_{S_j}(c - \rho \varepsilon^*) < 0$.
+\end{proof}
+
+\subsection{Proofs for the Learning Problem}
+
+In this subsection, we provide the proof of the regret bound for the regulatory learning problem.
+
+\phantomsection
+We now provide the proof of Theorem~\ref{thm:regret}.
+\begin{proof}[Proof of Theorem~\ref{thm:regret}: Regret Bound for Regulatory GP-TS]\label{app:proof_thm_regret}\label{proof:thm_regret}
+Under Assumption~\ref{ass:regularity}, the expected social welfare function $\mathcal{W}(\varepsilon)$ is smooth on $[0, \varepsilon_{\max}]$ and belongs to the RKHS $\mathcal{H}_k$ of $k_{5/2}$ with bounded norm $\|\mathcal{W}\|_{\mathcal{H}_k} \le B < \infty$. Furthermore, because traded share volume is bounded by total supply $\eta \mathcal{N}$ and valuations are bounded in magnitude by $Y_{\max}$, realized social welfare satisfies the symmetric envelope $|W_t| \le \eta Y_{\max}$. Consequently, the observation noise $\xi_t = W_t - \mathcal{W}(\varepsilon_t)$ is conditionally $R$-sub-Gaussian with $R = \eta Y_{\max}$ by Hoeffding's Lemma.
+
+Applying the GP-TS regret bound of \citet[Theorem 4]{chowdhury2017kernelized} on the 1D compact domain $[0, \varepsilon_{\max}]$, cumulative regret satisfies $R_T = \mathcal{O}\bigl(B\sqrt{T\gamma_T} + \gamma_T\sqrt{T}\bigr)$, where $\gamma_T$ is the maximum information gain for kernel $k_{5/2}$. For the Mat\'ern-$5/2$ kernel on a 1D compact domain ($d=1, \nu=5/2$), the maximum information gain is bounded by $\gamma_T = \widetilde{\mathcal{O}}(T^{\frac{d}{2\nu+d}}) = \widetilde{\mathcal{O}}(T^{1/6})$ \citep{vakili2021information}. Substituting $\gamma_T = \widetilde{\mathcal{O}}(T^{1/6})$ yields the sublinear cumulative regret bound $R_T = \widetilde{\mathcal{O}}(T^{2/3})$.
+\end{proof}
+
+% Applied Fix: Added zero-revenue option in subset proof and retained derivative terms in interior-optimality proof.

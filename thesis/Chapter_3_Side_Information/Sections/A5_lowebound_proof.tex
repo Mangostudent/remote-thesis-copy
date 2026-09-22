@@ -1,0 +1,89 @@
+\subsection{Proof of the Lower Bound}\label{subsec: proof of lower bound}
+
+We now prove Theorem \ref{thm: Lower bound on excess risk}.
+
+\begin{proof}
+    We prove the lower bound by exhibiting two joint distributions that are indistinguishable from the partitioned training data, yet have distinct optimal predictors.
+
+    Let $X \sim \mathrm{Unif}[0,1]$ and fix $p \in (0,\tfrac{1}{2})$; we set $p = 0.2$ for a concrete numerical bound below. Define the two conditional joint laws of $(Y,Z)$ given $X = x$ as follows.
+
+    \begin{enumerate}
+        \item[(I)] Distribution $P_1$:
+         Conditional on $X=x$, $(Y,Z)$ satisfy $\mathbb{P}(Y = Z) = 1-p$. The joint distribution is:
+         \begin{equation*}
+             \begin{array}{|c|c|c|}
+                 \hline
+                 & Z=-1 & Z=+1 \\
+                 \hline
+                 Y=-1 & (1-p)/2 & p/2 \\
+                 \hline
+                 Y=+1 & p/2 & (1-p)/2 \\
+                 \hline
+             \end{array}
+         \end{equation*}
+         Consider score functions of the form $f(z) = \alpha z$. The population logistic risk is
+         \begin{equation*}
+             R_1(\alpha) = \mathbb{E}\big[\ln\!\big(1 + \exp^{-Y\alpha Z}\big)\big]
+             = (1-p)\ln(1+\exp^{-\alpha}) + p\ln(1+\exp^{\alpha}).
+         \end{equation*}
+          Setting $\frac{d}{d\alpha}R_1(\alpha) = 0$,
+         \begin{equation*}
+             -\frac{1-p}{1+\exp^{\alpha}} + \frac{p\,\exp^{\alpha}}{1+\exp^{\alpha}} = 0
+             \quad\Longrightarrow\quad
+             \exp^{\alpha^*} = \frac{1-p}{p}.
+         \end{equation*}
+         Substituting back (using $1 + \exp^{\alpha^*} = 1/p$ and $1 + \exp^{-\alpha^*} = 1/(1-p)$) gives
+         \begin{equation*}
+             R_1^* = -(1-p)\ln(1-p) - p\ln p =: H(p).
+         \end{equation*}
+ 
+         \item[(II)] Distribution $P_2$:
+         Conditional on $X=x$, $(Y,Z)$ satisfy $\mathbb{P}(Y = -Z) = 1-p$. The joint distribution is:
+         \begin{equation*}
+             \begin{array}{|c|c|c|}
+                 \hline
+                 & Z=-1 & Z=+1 \\
+                 \hline
+                 Y=-1 & p/2 & (1-p)/2 \\
+                 \hline
+                 Y=+1 & (1-p)/2 & p/2 \\
+                 \hline
+             \end{array}
+         \end{equation*}
+         Consider the score function of the form $f(z) = \alpha z$ again. The population logistic risk is
+         \begin{equation*}
+             R_2(\alpha) = p\ln(1+\exp^{-\alpha}) + (1-p)\ln(1+\exp^{\alpha}).
+         \end{equation*}
+         This is minimized at $\exp^{\alpha^*} = \frac{p}{1-p}$. Substituting back gives
+         \begin{equation*}
+             R_2^* = -p\ln p - (1-p)\ln(1-p) = H(p).
+         \end{equation*}
+    \end{enumerate}
+
+    \noindent Indistinguishability: Under both $P_1$ and $P_2$ the marginal laws of $Y$ and $Z$ are each uniform on $\{-1,+1\}$:
+     \begin{equation*}
+         \mathbb{P}(Y=y \mid X) = \tfrac{1}{2}, \qquad \mathbb{P}(Z=z \mid X) = \tfrac{1}{2}.
+     \end{equation*}
+     Since the training data is partitioned into $D = \{(x_i, y_i)\}$ and $S = \{(x_j, z_j)\}$, let $Q$ denote the distribution of this partitioned sample. The distribution $Q$ is identically the product of these uniform marginals under both $P_1$ and $P_2$. Hence no algorithm can reliably determine which distribution generated the data.
+
+    \noindent Lower bound: Let $(D,S)$ be drawn from the common training law $Q$, together with any independent randomization seed $\Xi$ of the algorithm. For any realization of the output $\hat{w} = A(D,S) \in \mathbb{R}^{d+2}$, consider the sum of excess risks under $P_1$ and $P_2$:
+    \begin{equation*}
+        \big(R_1(\hat{w}) - R_1^*\big) + \big(R_2(\hat{w}) - R_2^*\big) = R_1(\hat{w}) + R_2(\hat{w}) - 2H(p).
+    \end{equation*}
+    For the equal mixture of $P_1$ and $P_2$, we have $\mathbb{P}(Y=1 \mid X, Z) = \tfrac{1}{2}$ pointwise for every $(X,Z)$. Consequently, the mixture risk $\tfrac{1}{2}(R_1(\hat{w}) + R_2(\hat{w}))$ is minimized by the trivial score $\hat{w} = 0$, whose logistic loss is identically $-\ln(1/2) = \ln 2$. Therefore,
+    \begin{equation*}
+        \big(R_1(\hat{w}) - R_1^*\big) + \big(R_2(\hat{w}) - R_2^*\big) \ge 2\big(\ln 2 - H(p)\big).
+    \end{equation*}
+    For $p = 0.2$, we have $\ln 2 - H(0.2) \approx 0.69315 - 0.50040 = 0.19275 > 0.19$. Hence, for every output $\hat{w}$,
+    \begin{equation*}
+        \big(R_1(\hat{w}) - R_1^*\big) + \big(R_2(\hat{w}) - R_2^*\big) > 2 \times 0.19.
+    \end{equation*}
+    Now define the bad events $E_k := \{(D, S, \Xi) : R_k(A(D,S)) - R_k^* > 0.19\}$ for $k \in \{1,2\}$. Since the sum of excess risks strictly exceeds $2 \times 0.19$ pointwise for every sample realization, every realization $(D,S,\Xi)$ must belong to at least one of $E_1$ or $E_2$, which implies $E_1 \cup E_2 = \Omega$. 
+    Because the distribution of $(D,S)$ under both $P_1$ and $P_2$ is identically the common law $Q$, we have
+    \begin{equation*}
+        Q(E_1) + Q(E_2) \ge Q(E_1 \cup E_2) = 1 \quad\Longrightarrow\quad \max\{Q(E_1),\, Q(E_2)\} \ge \frac{1}{2}.
+    \end{equation*}
+    Therefore, there exists a fixed distribution $P_{k^*} \in \{P_1, P_2\}$ in the class such that under $P_{k^*}$, the algorithm incurs excess risk exceeding $0.19$ with probability at least $1/2$ over the draw of $(D,S)$ and algorithm seed $\Xi$.
+
+    Finally, we note that under both $P_1$ and $P_2$, the feature $X$ is independent of $Z$ and $Y$, so $u^* = 0$, which places this construction outside the Non-Degeneracy condition (ND) assumed in Theorem~\ref{thm: main theorem}. This result establishes that across the broader class satisfying (C1)--(C4), non-vanishing excess risk is an intrinsic property of learning from partitioned observations.
+\end{proof}

@@ -1,0 +1,32 @@
+\section{Algorithm}
+
+We present our Partitioned Side Information Learning (PSIL) algorithm for leveraging side information in classification problems with partitioned datasets. The procedure consists of two main stages:
+
+\begin{enumerate}
+    \item Learning the Feature to Side Information mapping:
+    Select a regularization parameter $\mu$ and learn a classifier $\uh \equiv \ph: \cg{X} \rightarrow \cg{Z}$ from the sample $S$ using logistic regression (thresholded at $0.5$). This classifier is used to impute the missing $Z$-values in the primary dataset $D$.
+
+    \item Learning the Feature and imputed Side Information to Label mapping with regularization:
+    Choose regularization parameters $(\lamc, \lamx, \lamz)$. For each $(x_i, y_i) \in D$ we impute $z_i = \ph(x_i)$
+    and train a regularized logistic regression model (thresholded at $0.5$) to learn a classifier $\whl: \cg{X} \times \cg{Z} \rightarrow \cg{Y}$.
+\end{enumerate}
+
+Among all regularization parameters, only $\lambda_z$ requires non-trivial tuning and thus becomes the main focus of both theoretical and empirical analysis in this chapter. In principle, the optimal value of $\lambda_z$ depends on the properties of the unknown joint distribution of $(X, Z, Y)$. In standard scenarios, one would set aside a validation set to empirically estimate this hyperparameter. With the partitioned data, a held-out sample of $(X,Y)$ can validate the imputed-input risk $R^{\hat\phi}$, conditional on the fitted imputer. It cannot in general validate the target risk $R$, which uses observed $Z$, without a jointly observed labeled evaluation sample or additional identifying assumptions. Our theoretical selection criterion concerns this target risk.
+
+\begin{algorithm}[t]\index{Partitioned Side Information Learning (PSIL)|textbf}\index{Imputation-based learning|textbf}
+    \caption{Partitioned Side Information Learning (PSIL)}
+    \label{alg: side information algorithm}
+    \begin{algorithmic}[1]
+        \Require $D = \{(x_i, y_i)\}_{i=1}^n$, $S = \{(x_j, z_j)\}_{j=1}^{m}$
+        \Ensure Hypothesis $\whl$
+        \State Select the regularization parameter $\mu := \frac{c}{\sqrt{m}}$, where $c>0$ is chosen to minimize side-information prediction error on a validation set constructed from $S$.
+        \State Learn $\uh$ by minimizing the regularized empirical risk over $S$:
+        \Statex $\uh := \arg\min_{u \in \R^{d+1}} \; \hat{L}(u) + \mu\lVert u \rVert^2$
+        \State For each $(x_i, y_i) \in D$, impute $z_i := \ph(x_i)$.
+        \State Set $\lambda_c := \lambda_x := \frac{1}{\sqrt{n}}$ and choose $\lambda_z\geq n^{-1/2}$.
+        \State Learn $\whl$ by minimizing the regularized empirical risk over $D$ with imputed $z_i$:
+        \Statex $\whl := \arg\min_{w \in \R^{d+2}} \rh^{\hat{\phi}}(w) + \lambda_c |w_c|^2 + \lambda_x \lVert w_x \rVert^2 + \lambda_z |w_z|^2$
+        \State At test time, given $(x, z)$ (with observed $z$), predict $\hat{y} = 1$ if $\whlc + \whlx^\top x + \whlz z > 0$, else predict $\hat{y} = -1$.
+    \end{algorithmic}
+\end{algorithm}
+   

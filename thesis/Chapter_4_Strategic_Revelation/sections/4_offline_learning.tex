@@ -1,0 +1,93 @@
+\section{Offline Learning Problem}\label{sec:offline_learning}
+
+In the offline learning setting, the receiver does not know the joint distribution of $(U,X,Y)$, while the channel noise parameter $q$ is assumed known. Instead, the receiver observes a fully revealed training dataset alongside the sender's preference values, given by
+\begin{equation*}
+    D_n=\{(u_k,x_k,y_k)\}_{k=1}^n,
+\end{equation*}
+where the triples $(u_k,x_k,y_k)$ are drawn i.i.d. from the (unknown) distribution of $(U,X,Y)$.
+
+We propose a learning algorithm for the receiver to estimate the strategic advantage $\Delta(\env)$ from the training data and derive uniform generalization bounds for it. To simplify the calculations, assume $\|U\|,\|X\|,\|Y\|\le 1$ almost surely, and restrict the receiver's strategy space, which is also the learning algorithm's hypothesis class, to
+\begin{equation*}
+    \Rspace:=\{r:\X\cup\{\emptyset\}\to\Y\mid r(\emptyset)=0,\; r(x)=b^\top x\text{ for some }b\in\mathbb{R}^d,\; \|b\|\le 1\}.
+\end{equation*}
+\footnote{If the random variables and hypothesis class slopes were bounded by any constant $C>0$ instead of $1$, the generalization bounds change only by constant factors that are absorbed into the $\cO(\cdot)$ notation.}
+For a given dataset $D_n$, define the empirical vanilla and strategic risks as
+\begin{equation*}
+    \widehat{\RV}(b):=(1-q)\frac{1}{n}\sum_{k=1}^n (y_k - b^\top x_k)^2 + q\frac{1}{n}\sum_{k=1}^n y_k^2,
+\end{equation*}
+and
+\begin{equation*}
+    \widehat{\RS}(b):=\frac{1}{n}\sum_{k=1}^n\Big[y_k^2 - (1-q)G_b(x_k, y_k)\I{F_b(u_k, x_k) > 0}\Big]
+\end{equation*}
+respectively. The corresponding empirical optimizers are denoted as\footnote{The population OLS slope $b_V = \mathrm{Var}(X)^{-1}\mathrm{Cov}(X, Y)$ admits an unconstrained closed-form formula. However, under the restricted domain constraint $\mathcal{R}$ and unknown population distribution, $\widehat{b}_V$ cannot be evaluated in closed form and is estimated numerically via Empirical Risk Minimization.}
+\begin{equation*}
+    \widehat{\bV}:=\arg\min_{b\in\mathcal{R}}\widehat{\RV}(b),\qquad \widehat{\bS}:=\arg\min_{b\in\mathcal{R}}\widehat{\RS}(b).
+\end{equation*}
+Define the empirical strategic advantage as $\widehat{\Delta}(D_n):=\widehat{\RV}(\widehat{\bV})-\widehat{\RS}(\widehat{\bS})$, which estimates the population strategic advantage over the hypothesis class $\mathcal{R}$, $\Delta(\env) := \min_{b \in \mathcal{R}} \RV(b) - \min_{b \in \mathcal{R}} \RS(b)$. Algorithm \ref{alg:regression_offline} calculates $\widehat{\Delta}(D_n)$.
+
+\begin{algorithm}[htbp]\index{Strategic Advantage Regression (SAR-ERM)|textbf}\index{Offline learning problem|textbf}
+\caption{Strategic Advantage Regression Empirical Risk Minimization (SAR-ERM)}
+\label{alg:regression_offline}
+\begin{algorithmic}[1]
+\State \textbf{Input:} Training set $D_n = \{(u_i, x_i, y_i)\}_{i=1}^n$, channel erasure probability $q$, parameterized hypothesis class $\mathcal{R} := \{b \in \R^d : \|b\|_2 \le 1\}$.
+\State \textbf{Compute and optimize using ERM:}
+\begin{align*}
+    \RhatV(b) &\leftarrow (1-q)\frac{1}{n}\sum_{i=1}^n (y_i - b^\top x_i)^2 + q\frac{1}{n}\sum_{i=1}^n y_i^2,\\
+    \RhatS(b) &\leftarrow \frac{1}{n}\sum_{i=1}^n y_i^2 - (1 - q)\frac{1}{n}\sum_{i=1}^n G_b(x_i, y_i) \I{F_b(u_i, x_i) > 0},\\
+    \widehat{\Delta}(D_n) &\leftarrow \min_{b \in \mathcal{R}} \RhatV(b) - \min_{b \in \mathcal{R}} \RhatS(b)
+\end{align*}
+\State \textbf{Output:} Strategic advantage estimate $\widehat{\Delta}(D_n)$.
+\end{algorithmic}
+\end{algorithm}
+
+We now establish uniform generalization bounds for Algorithm \ref{alg:regression_offline}. We begin by bounding the generalization gap between the empirical and population vanilla risks.
+
+\begin{lemma}[Uniform Generalization of Vanilla Risk]
+\label{lem:vanilla_generalization}
+Let $\delta \in (0, 1)$. With probability at least $1 - \delta$, we have
+\begin{equation}
+    \label{eq:vanilla_gen_bound}
+    \sup_{b \in \mathcal{R}} |\RV(b) - \RhatV(b)| \le \cO\left( \frac{d^2}{\sqrt{n}} + d^2\sqrt{\frac{\log(1/\delta)}{n}} \right).
+\end{equation}
+\end{lemma}
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch4} (Proof~\ref{proof:vanilla_generalization}).
+\end{proof}
+
+We next bound the generalization gap between the empirical and population strategic risks.
+
+\begin{lemma}[Uniform Generalization of Strategic Risk]
+\label{lem:strategic_generalization}
+Let $\delta \in (0, 1)$. With probability at least $1 - \delta$ over the random draw of $S$
+\begin{equation*}
+    \sup_{b \in \mathcal{R}} |\RS(b) - \RhatS(b)| \le \cO\left( \frac{d^3 \sqrt{\log n}}{\sqrt{n}} + d^2 \sqrt{\frac{\log(1/\delta)}{n}} \right).
+\end{equation*}
+\end{lemma}
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch4} (Proof~\ref{proof:strategic_generalization}).
+\end{proof}
+Lemmas \ref{lem:vanilla_generalization} and \ref{lem:strategic_generalization} show that our strategic-risk upper bound has a larger complexity term than the mandatory feature-revelation baseline (vanilla).
+
+Finally, we combine these lemmas to establish a uniform generalization bound between the empirical strategic advantage $\widehat{\Delta}(D_n)$ and the population strategic advantage $\Delta(\env)$.
+
+\begin{theorem}[Generalization Bound for Strategic Advantage]\label{thm:advantage_generalization}\index{Uniform generalization bound|textbf}\index{Strategic advantage!generalization bound|textbf}
+Let $\delta \in (0, 1)$. With probability at least $1 - \delta$ over the random draw of $D_n$
+\begin{equation*}
+    |\Delta(\env) - \widehat{\Delta}(D_n)| \le \cO\left( \frac{d^3 \sqrt{\log n}}{\sqrt{n}} + d^2 \sqrt{\frac{\log(1/\delta)}{n}} \right).
+\end{equation*}
+\end{theorem}
+\begin{proof} The proof is given in Section~\ref{sec:proofs_ch4} (Proof~\ref{proof:advantage_generalization}).
+\end{proof}
+
+\paragraph{Simulation Results for Offline Learning.}
+
+To evaluate our Algorithm~\ref{alg:regression_offline} and empirically validate the uniform generalization bounds for strategic advantage from Theorem~\ref{thm:advantage_generalization}, we simulate the receiver offline learning problem across feature dimensions $d \in \{2, 5\}$.\coderef{subsec:code_reg_learning} For each evaluation environment, the data generation process draws joint feature vectors, outcomes, and sender preferences $(X, Y, U) \in \mathbb{R}^{d+2}$ from a 2-component Gaussian Mixture Model (GMM) with mixture weights $\pi_1 = 0.6, \pi_2 = 0.4$. Component 1 represents a sub-population with mean vector $\mu_1 = (+0.8 \mathbf{1}/\sqrt{d}, 1.0, 1.0)^\top$, while Component 2 represents a sub-population with mean vector $\mu_2 = (-0.8 \mathbf{1}/\sqrt{d}, -0.8, -1.0)^\top$. Both components share a symmetric positive-definite covariance matrix $\Sigma \in \mathbb{R}^{(d+2) \times (d+2)}$ specified by feature covariance $\Sigma_X = 0.64 I_d$, outcome variance $\mathrm{Var}(Y) = 0.6$, preference variance $\mathrm{Var}(U) = 0.5$, and cross-covariances $\mathrm{Cov}(X,Y) = \frac{0.5}{\sqrt{d}}\mathbf{1}$, $\mathrm{Cov}(X,U) = \frac{0.3}{\sqrt{d}}\mathbf{1}$, and $\mathrm{Cov}(Y,U) = 0.3$. The channel noise parameter is fixed at $q = 0.5$. 
+
+In each independent trial, a fresh empirical training set $D_n$ of size $n$ and a fresh held-out test dataset $D_{\mathrm{test}}$ of size $N_{\mathrm{test}} = 10{,}000$ are independently sampled to evaluate population strategic risk. We evaluate the empirical vanilla and strategic risk learning across a logarithmic grid of 65 training sample sizes $n \in [50, 3000]$. For each training size $n$, we run $M = 15$ independent Monte Carlo trials. In each trial, an empirical training set $D_n$ of size $n$ is sampled, and the receiver hypotheses $\widehat{b}_V$ and $\widehat{b}_S$ are learned. For each trial, we evaluate the empirical strategic advantage $\widehat{\Delta}(D_n) = \widehat{R}_{\mathrm{V}}(\widehat{b}_{\mathrm{V}}) - \widehat{R}_{\mathrm{S}}(\widehat{b}_{\mathrm{S}})$ on training set $D_n$ and the population strategic advantage $\Delta(\mathcal{E})$ on test set $D_{\mathrm{test}}$, recording the absolute strategic advantage generalization gap $|\Delta(\mathcal{E}) - \widehat{\Delta}(D_n)|$. 
+
+The empirical findings are presented in Figure~\ref{fig:regression_learning_gaps} and corroborate our theoretical analysis. As the sample size $n$ increases, the strategic advantage generalization gap decays at the rate $\mathcal{O}(\sqrt{d/n})$ as claimed in Theorem~\ref{thm:advantage_generalization}. Furthermore, comparing $d=2$ and $d=5$ confirms that higher feature dimensionality causes the generalization gap to decay at a slower rate, as claimed in the $d$-dependency of the generalization gap in Theorem~\ref{thm:advantage_generalization}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.72\textwidth]{regression_learning_gaps.png}
+    \caption{Generalization gap $|\Delta(\mathcal{E}) - \widehat{\Delta}(D_n)|$ versus training sample size $n$ under $q=0.5$ (solid lines show mean gap, shaded bands indicate $\pm 1$ standard error across $M=15$ trials).}
+    \label{fig:regression_learning_gaps}
+\end{figure}

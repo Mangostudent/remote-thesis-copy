@@ -1,0 +1,84 @@
+We begin by presenting the proof of Theorem~\ref{thm: multidimension decision problem}.
+
+\begin{apdxproof}{(Proof of Theorem \ref{thm: multidimension decision problem})}\label{proof: multidemnsional decision}\\
+Let $r$ be a receiver strategy and let $s_r$ be its worst-case best response. Define
+\[
+K_+ = \{x : w^\top x > \h\ \text{ and }\ r(s_r(x)) = h(x) = \plus\}, \quad 
+K_- = \{x : w^\top x \leq \h\ \text{ and }\ r(s_r(x)) = h(x) = \minus\}.
+\]
+For each $z \in \cg{Z}$, define
+\[
+f(z) := \inf \big(\{t > 0 : z + tw \in K_+\} \cup \{2\uu\}\big), \quad
+g(z) := \sup \big(\{t \leq 0 : z + tw \in K_-\} \cup \{-2\uu\}\big).
+\]
+We claim that
+\[
+f(z) - g(z) \geq 2\uu \quad \text{for all } z \in \cg{Z}.
+\]
+Suppose there exists $z \in \cg{Z}$ such that
+\begin{equation}\label{eqn: gap is 2u in multidimension}
+    f(z) - g(z) < 2\uu.
+\end{equation}
+This then rules out the possibility that either $f(z) = 2\uu$ or $g(z) = -2\uu$.
+By definition of infimum and supremum, for sufficiently small $\epsilon > 0$, there exist $t_1 \in (0, f(z) + \epsilon)$ and $t_2 \in (g(z) - \epsilon, 0]$ such that $\bar{x} := z + t_1 w \in K_+$ and $\underline{x} := z + t_2 w \in K_-$.
+Then
+\[
+\|\bar{x} - \underline{x}\| = (t_1 - t_2)\|w\| < 2\uu.
+\]
+Suppose $\|\bar{x} - s_r(\bar{x})\| \leq \|\underline{x} - s_r(\underline{x})\|$ (similar reasoning applies for the opposite inequality).
+Then the payoff for $\underline{x}$ under $s_r$ is
+\[
+- \|\underline{x} - s_r(\underline{x})\|.
+\]
+Now consider a new sender strategy $s$ defined by
+\[
+s(x) := 
+\begin{cases}
+s_r(x) & \text{if } x \neq \underline{x} \\
+s_r(\bar{x}) & \text{if } x = \underline{x}
+\end{cases}.
+\]
+The payoff for $\underline{x}$ under $s$ is
+\[
+2\uu - \|\underline{x} - s_r(\bar{x})\| \geq 2\uu - \|\underline{x} - \bar{x}\| - \|\bar{x} - s_r(\bar{x})\| > -\|\bar{x} - s_r(\bar{x})\| \geq -\|\underline{x} - s_r(\underline{x})\|,
+\]
+which contradicts the optimality of $s_r$. Hence, the assumption in \eqref{eqn: gap is 2u in multidimension} is false, and therefore
+\[
+f(z) - g(z) \geq 2\uu 
+\]
+for all $z \in \cg{Z}$.
+By the definitions of $f$ and $g$, for $z \in \cg{Z}$, all points $z + tw$, with $t \in (g(z), f(z))$, are misclassified by $r$. Thus,
+\[
+E(r) \supseteq \{x: x = z + tw,\, z \in \cg{Z},\, t \in (g(z),f(z))\}
+\]
+and 
+\[
+\cg{E}(r) = \int_{\cg{X}}\mathbbm{1}_{E(r)}\,dx = \int_{E}dx.
+\]
+We now evaluate this integral by using a change of variables. Let $\Phi: \cg{Z} \times \mathbb{R} \rightarrow \mathbb{R}^n$ be the change of variable map given by $\Phi(z,t) = z + wt$. It follows that $\det|J_\Phi| = \|w\| = 1$. Thus,
+\[
+\int_E dx \geq \int_{\cg{Z}}\int_{g(z)}^{f(z)} \det|J_{\Phi}|\,d\sigma(z)\, dt = \int_{\cg{Z}}\int_{g(z)}^{f(z)} d\sigma(z)\,dt = \int_\cg{Z}(f(z) - g(z))\, d\sigma(z) \geq 2\uu\,\sigma(\cg{Z}),
+\]
+where $\sigma(\cg{Z})$ is the surface area of $\cg{Z}$ induced by $D$.
+\end{apdxproof}
+
+We now provide the proof of Theorem~\ref{thm: multidimensional Stackelberg}.
+
+\begin{apdxproof}{(Proof of Theorem \ref{thm: multidimensional Stackelberg})}\label{proof: multidimensional stackelberg}\\
+For $z \in \cg{Z}$, let
+\[
+K_+ := \{x : w^\top x \geq \h + \uu\} \quad \text{and} \quad K_- := \{x : w^\top x \leq \h - \uu\}.
+\]
+Let $x \in K_+$. We now calculate the worst-case best response for $x$. Let $s_r(x) = t$. If $t \in K_-$, then the payoff for the sender is $2\uu - \|x - t\| < 0$ because $K_+$ and $K_-$ are separated by $2\uu$ units. Since $r(x) = \Delta$ for $x \in \cg{X} \setminus (K_+ \cup K_-)$, it follows that $t \notin \cg{X} \setminus (K_+ \cup K_-)$. Thus, $t = x$, as the sender gets $0$ payoff, which is the maximum it could get. Hence, $s_r(x) = x$ for $x \in K_+$. Using similar reasoning for $x \in K_-$, we get $s_r(x) = x$ for $x \in K_-$ as well. Therefore,
+\[
+E(r) \subset \{x : x = z + t w,\, z \in \cg{Z},\, t \in (-\uu, \uu)\}.
+\text{ and } 
+\cg{E}(r) = \int_{E(r)} dx.
+\]
+Evaluating this integral by using a change of variables from $x$ to $(z, t)$, we get
+\[
+\int_{E(r)} dx \leq \int_{\cg{Z}} \int_{-\uu}^{\uu} dt\, d\sigma(z) = \int_{\cg{Z}} 2\uu\, d\sigma(z) = 2\uu\, \sigma(\cg{Z}),
+\]
+where $\sigma(\cg{Z})$ is the surface area of $\cg{Z}$ induced by $D$.
+Theorem \ref{thm: multidimension decision problem} establishes that the receiver's error is lower-bounded by $2\uu\,\sigma(\cg{Z})$. We conclude that $\cg{E}(r) = 2\uu\, \sigma(\cg{Z})$ and $r$ is a Stackelberg equilibrium.
+\end{apdxproof}

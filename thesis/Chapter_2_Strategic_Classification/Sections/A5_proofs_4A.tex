@@ -1,0 +1,225 @@
+We begin with the proof of Proposition~\ref{prop: VC dimension}.
+
+\begin{apdxproof}(Proof of Proposition \ref{prop: VC dimension})\label{proof:VC_dimension}
+To show that $\text{VC dim}(\mathcal{F}) \geq d$, choose any $d$ distinct points $0 \leq x_1 < x_2 < \dots < x_d \leq 1$ in $\cg{X}$. Let $(y_1, \dots, y_d) \in \cg{Y}^d$ be an arbitrary labeling.
+Let $J := \{j \in \{1, \dots, d-1\} : y_j \neq y_{j+1}\}$. Note that $|J| \leq d-1$.
+If $J = \emptyset$, all labels are identical, so setting $f(x) \equiv y_1$ satisfies $f \in \mathcal{F}$ (with $0$ decision boundaries) and $f(x_k) = y_k$ for all $k \in \{1, \dots, d\}$.
+Let $k = |J| \geq 1$, and denote the elements of $J$ in increasing order by $j_1 < j_2 < \dots < j_k$. For each $i \in \{1, \dots, k\}$, define the decision boundary
+\[
+b_i := \frac{x_{j_i} + x_{j_i+1}}{2}.
+\]
+Setting $b_0 := 0$ and $b_{k+1} := 1$, we have $0 \leq x_1 \leq x_{j_1} < b_1 < x_{j_1+1} \leq \dots \leq x_{j_k} < b_k < x_{j_k+1} \leq x_d \leq 1$. Now define the hypothesis $f: \cg{X} \rightarrow \cg{Y}$ as:
+\[
+f(x) := 
+\begin{cases}
+    y_1 &\text{if } x \in [0, b_1),\\
+    y_{j_i+1} &\text{if } x \in [b_i, b_{i+1}) \quad \text{for } i \in \{1, \dots, k-1\},\\    
+    y_d &\text{if } x \in [b_k, 1].
+\end{cases}
+\]
+By construction, the label assigned by $f$ changes only at $b_1, \dots, b_k$, so $f$ has exactly $k = |J| \leq d-1$ decision boundaries, which implies $f \in \mathcal{F}$. Moreover, $f(x_m) = y_m$ for all $m \in \{1, \dots, d\}$. Since the labeling $(y_1, \dots, y_d)$ was arbitrary, $\mathcal{F}$ shatters $\{x_1, \dots, x_d\}$, and thus $\text{VC dim}(\mathcal{F}) \geq d$.
+
+To show that $\text{VC dim}(\mathcal{F}) \leq d$, consider an arbitrary set of $d+1$ points $0 \leq x_1 < x_2 < \dots < x_{d+1} \leq 1$ in $\cg{X}$. Assign alternating labels $y_j = (-1)^j$ so that $y_j \neq y_{j+1}$ for all $j \in \{1, \dots, d\}$. Any function $f'$ satisfying $f'(x_j) = y_j$ for all $j \in \{1, \dots, d+1\}$ must change signs between every adjacent pair $x_j$ and $x_{j+1}$, requiring at least $d$ decision boundaries. Because every function in $\mathcal{F}$ has at most $d-1$ decision boundaries, no function in $\mathcal{F}$ can realize this labeling. Therefore, no set of $d+1$ points can be shattered by $\mathcal{F}$, proving $\text{VC dim}(\mathcal{F}) \leq d$. Combining both bounds yields $\text{VC dim}(\mathcal{F}) = d$.
+\end{apdxproof}
+
+Next, we present the proof of Proposition~\ref{prop:Deterministic Stackelberg equilibrium for multiple decision boundaries}.
+
+\begin{apdxproof}(Proof of Proposition \ref{prop:Deterministic Stackelberg equilibrium for multiple decision boundaries})\label{proof:Deterministic Stackelberg equilibrium for multiple decision boundaries}
+    \setcounter{claims}{0}
+	Let $r^\star$ be a Stackelberg equilibrium, and define:
+	\begin{equation*}
+		\begin{aligned}
+			\theta^{(n)} &:= \sup (E(r^\star)^c \cap O_n), \\
+			\theta_{(n)} &:= \inf (E(r^\star)^c \cap O_n), \\
+			\Theta_n &:= [\theta_{(n)}, \theta^{(n)}],
+		\end{aligned}
+	\end{equation*}
+	where $\Theta_n := \emptyset$ if $E(r^\star)^c \cap O_n = \emptyset$.
+	This implies $E(r^\star)^c \subseteq \cup_{n=1}^{d-1} \Theta_n$. We demonstrate that with this choice of $\Theta_n$, the receiver strategy $r(x;\Theta_1,\cdots, \Theta_{d-1})$ given in \eqref{eqn:stack multiple} is a Stackelberg equilibrium. Consider the following cases for $\Theta_n$'s. \\
+
+	\noindent \textit{Case (i): }{All $\Theta_n$'s are empty.}\\
+    This case will not happen because if all $\Theta_n$'s are empty, then $r^\star$ misclassifies all feature vectors. However, a majority-label (described in Section \ref{sec:Problem formulation}) receiver strategy will correctly classify at least half of them, contradicting that $r^\star$ is a Stackelberg equilibrium. Thus, at least one $\Theta_n$ is non-empty.
+
+\noindent \textit{Case (ii): }{For all odd (or even) $n$, $\Theta_n$ is empty.}\\
+Suppose $\Theta_n = \emptyset$ for all odd $n$. For even $n$, denote the corresponding $\Theta_n$ as $\Theta_{2k}$, where $k \in \left\{1, \dots, \left\lfloor \frac{d-1}{2} \right\rfloor \right\}$.
+Since $r(x) = \Delta$ for all $x \in \cg{X} \setminus \bigcup_k \Theta_{2k}$, it follows that for $x \in 
+ \cg{X}$, $s_r(x) \in \bigcup_k \Theta_{2k}$. Thus, $r(s_r(x)) \equiv h(s_r(x))$ from \eqref{eqn:stack multiple}.
+From \eqref{eqn:multiple boundary true function}, we have $ h(t) = \minus$ for $t \in \cup_kO_{2k}$. Therefore, $r(s_r(x)) \equiv \minus$ and
+$r(s_r(x)) = h(x)$ for $x \in \cup_kO_{2k}.$ Hence 
+\[
+E(r)^c \supseteq \bigcup_k O_{2k} \supseteq \bigcup_k \Theta_{2k}.
+\]
+Since $r^\star$ is a Stackelberg equilibrium, it follows that $E(r^\star)^c \subseteq \bigcup_k \Theta_{2k}$ by construction. Consequently, $E(r)^c = E(r^\star)^c = \bigcup_k O_{2k}$, and $r$ is a Stackelberg equilibrium.
+A similar argument applies to show that $r$ is a Stackelberg equilibrium when $n$ for which $\Theta_n = \emptyset$ are all even.
+
+\noindent \textit{Case (iii): }{There exist an odd $k$ and even $l$ such that $\Theta_k, \Theta_l \neq \emptyset$.}\\
+We will first show that $\theta_{(\max\{l,k\})} - \theta^{(\min\{l,k\})} \geq \uu$. Suppose $k < l$ (similar reasoning holds when $k>l$).
+Suppose $\theta_{(l)} - \theta^{(k)} < \uu$. Let $\eps >0$ be such that it satisfies $0 < 2\eps < \uu - (\theta_{(l)} - \theta^{(k)})$. Let $\theta^{(k')}, \theta_{(l')} \in \cg{X}$ be feature vectors such that $\theta^{(k')}, \theta_{(l')} \in E(r^\star)^c$,  $0 \leq \theta_{(l')} - \theta_{(l)} < \eps$, and $0 \leq \theta^{(k)} - \theta^{(k')} < \eps$.  Such feature vectors exist by the definition of $\theta^{(k)}$ and $\theta_{(l)}$. It follows that 
+$$\theta_{(l')} - \theta^{(k')} < 2\eps + \theta_{(l)} - \theta^{(k)} < \uu.$$ Note that $h(\theta_{(l')}) = \minus$ and $h(\theta^{(k')}) = \plus$. Suppose $\mathbb{U}(\theta^{(k')};r^\star,s_{r^\star}) \leq \mathbb{U}(\theta_{(l')};r^\star,s_{r^\star})$ (similar arguments applies when $\mathbb{U}(\theta^{(k')};r^\star,s_{r^\star}) > \mathbb{U}(\theta_{(l')};r^\star,s_{r^\star})$).
+Let $s$ be a sender strategy defined as $s(x) := s_{r^\star}(\theta_{(l')})$ for all $x \in \cg{X}$. Then  
+\begin{equation*}
+    \begin{aligned}
+    \mathbb{U}(\theta^{(k')}; r^\star, s) &= \uu - |\theta^{(k')} -s_{r^\star}(\theta_{(l')})| \geq   \uu - |\theta_{(l')} - \theta^{(k')}|- |\theta_{(l')} - s_{r^\star}(\theta_{(l')})| \\
+    &> -|\theta_{(l')} - s_{r^\star}(\theta_{(l')})| = \mathbb{U}(\theta_{(l')};r^\star,s_{r^\star}).
+    \end{aligned}
+\end{equation*}
+This implies 
+$\mathbb{U}(\theta^{(k')};r^\star,s) > \mathbb{U}(\theta^{(k')};r^\star,s_{r^\star})$, which contradicts the fact that $s_{r^\star}$ is the worst-case best response. Therefore, $\theta_{(l)} - \theta^{(k)} \geq \uu$, proving the claim.
+
+Now consider the receiver strategy $r(x; \{\Theta_n\})$. We calculate its worst-case best response $s_r$. Let $t \in \Theta_i$. Since $r(x) = \Delta$ for $x \notin \cup_n \Theta_n$, we have $s_r(x) \in \cup_n \Theta_n$. Suppose $i$ is even (similar arguments hold for odd $i$) and $s_r(t) \geq t$ (a similar arguments hold for $s_r(t) < t$). The sender's payoff is:
+\[
+\mathbb{U}(t; r, s_r) = 
+\begin{cases}
+-s_r(t) + t & \text{if } s_r(t) \in \Theta_j, \, j \text{ even}, \\
+\uu - s_r(t) + t & \text{if } s_r(t) \in \Theta_j, \, j \text{ odd}.
+\end{cases}
+\]
+If $j$ is even, $\mathbb{U}(t; r, s_r) = -s_r(t) + t \leq 0$, with the maximum value $0$ at $s_r(t) = t$. If $j$ is odd, then using $\theta_{(l)} - \theta^{(k)} \geq \uu$, we get $s_r(t) - t \geq \uu$, and hence $\mathbb{U}(t; r, s_r) \leq 0$. Thus $s_r(t) = t$ gives the maximum payoff to the sender. Therefore, $r(s_r(t)) = h(t)$ for all $t \in \cup_n \Theta_n$. This gives $E(r)^c \supseteq \cup_n \Theta_n \supseteq E(r^\star)^c$. Since $r^\star$ minimizes classification error, $r$ is also a Stackelberg equilibrium, and $E(r)^c = \cup_n \Theta_n$ (up to a set of measure zero), yielding $r(s_r(x)) = -h(x)$ for $x \notin \cup_n \Theta_n$.
+\end{apdxproof}
+
+Next, we provide the proof of Lemma~\ref{lem:same true function}.
+
+\begin{apdxproof}(Proof of Lemma \ref{lem:same true function})\label{proof:same true function}
+Let $r_D := r^\star_{f,D}$ and $r_m := r^\star_{f,D(S)}$. Let $\psi(t)$ be the cumulative distribution function of the probability law $D$ and $\psi_m(t)$ be the empirical cumulative distribution function for a sample $S$, i.e.,
+\begin{equation*}
+    \psi_m(t) := \frac{1}{m} \sum_{i=1}^m \mathbbm{1}_{\{x_i \leq t\}}.
+\end{equation*}
+According to the Dvoretzky–Kiefer–Wolfowitz (DKW) inequality (\cite{Dvoretzky-Kiefer-Wolfowitz-1956}), for any $(\eps, \dlt) \in (0,1)^2$, there exists an $\bar{m}(\eps,\dlt)$ such that for all $m > \bar{m}(\eps,\dlt)$, we have:
+\begin{equation}\label{eqn:DKW inequality:lem: same true function}
+    D^{\otimes m}\big(\sup_{t \in \cg{X}} |\psi(t) - \psi_m(t)| \leq \eps\big) > 1 - 2e^{-2m\eps^2}.
+\end{equation}
+Let $\cg{S} := \{S: \sup_{t \in \cg{X}}|\psi(t) - \psi_m(t)| \leq \eps\}$. From \eqref{eqn:DKW inequality:lem: same true function}, $D^{\otimes m}(\cg{S}) > 1-2e^{-2m\eps^2}$. Fix a sample $S \in \cg{S}$. 
+From Proposition \ref{prop:Deterministic Stackelberg equilibrium for multiple decision boundaries}, for any target function $f$ with at most $K-1$ internal boundaries ($K$ true-label intervals), the error set of any candidate strategy $r$ is a union of at most $K$ open intervals of the form $E_n = (a_n, b_n)$. 
+For an open interval $(a_n, b_n)$, its probability under $D(S)$ is $D_m((a_n, b_n)) = \psi_m(b_n) - \psi_m(a_n)$. Because the uniform DKW bound holds for all $t$ and their limits simultaneously, the difference in probability for any single interval is bounded by $2\eps$.
+Summing over the $K$ intervals that make up the error set, we obtain a uniform bound on the difference between the empirical error and the population error for any strategy $r$:
+\begin{equation}\label{eqn:uniform bound K}
+    \sup_{r} |\cg{E}(r; f, D) - \cg{E}(r; f, D(S))| \leq 2K\eps.
+\end{equation}
+Using the optimality of $r_m$ under the empirical distribution $D(S)$ (so $\cg{E}(r_m; f, D(S)) \leq \cg{E}(r_D; f, D(S))$), we can bound the excess population error of $r_m$
+\begin{align*}
+    \cg{E}(r_m; f, D) - \cg{E}(r_D; f, D) &= [\cg{E}(r_m; f, D) - \cg{E}(r_m; f, D(S))] \\
+    &\quad + [\cg{E}(r_m; f, D(S)) - \cg{E}(r_D; f, D(S))] \\
+    &\quad + [\cg{E}(r_D; f, D(S)) - \cg{E}(r_D; f, D)] \\
+    &\leq 2K\eps + 0 + 2K\eps = 4K\eps.
+\end{align*}
+This holds for all $S \in \cg{S}$, so we get
+\begin{equation}
+    D^{\otimes m}\big(\cg{E}(r_m; f, D) - \cg{E}(r_D; f, D) \leq 4K\eps\big) > 1- 2e^{-2m\eps^2},
+\end{equation}
+as required.
+\end{apdxproof}
+
+Next, we provide the proof of Lemma~\ref{lem:same distribution}.
+
+\begin{apdxproof}(Proof of Lemma \ref{lem:same distribution})\label{proof:same distribution}
+Let $r_1 := r^\star_{h,D}$, $r_2 := r^\star_{A(S),D}$, and $E(r,f) := E(r,s_r,f)$.
+Since VC dim$(\cg{F}) < \infty$,  $\cg{F}$ is PAC learnable from Theorem \ref{thm:Fundamental theorem of statistical learning}. Furthermore, from Theorem  \ref{thm:Fundamental theorem of statistical learning} we have
+\begin{equation}\label{eq:concentration bound}
+    D^{\otimes m}(L_{D}(A(S);h) < \eps) > 1 - \dlt,
+\end{equation}
+where $m \geq \underline{m}(\eps,\dlt) := m_{\cg{F}}^{\mathrm{PAC}}(\eps,\dlt)$ and $\underline{m}(\eps,\dlt)$ satisfies 
+\begin{equation*}
+    C_1 \frac{d + \log\left(\frac{1}{\dlt}\right)}{\eps} \leq \underline{m}(\eps,\dlt) \leq C_2 \frac{d \log\left(\frac{1}{\eps}\right) + \log\left(\frac{1}{\dlt}\right)}{\eps}.
+\end{equation*}
+Here $C_1, C_2 \geq 0$ are constants and $d$ is the VC dimension of $\mathcal{F}$.
+Let 
+\begin{equation}\label{eqn:good set}
+    \cg{S} := \{S: L_D(A(S);h) < \eps\}.
+\end{equation}
+From \eqref{eq:concentration bound}, we know that $D^{\otimes m}(\cg{S}) > 1-\dlt$.
+Fix a $S \in \cg{S}$. Define $W(S) := \{x \mid h(x) \neq A(S)(x)\}$. For a receiver strategy $r$ and (an arbitrary) true function $f$ (recall from Definition \ref{defn:Best response} that $s_r$ will depends upon the true function $f$ v.i.a. utility function), the classification error set $E(r;A(S))$ (defined in \eqref{eqn:error set}) can be decomposed as
+\[
+E(r; A(S)) = (E(r; A(S)) \cap W(S)) \cup (E(r; A(S)) \cap W(S)^c).
+\]
+Since $S \in \cg{S}$, using \eqref{eqn:good set}, we get $L(A(S);h) < \eps$, and therefore it follows that $D(W(S)) < \eps$. Hence, we get
+\[
+\mathcal{E}(r; A(S),D) < \eps + D(E(r; A(S)) \cap W(S)^c).
+\]
+From the definition of $W(S)$, the sender's worst case best response $s_r(x)$ under $h$ is identical to that under $A(S)$ for all $x \in W(S)^c$. Therefore,
+\begin{equation}
+    \begin{aligned}
+        E(r;A(S)) \cap W(S)^c &= \{x:r(s_r(x)) \neq A(S)(x)\} \cap \{x: h(x) = A(S)(x)\} \\
+        &= \{x:r(s_r(x)) \neq h(x)\} \cap \{x: h(x) = A(S)(x)\} \\
+        &= E(r;h) \cap W(S)^c,
+    \end{aligned}
+\end{equation}
+and thus
+\begin{equation}\label{eqn:lem:change in ground truth 3}
+    \mathcal{E}(r; A(S),D) \leq D(E(r; A(S)) \cap W(S)) + D(E(r; h) \cap W(S)^c) \leq D(W(S)) + \mathcal{E}(r; h,D).
+\end{equation}
+Similarly, we can decompose the classification error set $E(r;h)$ as
+\[E(r;h) := (E(r;h) \cap W(S)) \cup (E(r;h)\cap W(S)^c).\]
+Repeating the argument used for deriving \eqref{eqn:lem:change in ground truth 3}, we obtain
+\begin{equation}\label{eqn:lem:change in ground truth 6}
+    \mathcal{E}(r; h,D) \leq D(W(S)) + \mathcal{E}(r; A(S),D).
+\end{equation}
+Combining \eqref{eqn:lem:change in ground truth 3} and \eqref{eqn:lem:change in ground truth 6}, we get
+\[| \cg{E}(r;h,D) - \cg{E}(r;A(S),D) | \leq D(W(S)).\] 
+Since $D(W(S)) < \eps$ for all $S \in \cg{S}$, we have $\sup_{r \in \msf{R}} | \cg{E}(r;h,D) - \cg{E}(r;A(S),D) | < \eps$ for all $S \in \cg{S}$. But we have $D^{\otimes m}(\cg{S}) > 1-\dlt$, therefore we get 
+\begin{equation}\label{eqn:lem:change in ground truth 5}
+    D^{\otimes m}\left(\sup_{r \in \msf{R}} |\mathcal{E}(r; h,D) - \mathcal{E}(r; A(S), D)|  < \eps\right) > 1-\dlt.
+\end{equation}
+This proves part $(a)$.
+Using part $(a)$, we now establish
+\begin{equation}
+    D^{\otimes m}(0 \leq \cg{E}(r_2;h,D) - \cg{E}(r_1;h,D) < 2\eps) > 1-\dlt,
+\end{equation}
+where $r_1 = r^\star_{h,D}$ and $r_2 = r^\star_{A(S),D}$. This is the same as the claim (given in \eqref{eqn:lem:vanilla ERM PAC bound}) we want to prove.
+Since $r_2$ is the minimizer of the classification error under $A(S)$, we have $\mathcal{E}(r_2; A(S),D) - \mathcal{E}(r_1; A(S),D) \leq 0$. Also, by the definition of optimality, $0 \leq \mathcal{E}(r_2; h,D) - \mathcal{E}(r_1; h,D)$.
+For any $S \in \cg{S}$, applying the uniform bound from part $(a)$, we get
+\begin{equation}
+\begin{aligned}
+    \mathcal{E}(r_2; h,D) - \mathcal{E}(r_1; h,D) &\leq \mathcal{E}(r_2; A(S),D) + \eps - \mathcal{E}(r_1; h,D) \\
+    &\leq \mathcal{E}(r_1; A(S),D) + \eps - \mathcal{E}(r_1; h,D) \\
+    &\leq \mathcal{E}(r_1; h,D) + \eps + \eps - \mathcal{E}(r_1; h,D) = 2\eps.
+\end{aligned}
+\end{equation}
+This holds true for all $S \in \cg{S}$. Since $D^{\otimes m}(\cg{S}) > 1-\dlt$, we get 
+\[D^{\otimes m}(0 \leq \mathcal{E}(r_2; h,D) - \mathcal{E}(r_1; h,D) < 2\eps) > 1-\dlt
+\]
+as claimed in part $(b)$.
+\end{apdxproof}
+
+Finally, we present the proof of Theorem~\ref{thm:Startegic learning for vanilla ERM}.
+
+\begin{apdxproof}(Proof of Theorem \ref{thm:Startegic learning for vanilla ERM})\label{proof:strategic_learning_vanilla_erm}
+Let $D \in \fk{D}$ be the probability law on $\cg{X}$ and let $(a,\dlt) \in (0,1)^2$. We aim to show that the excess strategic risk is at most $a$ with probability at least $1-\dlt$. Let $h \in \cg{F}$ be the true function and let $S = \{(x_i,y_i)\}_{i=1}^m$ be an $m$-sized sample where $x_i$ are drawn i.i.d. from $D$.
+Let $\eps = a / (2 + 4K)$, where $K$ is the maximum number of true-label intervals for functions in $\cg{F}$. We allocate confidence $\dlt/2$ to the statistical learning event and $\dlt/2$ to the uniform DKW event.
+Let $m \geq \max\{m_{\cg{F}}^{\mathrm{PAC}}(\eps,\dlt/2), \bar{m}(\eps,\dlt/2)\}$, where $m_{\cg{F}}^{\mathrm{PAC}}(\eps,\dlt/2)$ is the PAC sample complexity from Theorem \ref{thm:Fundamental theorem of statistical learning} corresponding to confidence $\dlt/2$, and $\bar{m}(\eps,\dlt/2) = \frac{\log(4/\dlt)}{2\eps^2}$ ensures the DKW bound holds with probability $1-\dlt/2$.
+Let $D(S)$ be the corresponding empirical distribution of $S$.
+Let $r_1 := r^\star_{h,D}$, $r_2 := r^\star_{A(S),D}$, and $r_3 := r^\star_{A(S),D(S)} = B(A(S))$.
+
+Since VC dim$(\cg{F}) < \infty$, $\cg{F}$ is PAC learnable. We have $A(S)$ as the estimated true function such that 
+\begin{equation}\label{eq:concentration bound3}
+    D^{\otimes m}(L_{D}(A(S);h) < \eps) > 1 - \dlt/2.
+\end{equation}
+Let $\cg{S}_1 := \{S: L_D(A(S);h) < \eps\}$ and $\cg{S}_2 := \{S: \sup_{x \in \cg{X}}|\psi(x) - \psi_m(x)| \leq \eps \}$.
+From \eqref{eq:concentration bound3}, we have $D^{\otimes m}(\cg{S}_1) > 1-\dlt/2$. From the DKW inequality and our choice of $m$, $D^{\otimes m}(\cg{S}_2) > 1 - 2e^{-2m\eps^2} \geq 1-\dlt/2$. By the union bound, for the intersection $\cg{S} := \cg{S}_1 \cap \cg{S}_2$, we have $D^{\otimes m}(\cg{S}) > 1-\dlt$.
+
+Fix $S \in \cg{S}$. 
+From Lemma \ref{lem:same distribution}(a) applied with $f = A(S)$ as the (estimated) true function, the error under $D$ satisfies for any strategy $r$:
+\begin{equation}\label{eqn:uniform D}
+    |\mathcal{E}(r; h, D) - \mathcal{E}(r; A(S), D)| < \eps.
+\end{equation}
+Applying this to $r_3$, we get
+\begin{equation}\label{eq:step1}
+    \mathcal{E}(r_3; h, D) < \mathcal{E}(r_3; A(S), D) + \eps.
+\end{equation}
+Since $S \in \cg{S}_2$, Lemma \ref{lem:same true function} applied to the target $A(S)$ yields
+\begin{equation}\label{eq:step2}
+    \mathcal{E}(r_3; A(S), D) - \mathcal{E}(r_2; A(S), D) \leq 4K\eps.
+\end{equation}
+By definition, $r_2$ minimizes the classification error for target $A(S)$ under distribution $D$, so $\mathcal{E}(r_2; A(S), D) \leq \mathcal{E}(r_1; A(S), D)$. Using this and applying \eqref{eqn:uniform D} to $r_1$, we obtain
+\begin{equation}\label{eq:step3}
+    \mathcal{E}(r_2; A(S), D) \leq \mathcal{E}(r_1; A(S), D) < \mathcal{E}(r_1; h, D) + \eps.
+\end{equation}
+Summing the inequalities \eqref{eq:step1}, \eqref{eq:step2}, and \eqref{eq:step3}, we get
+\[
+\mathcal{E}(r_3; h, D) < \mathcal{E}(r_1; h, D) + 2\eps + 4K\eps = \mathcal{E}(r_1; h, D) + a.
+\]
+This holds for all $S \in \cg{S}$. Thus, we have
+\[
+D^{\otimes m}\big(\mathcal{E}(r_3; h, D) - \mathcal{E}(r_1; h, D) < a\big) > 1 - \dlt.
+\]
+The choice of $D$, $(a,\dlt)$, and $h$ were arbitrary, establishing that $\cg{F}$ is strategically learnable under $B \circ A$.
+\end{apdxproof}

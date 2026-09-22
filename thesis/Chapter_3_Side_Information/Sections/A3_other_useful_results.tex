@@ -1,0 +1,215 @@
+\subsection{Other Useful Lemmas}
+
+This section contains the remaining lemmas required for proving the main theorem (Theorem \ref{thm: main theorem}).
+The following lemma calculates the gap in risk when $Z$ is substituted with $\phi: \cg{X} \rightarrow \cg{Z}$.
+
+\begin{lem}\label{lem: gap in risk when z is replaced with phi hat}
+    Let $w := (w_c,w_x,w_z) \in \R^{d+2}$ and let $\ph$ be defined in  \eqref{eqn: phi star and phi hat}. Then
+    \begin{equation*}
+        |\rph(w) - R(w)| \leq 2|w_z|L_{(0,1)}(\uh).
+    \end{equation*}
+\end{lem}
+
+\begin{proof}
+For fixed $(x,y)$ and $w$, set
+$\ell(x,t,y;w)=\ln(1+\exp(-y(w_c+w_x^\top x+w_zt)))$.
+Its derivative in $t$ satisfies
+\[
+\left|\frac{\partial}{\partial t}\ell(x,t,y;w)\right|
+=|yw_z|\,[1-\sigma(y(w_c+w_x^\top x+w_zt))]\leq|w_z|.
+\]
+We further have $\mathbb E_{X,Z}|Z-\ph(X)|
+=2\mathbb P_{X,Z}(Z\neq\ph(X))
+\leq2L_{(0,1)}(\uh)$.
+Therefore
+\[
+|\rph(w)-R(w)|
+\leq\mathbb E_{X,Y,Z}
+  |\ell(X,\ph(X),Y;w)-\ell(X,Z,Y;w)|
+\leq2|w_z|L_{(0,1)}(\uh).
+\]
+\end{proof}
+
+The next lemma establishes the effect of the regularizer on $w_z$.
+
+\begin{lem}\label{lem: bound weights in terms of lambda}
+Let $\lambda_c,\lambda_x,\lambda_z>0$ and let $\whl$ and $\wsl$
+be defined in \eqref{eqn: w hat lambda} and \eqref{eqn: w lambda star}.
+For either $q=\whl$ or $q=\wsl$,
+\[
+|q_z|\leq
+\min\left\{\sqrt{\frac{\ln2}{\lambda_z}},\frac1{2\lambda_z}\right\}
+\leq\frac{\ln2}{\lambda_z}.
+\]
+\end{lem}
+
+\begin{proof}
+Suppose $q = \whl$. Using the property that $\whl$ is an optimal regularized empirical risk minimizing weights, we have 
+\[
+\lambda_z|\whlz|^2 \le \rhph(\whl) + \lambda_c|\whlc|^2 + \lambda_x\|\whlx\|^2 + \lambda_z|\whlz|^2 \le \rhph(0) + 0 = \ln 2.
+\]
+Thus,
+\[
+|\whlz| \le \sqrt{\frac{\ln 2}{\lambda_z}}.
+\]
+Next, we apply the first-order optimality condition to get 
+$$\frac{\partial}{\partial w_z}\Big(\rhph(\whl)  + \lambda_c|\whlc|^2 + \lambda_x\|\whlx\|^2 + \lambda_z|\whlz|^2\Big) = 0 \implies 2\lamz|\whlz| = \Big|\frac{\partial \rhph(\whl)}{\partial \whlz}\Big|.$$ 
+Simplifying it and using triangle ineqaulity we get
+\[
+2\lambda_z |\whlz| = \Big|\frac{\partial \rhph(\whl)}{\partial \whlz}\Big| \le \frac{1}{n}\sum_{i=1}^n |y_i\ph(x_i)\big(1 - \sigma(y_i(\whlc + \whlx^\top x_i + \whlz\ph(x_i)))\big)\Big|.
+\]
+Since $y_i \in \{-1,1\}$ and $\ph(x_i) \in \{-1,1\}$, we have $|y_i\ph(x_i)| = 1$. Moreover, because the sigmoid function satisfies $0 < \sigma(\cdot) < 1$, we have $0 < 1 - \sigma(\cdot) < 1$. Therefore,
+\[
+2\lambda_z|\whlz| \le \frac{1}{n}\sum_{i=1}^n 1 = 1 \implies |\whlz| \le \frac{1}{2\lambda_z}.
+\]
+An identical argument works for $q = \wsl$. Combining both bounds gives
+\[
+|q_z| \le \min\left\{\sqrt{\frac{\ln 2}{\lambda_z}}, \frac{1}{2\lambda_z}\right\} \le \frac{\ln(2)}{\lamz}.
+\]
+\end{proof}
+
+The following lemma is an application of McDiarmid's inequality to $\rhph(w)$ and $\rph(w)$.
+
+\begin{lem}\label{lem: McDiamird's inequality}
+Let $\ph$ be defined in \eqref{eqn: phi star and phi hat}.
+Conditional on $S$, fix $w=(w_c,w_x,w_z)\in\R^{d+2}$. For $0<\delta<1$, with conditional probability at least
+$1-\delta$ over $D$,
+\begin{equation}
+|\rhph(w)-\rph(w)|
+\leq(\ln2+\sqrt{\kappa^2+2}\|w\|)
+       \sqrt{\frac{2\ln(2/\delta)}{n}}.
+\end{equation}
+\end{lem}
+
+\begin{proof}
+Conditional on $S$, the imputer $\ph$ is fixed and independent of $D$. For any observation $(x_i, y_i) \in D$, let $A_i = (1, x_i, \ph(x_i)) \in \mathbb{R}^{d+2}$. By Assumption (C1) in \eqref{eqn: distribution conditions}, $\|x_i\| \le \kappa$ almost surely, and since $\ph(x_i) \in \{-1, 1\}$, we have
+\[
+\|A_i\| = \sqrt{1 + \|x_i\|^2 + |\ph(x_i)|^2} \le \sqrt{\kappa^2 + 2}.
+\]
+By the Cauchy--Schwarz inequality,
+\[
+|w_c + w_x^\top x_i + w_z\ph(x_i)| = |w^\top A_i| \le \|w\| \|A_i\| \le \sqrt{\kappa^2 + 2}\|w\|.
+\]
+Since the logistic loss $\ell(x_i, \ph(x_i), y_i; w) = \ln(1 + \exp(-y_i w^\top A_i))$ is $1$-Lipschitz with $\ell(x_i, \ph(x_i), y_i; 0) = \ln 2$, and $y_i \in \{-1, 1\}$, each loss is non-negative and bounded almost surely by
+\[
+0 \le \ell(x_i, \ph(x_i), y_i; w) \le \ln 2 + |w^\top A_i| \le \ln 2 + \sqrt{\kappa^2 + 2}\|w\| =: M_w.
+\]
+Replacing any single observation in $D$ changes the empirical risk $\rhph(w) = \frac{1}{n} \sum_{i=1}^n \ell(x_i, \ph(x_i), y_i; w)$ by at most $M_w/n$. Since $\mathbb{E}_D[\rhph(w) \mid S] = \rph(w)$, applying McDiarmid's bounded differences inequality yields, for any $\epsilon > 0$,
+\[
+\mathbb{P}\big( |\rhph(w) - \rph(w)| \ge \epsilon \mid S \big) \le 2\exp\left(-\frac{2\epsilon^2}{n(M_w/n)^2}\right) = 2\exp\left(-\frac{2n\epsilon^2}{M_w^2}\right).
+\]
+Setting the right-hand side to $\delta$ and solving for $\epsilon$ gives
+\[
+\epsilon = M_w \sqrt{\frac{\ln(2/\delta)}{2n}}.
+\]
+Thus, with conditional probability at least $1 - \delta$ over $D$,
+\[
+|\rhph(w) - \rph(w)| \le M_w \sqrt{\frac{\ln(2/\delta)}{2n}} \le M_w \sqrt{\frac{2\ln(2/\delta)}{n}} = (\ln 2 + \sqrt{\kappa^2 + 2}\|w\|)\sqrt{\frac{2\ln(2/\delta)}{n}},
+\]
+which proves the claimed inequality.
+\end{proof}
+
+
+The previous lemma gave a pointwise bound, we now specify a uniform bound.
+\begin{lem}\label{lem: uniform ball deviation}
+Let $B>0$, $K=\sqrt{\kappa^2+2}$, and define for any $\eta \in (0,1)$:
+\[
+\Gamma(B,K,\eta):=4KB+(\ln2+KB)\sqrt{\frac{\ln(2/\eta)}2}.
+\]
+Conditional on $S$, with probability at least $1-\delta$ over $D$,
+\[
+\sup_{\|w\|\leq B}|\rhph(w)-\rph(w)|
+\leq\frac{\Gamma(B,K,\delta)}{\sqrt n}.
+\]
+\end{lem}
+\begin{rem}
+In our application, the radius $B$ will be set to the deterministic population envelope $\mathsf{W}$ (defined in Proposition \ref{cor: uniform bound on weights}), ensuring that this uniform concentration bound is applied to a fixed, non-random hypothesis class.
+\end{rem}
+\begin{proof}
+Conditional on $S$, $\ph$ is fixed. Without loss of generality, we can center the loss by subtracting the constant $\ell(x,\ph(x),y;0)=\ln2$ without affecting the difference $\rhph(w)-\rph(w)$. Using standard symmetrization with independent Rademacher variables $\sigma_1,\dots,\sigma_n\in\{-1,1\}$ as shown in \cite[Thm 26.2]{shalev-shwartz_ben-david_2014}, we get
+\[
+\mathbb{E}_D\left[\sup_{\|w\|\leq B}|\rhph(w)-\rph(w)| \;\middle|\; S\right]
+\leq 2\,\mathbb{E}_{D,\sigma}\left[\sup_{\|w\|\leq B}\left|\frac{1}{n}\sum_{i=1}^n\sigma_i\big(\ell(x_i,\ph(x_i),y_i;w)-\ln2\big)\right|\;\middle|\; S\right].
+\]
+Since the scalar loss $t\mapsto\ln(1+e^{-t})-\ln2$ is $1$-Lipschitz and vanishes at zero, the contraction principle combined with the Cauchy--Schwarz inequality yields
+\[
+\mathbb{E}_\sigma\left[\sup_{\|w\|\leq B}\left|\frac{1}{n}\sum_{i=1}^n\sigma_i\big(\ell(x_i,\ph(x_i),y_i;w)-\ln2\big)\right|\right]
+\leq \frac{2B}{n}\mathbb{E}_\sigma\left\|\sum_{i=1}^n\sigma_i A_i\right\|
+\leq \frac{2KB}{\sqrt{n}},
+\]
+where $A_i=(1,x_i,\ph(x_i))$ satisfies $\|A_i\|\leq\sqrt{\kappa^2+2}=K$ under Assumption (C1), and the final inequality follows from Jensen's inequality with $\mathbb{E}_\sigma\|\sum_{i=1}^n\sigma_i A_i\|^2=\sum_{i=1}^n\|A_i\|^2\leq nK^2$. Hence, the expected uniform deviation is bounded by $\frac{4KB}{\sqrt{n}}$.
+To establish concentration around the expectation, define $\Phi(D):=\sup_{\|w\|\leq B}|\rhph(w)-\rph(w)|$. From Lemma \ref{lem: McDiamird's inequality}, each loss on the ball $\|w\|\leq B$ lies in $[0,\ln2+KB]$. Thus, replacing any single observation in $D$ changes $\Phi(D)$ by at most $c_k=\frac{\ln2+KB}{n}$. Applying McDiarmid's bounded differences inequality, the deviation from its expectation satisfies, with conditional probability at least $1-\delta$,
+\[
+\Phi(D) - \mathbb{E}_D[\Phi(D)\mid S] \leq \frac{\ln2+KB}{\sqrt{n}}\sqrt{\frac{\ln(2/\delta)}{2}}.
+\]
+Combining the expectation bound with this concentration bound yields
+\[
+\sup_{\|w\|\leq B}|\rhph(w)-\rph(w)| \leq \frac{4KB}{\sqrt{n}} + \frac{\ln2+KB}{\sqrt{n}}\sqrt{\frac{\ln(2/\delta)}{2}} = \frac{\Gamma(B,K,\delta)}{\sqrt{n}},
+\]
+which completes the proof.
+\end{proof}
+
+The next lemma examines how the optimal weights and risk behave as the regularization parameter varies.
+
+\begin{lem}\label{lem: inverse relation between regulariser and risk}
+Let $\lambda=(\lambda_c,\lambda_x,\lambda_z)$ and
+$\theta=(\lambda_c,\lambda_x,\theta_z)$ with
+$\lambda_z\leq\theta_z$. Then
+\begin{equation}\label{eqn: inverse relation between regulariser and risk z weight}
+|w^\star_{\theta,z}|\leq|\wslz|.
+\end{equation}
+If $\lambda_c=\lambda_x=\lambda_0=n^{-1/2}$, then
+\begin{equation}\label{eqn: inverse relation between regulariser and risk z}
+R(\wsl)\leq R(w^\star_\theta)
++\lambda_0\bigl(|w^\star_{\theta,c}|^2+\|w^\star_{\theta,x}\|^2\bigr).
+\end{equation}
+The same statements hold for $\rps(\cdot)$ and its corresponding optimal weights.
+\end{lem}
+
+\begin{proof}
+Write $P(q)=\lambda_c|q_c|^2+\lambda_x\|q_x\|^2$. By the optimality of $\wsl$ for the regularized objective with parameter $\lambda$,
+\[
+R(\wsl)+P(\wsl)+\lambda_z|\wslz|^2 \leq R(w^\star_\theta)+P(w^\star_\theta)+\lambda_z|w^\star_{\theta,z}|^2.
+\]
+Similarly, by the optimality of $w^\star_\theta$ for the objective with parameter $\theta$,
+\[
+R(w^\star_\theta)+P(w^\star_\theta)+\theta_z|w^\star_{\theta,z}|^2 \leq R(\wsl)+P(\wsl)+\theta_z|\wslz|^2.
+\]
+Adding these two inequalities and canceling common terms yields
+\begin{equation}\label{eqn: w theta less than w lambda}
+(\theta_z-\lambda_z)\bigl(|w^\star_{\theta,z}|^2-|\wslz|^2\bigr) \leq 0.
+\end{equation}
+Since $\theta_z \geq \lambda_z > 0$, this implies $|w^\star_{\theta,z}| \leq |\wslz|$, which proves \eqref{eqn: inverse relation between regulariser and risk z weight}.
+
+Using $|w^\star_{\theta,z}|^2 \leq |\wslz|^2$ in the first optimality inequality gives
+\[
+R(\wsl)+P(\wsl) \leq R(w^\star_\theta)+P(w^\star_\theta) + \lambda_z\big(|w^\star_{\theta,z}|^2 - |\wslz|^2\big) \leq R(w^\star_\theta)+P(w^\star_\theta).
+\]
+Since $P(\wsl) \geq 0$, we have $R(\wsl) \leq R(\wsl) + P(\wsl)$. Setting $\lambda_c = \lambda_x = \lambda_0 = n^{-1/2}$, we obtain $P(w^\star_\theta) = \lambda_0(|w^\star_{\theta,c}|^2 + \|w^\star_{\theta,x}\|^2)$, which proves \eqref{eqn: inverse relation between regulariser and risk z}. The same argument holds verbatim for $\rps$ by replacing $R$ with $\rps$ and using the corresponding regularized minimizers.
+\end{proof}
+
+We next present a corollary which relates the risk of various optimal weights.
+\begin{cor}\label{cor: v star and w star infinity}
+Let $\lambda=(n^{-1/2},n^{-1/2},\lambda_z)$ with $\lambda_z>0$ and set
+$J_\lambda(w)=n^{-1/2}(|w_c|^2+\|w_x\|^2)+\lambda_z|w_z|^2$.
+Then
+\begin{equation}\label{eqn: population comparator bound}
+R(\wsl)+J_\lambda(\wsl)
+\leq\min\left\{
+R(\ws)+J_\lambda(\ws),\
+T(\vs)+\frac{\|\vs\|^2}{\sqrt n}\right\}.
+\end{equation}
+In particular,
+$R(\wsl)\leq T(\vs)+\|\vs\|^2/\sqrt n$.
+\end{cor}
+\begin{proof}
+By the optimality of $\wsl$, we have  
+\[
+R(\wsl)+J_\lambda(\wsl)\leq R(\ws)+J_\lambda(\ws).
+\]
+Similarly, evaluating at the feature-only candidate $w=(v_c^\star,v_x^\star,0)\in\mathbb{R}^{d+2}$ yields $R(v_c^\star,v_x^\star,0)=T(\vs)$ and $J_\lambda(v_c^\star,v_x^\star,0)=\frac{\|\vs\|^2}{\sqrt{n}}$, which gives
+\[
+R(\wsl)+J_\lambda(\wsl)\leq T(\vs)+\frac{\|\vs\|^2}{\sqrt{n}}.
+\]
+Taking the minimum of these two upper bounds establishes \eqref{eqn: population comparator bound}. Since $J_\lambda(\wsl)\ge 0$, we further get $R(\wsl)\leq T(\vs)+\|\vs\|^2/\sqrt{n}$.
+\end{proof}

@@ -1,0 +1,146 @@
+
+
+
+\section{Problem Formulation}
+In this section, we mathematically formulate the problem of learning with side information with partioned dataset.
+
+\subsection{Notation Scheme}
+
+Random variables are denoted by capital letters (e.g., $X$), with their specific instances represented by the corresponding lowercase letters (e.g., $x$). The space over which a random variable is defined is denoted using the corresponding calligraphic letter (e.g., $\mathcal{X}$). Risks are represented by capital  letters (e.g., $R,L$), while empirical risks are indicated by placing a hat over the corresponding letter (e.g., $\rh, \hat{L}$). Model parameters, such as weights, are denoted by lowercase  letters (e.g., $w,u$). The optimal weights minimizing the population risk are denoted with a superscript star (e.g., $w^\star$), and those minimizing the empirical risk are denoted with a hat (e.g., $\hat{w}$). We use sans-serif letters to denote important constants (w.r.t. this chapter, e.g., $\mathsf{W}$). For random variables $X$ and $Y$, we write $\E_{X}[f(X,Y)\mid Y]$ simply as $\E_{X}[f(X,Y)]$ when the conditioning variable is clear from context.
+
+
+\subsection{Modeling}
+Let $\mathcal{X} \subset \mathbb{R}^d$ denote the feature space, $\mathcal{Y} = \{-1, 1\}$ the label space, and $\mathcal{Z} = \{-1, 1\}$ the side information space. Let $(X, Y, Z)$ be a random variable representing the true data generating process over $\mathcal{X} \times \mathcal{Y} \times \mathcal{Z}$. We assume the following properties:
+
+\begin{equation} \label{eqn: distribution conditions}
+\begin{array}{ll}
+\textbf{(C1) Boundedness:} \ \ \exists \kappa>0  \;\; \lVert X \rVert \leq \kappa \text{ almost surely,} \\
+\textbf{(C2) Regularity:} \;\; X \text{ has a Lebesgue density and a Lipschitz cumulative distribution function;}\\
+\quad (X,Y,Z) \text{ has densities }p_{y,z}(x)\text{ with respect to Lebesgue measure in $x$ and counting measure} \\
+\quad \text{in the binary coordinates $y,z$.}\\
+\textbf{(C3) Positive definiteness:} \;\; \mathbb{E}[(1,X)(1,X)^T] \succ 0, \\
+\textbf{(C4) Non-separability:} \;\; \text{For all } x, z, \\
+ \quad \mathbb{P}(Y = 1 \mid X = x, Z = z) \not\in \{0,1\}, \quad \mathbb{P}(Y = 1 \mid X = x) \not\in \{0,1\}, \quad \mathbb{P}(Z = 1 \mid X = x) \not\in \{0,1\}.
+\end{array}
+\end{equation}
+
+Consider a dataset $\{(x_k, y_k, z_k)\}_{k=1}^{n+m}$ consisting of i.i.d. samples drawn from the joint distribution of $(X, Y, Z)$. We partition this dataset as follows.
+\begin{equation}\label{eqn: partitioned dataset}\index{Partitioned dataset|textbf}\index{Side information|textbf}
+    \begin{aligned}
+        D = \{(x_i, y_i)\}_{i=1}^n \quad \text{(missing  $z_i$\text)}, \quad S = \{(x_j, z_j)\}_{j=n+1}^{n+m} \quad \text{(missing $y_j$)}, \;\; n \ge m.
+    \end{aligned}
+\end{equation}
+Here, $D$ contains feature-label pairs with missing side information, and $S$ contains feature–side information pairs with missing labels.
+At test time, a sample $(x, y, z)$ is drawn from the joint distribution of $(X, Y, Z)$. The objective is to learn a classifier using both $S$ and $D$ in order to accurately predict the target label $y$ based on the features $x$ and side information $z$.
+
+We employ a logistic regression classifier with an intercept term and use a decision threshold of 0.5 for a deterministic binary prediction. Define the sigmoid function,
+\begin{equation*}
+    \sigma(t) := \frac{1}{1 + \exp(-t)}, \quad t \in \mathbb{R}.
+\end{equation*}
+and let the logistic loss for a feature vector $a \in \R^k$, label $b \in \{-1,1\}$ and a weight vector $c \in \R^{k+1}$
+be given by
+\begin{equation*}
+\ell(a,b;c) := -\ln(\sigma(b(c^\top(1,a))))
+\end{equation*}
+
+To characterize the excess risk of the hypothesis learned by our algorithm, we now define several classifiers together with their associated population risks.
+
+Let $u := (u_c, u_x) \in \mathbb{R}^{d+1}$ parameterize a classifier $ \phi_u: \mathcal{X} \rightarrow \mathcal{Z}$ given by
+\begin{equation*}\phi_u(x) := 2\mathbbm{1}_{\{\sigma(u_c + u_x^\top x) > 0.5\}} - 1.
+\end{equation*}
+The logistic population risk of a classifier parameterized by $u$ is defined as (with $a = X, b= Z, c = (u_c, u_x)$ in the logistic loss)
+\begin{equation*}\label{eqn: Logistic risk small}
+\begin{aligned}
+    L(u) &:= \mathbb{E}_{(X, Y, Z)}[\ell(X, Z; u)]=\mathbb{E}_{(X, Z)}[-\ln(\sigma(Z(u_c + u_x^\top X)))].
+\end{aligned}
+\end{equation*}
+The optimal weight $u^\star := (u^\star_c, u^\star_x)$ minimizes the population risk:
+\begin{equation}\label{eqn: u star}
+    u^\star := \arg\min_u L(u).
+\end{equation}
+From the non-separability assumption, we have $\lVert \us \rVert < \infty$ (a consequence of Lemma \ref{lem: finite norm for optimal weights}).
+The
+population risk under the zero-one loss is defined as
+\begin{equation*}\label{{eqn: zero-one risk}}
+    L_{(0,1)}(u) := \E_{(X,Y,Z)}[\mathbbm{1}_{\{Z(u_c + u_x^\top X) \leq 0 \}}] = \E_{(X,Z)}[\mathbbm{1}_{\{Z(u_c + u_x^\top X) \leq 0 \}}] .
+\end{equation*}
+The logistic empirical risk over $S$ of a classifier parameterised by $u$ is defined as (with $a = x_j, b= z_j, c = (u_c, u_x)$ in the logistic loss)
+\begin{equation*}
+\begin{aligned}
+    \hat{L}(u) &:= \frac{1}{m} \sum_{(x_j, z_j) \in S} \ell(x_j, z_j; u) = \frac{1}{m} \sum_{(x_j, z_j) \in S}-\ln(\sigma(z_j(u_c + u_x^\top x_j))).
+\end{aligned}
+\end{equation*}
+For a regularization parameter $\mu > 0$, the regularized empirical minimizer $\hat{u} := (\hat{u}_c, \hat{u}_x)$ is given by
+\begin{equation}\label{eqn: u hat}
+    \hat{u} := \arg\min_u \hat{L}(u) + \mu \lVert u \rVert^2.
+\end{equation}
+The corresponding classifiers associated with $u^\star$ and $\hat{u}$ are denoted by
+\begin{equation}\label{eqn: phi star and phi hat}
+    \phi^\star(x) := \phi_{u^\star}(x) \text{ and } \quad \hat{\phi}(x) := \phi_{\hat{u}}(x).
+\end{equation}
+Let $ v := (v_c, v_x) \in \mathbb{R}^{d+1} $ parameterize a classifier $ \psi_v: \mathcal{X} \rightarrow \mathcal{Y} $ given by
+\begin{equation*}
+    \psi_v(x) := 2\mathbbm{1}_{\{\sigma(v_c + v_x^\top x) > 0.5\}} - 1.
+\end{equation*}
+The logistic population risk of a classifier parameterised by $v$ is defined as (with $a = X, b= Y, c = (v_c, v_x)$ in the logistic loss)
+\begin{equation*}
+\begin{aligned}
+    T(v) &:= \mathbb{E}_{(X, Y, Z)}[\ell(X, Y; v)] = \mathbb{E}_{(X, Y)}[-\ln(\sigma(Y(v_c + v_x^\top X)))].
+\end{aligned}
+\end{equation*}
+and the optimal weight $ v^\star := (v^\star_c, v^\star_x) $ is given by
+\begin{equation}\label{eqn: v star}
+    v^\star := \arg\min_v T(v).
+\end{equation}
+Note that from the non-separability assumption, we have $\lVert \vs \rVert < \infty$ (a consequence of Lemma \ref{lem: finite norm for optimal weights}).
+Finally let $ w := (w_c, w_x, w_z) \in \mathbb{R}^{d+2} $ parameterize a classifier $ \pi_w: \mathcal{X} \times \mathcal{Z} \rightarrow \mathcal{Y} $ given by
+\begin{equation*}
+    \pi_w(x, z) := 2\mathbbm{1}_{\{\sigma(w_c + w_x^\top x + w_z z) > 0.5\}} - 1.
+\end{equation*}
+The logistic population risk of a classifier parameterised by $w$ is defined as (with $a = (X, Z), b= Y, c = (w_c, w_x, w_z)$ in the logistic loss)
+\begin{equation*}\label{eqn: Logistic risk}
+\begin{aligned}
+    R(w) &:= \mathbb{E}_{(X, Y, Z)}[\ell(X, Z, Y; w)] = \mathbb{E}_{(X, Y, Z)}[-\ln(\sigma(Y(w_c + w_x^\top X + w_z Z)))].
+\end{aligned}
+\end{equation*}
+The optimal weight $ w^\star := (w^\star_c, w^\star_x, w^\star_z) $ is defined as
+\begin{equation}\label{eqn: w star}
+    w^\star := \arg\min_w R(w).
+\end{equation}
+Note that from the non-separability assumption, $\lVert \ws \rVert < \infty$ (a consequence of Lemma \ref{lem: finite norm for optimal weights}).
+For a regularization parameter $ \lambda := (\lambda_c, \lambda_x, \lambda_z) \in [0,\infty)^{3} $, the regularized logistic population risk is
+\begin{equation*}
+    R_\lambda(w) := R(w) + \lambda_c |w_c|^2 + \lambda_x \lVert w_x \rVert^2 + \lambda_z |w_z|^2,
+\end{equation*}
+with minimizer
+\begin{equation}\label{eqn: w lambda star}
+    w^\star_\lambda := \arg\min_{w \in \mathbb{R}^{d+2}} R_\lambda(w).
+\end{equation}
+Given a mapping $ \phi: \mathcal{X} \rightarrow \mathcal{Z} $, the \textit{logistic $\phi$-population risk} over $ (X,Y) $ is
+\begin{equation*}
+    R^\phi(w) := \mathbb{E}_{(X, Y)}[\ell(X,\phi(X),Y; w)].
+\end{equation*}
+The corresponding regularized risk and its minimizer are
+\begin{equation*}\label{eqn: risk phi eta}
+    R^\phi_\lambda(w) := R^\phi(w) + \lambda_c |w_c|^2 + \lambda_x \lVert w_x \rVert^2 + \lambda_z |w_z|^2,
+\end{equation*}
+and
+\begin{equation}\label{eqn: w star phi lambda}
+   \ws_{\phi,\lambda} := \arg\min_w \rpl(w)
+\end{equation}
+respectively.
+
+\noindent The logistic empirical risk over $ D $ with imputed side information $ \hat{\phi}(x_i) $ described in \eqref{eqn: phi star and phi hat} for a classifier parameterised by $w$ is defined as (with $a = (x_i,\hat{\phi}(x_i)), b= y_i, c = (w_c, w_x, w_z)$ in the logistic loss)
+\begin{equation*}
+\begin{aligned}
+    \rh^{\hat{\phi}}(w) &:= \frac{1}{n} \sum_{(x_i, y_i) \in D} \ell(x_i, \hat{\phi}(x_i), y_i; w) = \frac{1}{n} \sum_{(x_i, y_i) \in D} -\ln(\sigma(y_i(w_c + w_x^\top x_i + w_z \ph(x_i)))).
+\end{aligned}
+\end{equation*}
+The corresponding regularized empirical minimizer is
+\begin{equation}\label{eqn: w hat lambda}
+    \hat{w}_\lambda := \arg\min_w [ \rh^{\hat{\phi}}(w) + \lambda_c |w_c|^2 + \lambda_x \lVert w_x \rVert^2 + \lambda_z |w_z|^2 ].
+\end{equation}
+
+Our goal is to analyze the excess risk of the learned classifier $\whl$ in terms of the various population-optimal weights described earlier.
+
+

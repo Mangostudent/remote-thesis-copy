@@ -1,0 +1,122 @@
+%!TEX root = ../../main.tex
+\subsection{Main Result: Upper Bound on Excess Risk}
+
+We now state our main theorem, which provides an explicit upper bound on the excess risk as a function of the sample sizes $m$ and $n$, relevant distribution-dependent quantities, and the choice of regularizer $\lamz$.
+
+To ensure coercivity of the upper bound, we require a non-degeneracy condition on the expected score of the imputer.
+\begin{enumerate}
+    \item[(ND)] \textbf{Non-degeneracy}: We assume that the boundary has measure zero and the optimal features are not perfectly collinear
+    \begin{equation}
+        P(s^*(X)=0)=0, \qquad E[A_*A_*^T]\succ 0, \quad \text{where} \quad s^*(x)=u_c^*+u_x^{*T}x,\quad A_*=(1,X,\phi^*(X)).
+    \end{equation}
+\end{enumerate}
+Under an absolutely continuous $X$ distribution, it suffices that $\phi^*$ takes both labels with positive probability. A nonconstant affine classifier has a zero-probability boundary. An affine relation involving $1, X$ and $\phi^*$ cannot vanish on both positive-volume label regions unless its coefficients all vanish.
+
+\begin{thm}\label{thm: main theorem}\index{Excess risk!upper bound|textbf}
+    Let $\us$ and $\vs$ be as defined in \eqref{eqn: u star} and \eqref{eqn: v star}, respectively. Let $\ws$ and $\wsn$ be as defined in \eqref{eqn: w star} and \eqref{eqn: w lambda star}. Let $\mathsf{W}$ be the deterministic population envelope defined in Proposition \ref{cor: uniform bound on weights}.
+Consider the partitioned training datasets $D$ of size $n$ and $S$ of size $m$, as defined in \eqref{eqn: partitioned dataset}. Under the continuous density assumption (ND) and non-separability condition (C4), let $n \ge n_0$ and $m \ge m_0$. Let $0<\delta<1$. Take the regularizer $\lambda$ as
+\begin{equation*}
+    \lambda = \Bigg(\frac{1}{\sqrt{n}}, \frac{1}{\sqrt{n}}, \lamz\Bigg) \in \mathbb{R}^{3},
+\end{equation*}
+where $\lamz \geq \frac{1}{\sqrt{n}}$. Then, with probability at least $1-\delta$, the following inequality holds simultaneously for all such $\lambda$
+   \begin{equation}\label{eqn: main equation}
+        \begin{aligned}
+            R(\whl) - R(\ws) &\leq \frac{C_1}{\sqrt{n}} +
+            \min\Big\{\lamz|\wsz|^2,\,
+            T(\vs)-R(\ws)\Big\} \\
+            &+
+            \min\Bigg\{\frac{1}{2\lamz},\mathsf{W}\Bigg\}\frac{4}{\ln(2)}\Bigg(\frac{C_2}{\sqrt{m}} + L(\us)\Bigg),
+        \end{aligned}  
+    \end{equation}
+    where $C_1=C_1(\mathsf W,\delta)$ and $C_2 = \bigO( \sqrt{\ln(1/\delta)} )$ are purely deterministic constants. Since $m < n$, the term $1/\sqrt{m}$ on the right-hand side does not get absorbed into the $1/\sqrt{n}$ term.
+\end{thm}
+
+
+\begin{proof}[Proof Outline]
+To analyze the excess risk, we decompose the left-hand side of \eqref{eqn: main equation} into four terms, each capturing a distinct source of error
+\begin{equation*}
+\begin{aligned}
+    R(\whl) - R(\ws) =\;&
+    \underbrace{R(\whl) - \rph(\whl)}_{\mathrm{(A)}} +
+    \underbrace{\rph(\whl) - \rph(\wsl)}_{\mathrm{(B)}} + \underbrace{\rph(\wsl) - R(\wsl)}_{\mathrm{(C)}} +
+    \underbrace{R(\wsl) - R(\ws)}_{\mathrm{(D)}}.
+\end{aligned}
+\end{equation*}
+
+\noindent The first and third terms, (A) and (C), quantify the estimation error resulting from the use of the imputed side information $\ph$. This error depends on the complexity of the relationship between $(X, Z)$ quantified by $L(\us)$, the sample size $m$ of the side information dataset $S$, and the regularization parameter $\lamz$, which determines the extent to which the model relies on the imputed side information. These terms contribute the following to the
+upper bound
+\begin{equation*}
+    \min\Bigg( \frac{1}{2\lamz},\ \mathsf{W} \Bigg)
+    \times
+    \frac{4}{\ln(2)}\Bigg( \frac{C_2}{\sqrt{m}} + L(\us) \Bigg).
+\end{equation*}
+
+\noindent The second and fourth terms, (B) and (D), are bounded together.
+Empirical optimality retains the population penalty, and a population
+comparator argument then gives the contribution
+\begin{equation*}
+\begin{aligned}
+    &\min\{\lamz |\wsz|^2,\, T(\vs)-R(\ws)\}
+\end{aligned}
+\end{equation*}
+together with $C_1/\sqrt n$ to the upper bound in \eqref{eqn: main equation}.
+At $\lamz=\infty$, the constraint $w_z=0$ yields the feature-only regularized population fit; its unregularized benchmark is $\vs$. Thus, this term quantifies the proportion of the worst-case gap $T(\vs) - R(\ws)$ (with the worst at $\lamz = \infty$) that is realized, depending on the choice of the regularizer $\lamz$.
+The complete proof is given in Section~\ref{sec:proofs_ch3} (Proof~\ref{subsec: proof of main theorem}).
+\end{proof}
+
+\subsubsection{Interpretation of the Excess Risk Bound}
+
+To provide intuition for the upper bound in Theorem \ref{thm: main theorem}, consider the university admission scenario. Here, the feature $x \in \R^d$ represents a candidate's academic scores, the side information $z$ is the admission decision of a secondary university, and the label $y$ is the decision of the primary university. The excess risk $R(\hat{w}_{\lambda}) - R(w^*)$ represents the performance gap between our learned classifier $\hat{w}_{\lambda}$ and the benchmark optimal classifier $w^*$, which has access to the true joint distribution of $(X, Y, Z)$. This risk is controlled by the regularization parameter $\lambda_z$ and consists of three distinct components.
+
+The first term, $\bigO(1/\sqrt{n})$, is the standard estimation error associated with the sample size $n$ of the primary university's dataset. This error is unavoidable and decays as more primary data becomes available.
+
+The second term captures the potential gain from incorporating $z$. It is proportional to the gap $T(v^*) - R(w^*)$, which measures how much knowing the true side information improves prediction accuracy over using features $x$ alone. This term is controlled linearly by $\lambda_z$. If $z$ carries meaningful information (i.e., the gap is significant), the upper bound is lowered by reducing $\lambda_z$, which encourages the model to assign larger weight to the side information.
+
+The third term quantifies the error introduced by imputing $z$ from $x$ using the secondary university sample. It depends on the sample size $m$ of the secondary university's data and the optimal prediction error $L(u^*)$, which reflects the complexity of the relationship between features and side information. This term is inversely controlled by $\lambda_z$ (scaling as $1/\lambda_z$). If the features cannot accurately predict $z$, the imputed values are noisy, and a large $\lambda_z$ is required to ignore the unreliable imputed data.
+
+The interplay between the second and third terms creates a tension in selecting $\lambda_z$. If $z$ is highly informative for predicting $y$ (large gap $T(v^*) - R(w^*)$), a smaller $\lambda_z$ is desirable to leverage this information. However, if $x$ poorly predicts $z$ (large $L(u^*)$), a larger $\lambda_z$ is necessary to mitigate the noise from imperfect imputation. The regularizer $\lambda_z$ must balance these two competing terms. In this case, the optimal $\lambda_z$ must find a balance to extract the signal in $z$ while damping the noise from imperfect imputation. As we will show in subsequent sections, despite this tension, when the side information sample size is large, the optimal $\lambda_z$ can exhibit a conditional threshold-based behavior, taking on extreme values (either very large or very small) depending on which factor is more limiting: the noise introduced by imperfectly imputed $z$, or the dependence of $y$ on $z$. The direction of this behavior is determined by the underlying population distributional properties.
+
+\subsubsection{Retrospective Regularizer Selection}
+
+Theorem \ref{thm: main theorem} provides an explicit upper bound on the excess risk as a function of the regularization parameter $\lamz$. We are interested in determining the value of $\lamz$ that minimizes this upper bound. Since $\lamz$ is a hyperparameter, its optimal value depends on the underlying population distribution. To analyze its optimal choice, we define the parameters of the bound as follows: Let $a = |\wsz|^2$ represent the signal strength, $\Delta = T(\vs) - R(\ws)$ represent the worst-case feature-only risk gap, and $b_m = \frac{4}{\ln 2}(L(\us) + \frac{C_2}{\sqrt{m}})$ represent the bounded imputation error. The upper bound on the excess risk (excluding the $\bigO(1/\sqrt{n})$ term) as a function of $\lamz \ge \lambda_0 = 1/\sqrt{n}$ is given by
+\begin{equation}\label{eqn: F lambda}
+    F(\lamz) := \min\{a\lamz, \Delta\} + b_m \min\left\{\mathsf{W}, \frac{1}{2\lamz}\right\}.
+\end{equation}
+Let $\lambda_z^\star := \arg\min_{\lamz \ge \lambda_0} F(\lamz)$ be the (retrospective) optimal regularizer that minimizes the theoretical upper bound. 
+Because $F(\lamz)$ is a combination of two minima, it is a piecewise function. Its global minimum over the valid range must occur at one of three candidate points: the lower endpoint $\lambda_0$, the upper endpoint $\infty$, or an interior point where the derivative of the active branches is zero. We establish this exactly in the following corollary, replacing the regime analysis of the earlier work.
+
+\begin{corollary}[The Three-Candidate Rule]\label{cor: three candidates}
+For any distribution, the optimal regularizer $\lambda_z^\star$ that minimizes the upper bound $F(\lamz)$ on the interval $[\lambda_0, \infty)$ is selected from at most three candidates:
+\begin{enumerate}
+\item The lower endpoint: $\lambda_0 = 1/\sqrt{n}$.
+\item The upper endpoint: $\lambda_\infty = \infty$.
+\item The interior point: $\lambda_I = \sqrt{\frac{b_m}{2a}}$, provided it satisfies $\lambda_0 \le \lambda_I$, $a\lambda_I \le \Delta$, and $\frac{1}{2\lambda_I} \le \mathsf{W}$.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+The proof is given in Section~\ref{subsec:proofs_corollaries_upper_bound} (Proof~\ref{proof:cor_three_candidates}).
+\end{proof}
+
+To understand when each candidate is selected, we examine the asymptotic behavior as $m \to \infty$. Notice that $b_m \to \frac{4}{\ln 2} L(\us)$. If the true imputation loss is non-zero (i.e., $L(\us) > 0$), then the interior candidate approaches a strictly positive constant
+\begin{equation}
+    \lim_{m \to \infty} \lambda_I = \sqrt{\frac{2L(\us)}{a \ln 2}} > 0.
+\end{equation}
+The optimal choice is determined by the balance between the signal strength of the side information ($a = |\wsz|^2$) and the noise level of the imputation ($L(\us)$). We formalize this by defining the signal-imputation ratio
+\begin{equation}
+    \rho := \frac{|\wsz|^2}{L(\us)}.
+\end{equation}
+Depending on this ratio, we establish the Conditional Threshold-Based Corollary, showing exactly when the endpoints strictly dominate.
+
+\begin{corollary}[Conditional Threshold-Based Regularization]\label{cor: bang_bang}\index{Threshold-based regularization|textbf}
+For sufficiently large $m, n$, there exist critical thresholds $\rho_{\rm low}$ and $\rho_{\rm high}$ such that
+\begin{itemize}
+    \item If $\rho < \rho_{\rm low}$ (the side information is too noisy), the optimal regularizer is strictly the upper endpoint: $\lambda_z^\star = \infty$.
+    \item If $\rho > \rho_{\rm high}$ (the side information is clean and strong), the optimal regularizer is strictly the lower endpoint: $\lambda_z^\star = \lambda_0 = 1/\sqrt{n}$.
+    \item If $\rho \in (\rho_{\rm low}, \rho_{\rm high})$ (moderate signal-imputation ratio), the theoretical bound is strictly minimized by the interior point $\lambda_z^\star = \lambda_I$.
+\end{itemize}
+\end{corollary}
+
+\begin{proof}
+The proof is given in Section~\ref{subsec:proofs_corollaries_upper_bound} (Proof~\ref{proof:cor_bang_bang}).
+\end{proof}
